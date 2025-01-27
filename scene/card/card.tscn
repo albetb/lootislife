@@ -1,0 +1,135 @@
+[gd_scene load_steps=14 format=3 uid="uid://3trgkf0u68ry"]
+
+[ext_resource type="Script" path="res://scene/card/card.gd" id="1_gelhr"]
+[ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="2_ak6k4"]
+[ext_resource type="Script" path="res://scene/card/state_machine/card_state_machine.gd" id="2_vqdgh"]
+[ext_resource type="Script" path="res://scene/card/state_machine/states/idle_card_state.gd" id="3_bx54l"]
+[ext_resource type="Texture2D" uid="uid://b46ukv88ys66g" path="res://sprite/attack_card_image.png" id="3_l87kj"]
+[ext_resource type="Script" path="res://scene/card/state_machine/states/clicked_card_state.gd" id="4_2bop5"]
+[ext_resource type="Script" path="res://scene/card/state_machine/states/drag_card_state.gd" id="5_f7w2d"]
+[ext_resource type="Script" path="res://scene/card/state_machine/states/release_card_state.gd" id="6_r0y7t"]
+[ext_resource type="Script" path="res://scene/card/state_machine/states/hover_card_state.gd" id="7_xjssr"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_g70p4"]
+load_path = "res://.godot/imported/card_base.png-1af9a569f6a3c2f40522db7f0a094bb0.ctex"
+
+[sub_resource type="LabelSettings" id="LabelSettings_8dhbj"]
+font_size = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_ibbey"]
+font_size = 12
+font_color = Color(0.07, 0.07, 0.07, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gwet6"]
+size = Vector2(100, 150)
+
+[node name="Card" type="Control"]
+custom_minimum_size = Vector2(100, 150)
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+script = ExtResource("1_gelhr")
+metadata/_edit_use_anchors_ = true
+
+[node name="CardBase" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(49.5, 75)
+scale = Vector2(1.2625, 1.1875)
+texture = SubResource("CompressedTexture2D_g70p4")
+
+[node name="CostSymbol" type="Sprite2D" parent="CardBase"]
+position = Vector2(32.8713, -55.5789)
+texture = ExtResource("2_ak6k4")
+
+[node name="CostLabel" type="Label" parent="CardBase/CostSymbol"]
+unique_name_in_owner = true
+offset_left = -8.71287
+offset_top = -10.1053
+offset_right = 10.2871
+offset_bottom = 9.89474
+text = "5"
+label_settings = SubResource("LabelSettings_8dhbj")
+horizontal_alignment = 1
+
+[node name="CardImage" type="Sprite2D" parent="CardBase/CostSymbol"]
+position = Vector2(-32.8713, 40.8421)
+scale = Vector2(1.07673, 1.11579)
+texture = ExtResource("3_l87kj")
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 83.0
+offset_bottom = 47.0
+text = "Power Attack"
+label_settings = SubResource("LabelSettings_ibbey")
+autowrap_mode = 3
+
+[node name="EffectLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -64.0
+offset_right = 42.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Effect"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+
+[node name="CardStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("2_vqdgh")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="CardStateMachine" node_paths=PackedStringArray("card")]
+script = ExtResource("3_bx54l")
+card = NodePath("../..")
+
+[node name="Click" type="Node" parent="CardStateMachine" node_paths=PackedStringArray("card")]
+script = ExtResource("4_2bop5")
+card = NodePath("../..")
+
+[node name="Drag" type="Node" parent="CardStateMachine" node_paths=PackedStringArray("card")]
+script = ExtResource("5_f7w2d")
+card = NodePath("../..")
+
+[node name="Release" type="Node" parent="CardStateMachine" node_paths=PackedStringArray("card")]
+script = ExtResource("6_r0y7t")
+card = NodePath("../..")
+
+[node name="Hover" type="Node" parent="CardStateMachine" node_paths=PackedStringArray("card")]
+script = ExtResource("7_xjssr")
+card = NodePath("../..")
+
+[node name="DropPointDetector" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropPointDetector"]
+visible = false
+position = Vector2(50, 75)
+shape = SubResource("RectangleShape2D_gwet6")
+
+[node name="CardsDetector" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardsDetector"]
+visible = false
+position = Vector2(50, 75)
+shape = SubResource("RectangleShape2D_gwet6")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
