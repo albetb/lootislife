@@ -9,8 +9,8 @@ extends Node2D
 @export var hand_size: int
 
 
-@onready var health_label: Label = $CanvasLayer/HealthValue
-@onready var mana_label: Label = $CanvasLayer/ManaLabel
+@onready var health_label: Label = $"../CanvasLayer/HealthValue"
+@onready var mana_label: Label = $"../CanvasLayer/Mana/ManaValue"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

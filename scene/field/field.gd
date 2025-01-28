@@ -4,7 +4,7 @@ extends MarginContainer
 @onready var card_drop_area_right: Area2D = $CardDropAreaRight
 @onready var card_drop_area_left: Area2D = $CardDropAreaLeft
 @onready var cards_holder: HBoxContainer = $CardsHolder
-@onready var mana_value: Label = $"../ManaValue"
+@onready var mana_value: Label = $"../Mana/ManaValue"
 @onready var player_node: Node2D = $"../../Player"
 @onready var combat_manager: Node2D = $"../../CombatManager"
 
@@ -50,7 +50,6 @@ func card_reposition(card: Card):
 	var index: int = 0
 	
 	if cards_areas.is_empty():
-		print(field_areas.has(card_drop_area_left))
 		if field_areas.has(card_drop_area_right):
 			index = cards_holder.get_children().size()
 	elif cards_areas.size() == 1:

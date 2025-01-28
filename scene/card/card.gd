@@ -31,8 +31,8 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	state_machine.on_mouse_exited()
 
-func setValues(name: String, cost: int, effect: String):
-	card_name = name
+func setValues(name_value: String, cost: int, effect: String):
+	card_name = name_value
 	card_cost = cost
 	card_description = effect
 
