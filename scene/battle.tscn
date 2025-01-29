@@ -1,0 +1,130 @@
+[gd_scene load_steps=14 format=3 uid="uid://b6bl6fl4ey2qf"]
+
+[ext_resource type="Script" path="res://entity/enemy.gd" id="1_hdxvr"]
+[ext_resource type="Script" path="res://entity/opponent_name.gd" id="2_nb8j0"]
+[ext_resource type="LabelSettings" uid="uid://ciji6abhr4pdk" path="res://ref/health.tres" id="3_8dkwp"]
+[ext_resource type="Script" path="res://entity/opponent_health_value.gd" id="4_1v6md"]
+[ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/field/field.tscn" id="5_f0ybc"]
+[ext_resource type="Script" path="res://entity/health_value.gd" id="6_a6o6i"]
+[ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="7_uh1ts"]
+[ext_resource type="Script" path="res://entity/mana_value.gd" id="8_grllu"]
+[ext_resource type="Script" path="res://entity/combat_manager.gd" id="9_di3du"]
+[ext_resource type="Script" path="res://battleground.gd" id="10_1jfp7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
+font_size = 50
+
+[sub_resource type="LabelSettings" id="LabelSettings_q2lf6"]
+font_size = 75
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbkxh"]
+size = Vector2(414, 203)
+
+[node name="Battle" type="CanvasLayer" groups=["fields"]]
+
+[node name="Enemy" type="Node2D" parent="."]
+script = ExtResource("1_hdxvr")
+
+[node name="OpponentName" type="Label" parent="Enemy"]
+offset_left = 437.0
+offset_top = 51.0
+offset_right = 720.0
+offset_bottom = 120.0
+text = "1"
+label_settings = SubResource("LabelSettings_jh7dp")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_nb8j0")
+
+[node name="OpponentHealthValue" type="Label" parent="Enemy"]
+offset_left = 744.0
+offset_top = 53.0
+offset_right = 827.0
+offset_bottom = 118.0
+text = "20"
+label_settings = ExtResource("3_8dkwp")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_1v6md")
+
+[node name="Hand" parent="." instance=ExtResource("5_f0ybc")]
+anchor_left = 0.209201
+anchor_top = 1.0
+anchor_right = 0.795139
+anchor_bottom = 1.0
+offset_left = -212.0
+offset_top = -75.0
+offset_right = 209.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" parent="Hand" index="1"]
+visible = true
+
+[node name="CollisionShape2D" parent="Hand/CardDropAreaRight" index="0"]
+position = Vector2(616, 74)
+
+[node name="CollisionShape2D" parent="Hand/CardDropAreaLeft" index="0"]
+position = Vector2(275.25, 74)
+
+[node name="PlayerHud" type="Node2D" parent="."]
+
+[node name="HealthValue" type="Label" parent="PlayerHud"]
+offset_left = 524.0
+offset_top = 489.0
+offset_right = 622.0
+offset_bottom = 553.0
+text = "20"
+label_settings = ExtResource("3_8dkwp")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("6_a6o6i")
+
+[node name="Mana" type="Node2D" parent="PlayerHud"]
+
+[node name="ManaSprite" type="Sprite2D" parent="PlayerHud/Mana"]
+position = Vector2(85.25, 499.75)
+scale = Vector2(6.84375, 6.34375)
+texture = ExtResource("7_uh1ts")
+
+[node name="ManaValue" type="Label" parent="PlayerHud/Mana"]
+offset_left = 35.0
+offset_top = 442.0
+offset_right = 140.0
+offset_bottom = 545.0
+text = "3"
+label_settings = SubResource("LabelSettings_q2lf6")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("8_grllu")
+
+[node name="CombatManager" type="Node2D" parent="."]
+script = ExtResource("9_di3du")
+
+[node name="Battleground" type="MarginContainer" parent="CombatManager"]
+offset_left = 379.0
+offset_top = 154.0
+offset_right = 792.0
+offset_bottom = 357.0
+script = ExtResource("10_1jfp7")
+
+[node name="Panel" type="Panel" parent="CombatManager/Battleground"]
+layout_mode = 2
+
+[node name="DropArea" type="Area2D" parent="CombatManager/Battleground"]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="CombatManager/Battleground/DropArea"]
+position = Vector2(206, 101.5)
+shape = SubResource("RectangleShape2D_dbkxh")
+
+[node name="PassButton" type="Button" parent="."]
+offset_left = 935.0
+offset_top = 455.0
+offset_right = 1110.0
+offset_bottom = 547.0
+text = "Pass"
+
+[connection signal="pressed" from="PassButton" to="CombatManager" method="_on_pass_button_pressed"]
+
+[editable path="Hand"]

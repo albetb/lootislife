@@ -1,6 +1,6 @@
 extends Label
 
-@onready var player_node: Node2D = $"../../Player"
+@onready var player_node: Node2D = $"../../../Player"
 
 
 # Called when the node enters the scene tree for the first time.

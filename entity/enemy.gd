@@ -5,8 +5,8 @@ extends Node2D
 @export var current_health: int
 @export var max_health: int
 
-@onready var health_label: Label = $"../CanvasLayer/OpponentHealthValue"
-@onready var name_label: Label = $"../CanvasLayer/OpponentName"
+@onready var health_label: Label = $OpponentHealthValue
+@onready var name_label: Label = $OpponentName
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -14,7 +14,7 @@ func _ready() -> void:
 	level = 1
 	current_health = 20
 	max_health = 20
-	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if current_health <= 0:

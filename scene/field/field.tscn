@@ -10,7 +10,6 @@ anchors_preset = -1
 anchor_right = 0.364583
 anchor_bottom = 0.228395
 script = ExtResource("1_7p7dw")
-metadata/_edit_use_anchors_ = true
 
 [node name="Panel" type="Panel" parent="."]
 modulate = Color(1, 1, 1, 0.278431)

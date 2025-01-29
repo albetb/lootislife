@@ -1,6 +1,6 @@
 extends Label
 
-@onready var enemy_node: Node2D = $"../../Enemy"
+@onready var enemy_node: Node2D = $".."
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

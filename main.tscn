@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://buh3412b0qtpp"]
+[gd_scene load_steps=15 format=3 uid="uid://buh3412b0qtpp"]
 
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/field/field.tscn" id="1_73c3s"]
 [ext_resource type="Script" path="res://entity/combat_manager.gd" id="1_ijp7u"]
 [ext_resource type="LabelSettings" uid="uid://ciji6abhr4pdk" path="res://ref/health.tres" id="2_8w6h7"]
 [ext_resource type="Script" path="res://entity/mana_value.gd" id="2_ogkjf"]
 [ext_resource type="Script" path="res://entity/enemy.gd" id="2_qkd5y"]
+[ext_resource type="Script" path="res://battleground.gd" id="4_0mwpy"]
 [ext_resource type="Script" path="res://entity/health_value.gd" id="4_obuli"]
 [ext_resource type="Script" path="res://entity/player.gd" id="4_rp7vx"]
 [ext_resource type="Script" path="res://entity/opponent_name.gd" id="7_3ri6c"]
@@ -17,18 +18,40 @@ font_size = 50
 [sub_resource type="LabelSettings" id="LabelSettings_q2lf6"]
 font_size = 75
 
-[node name="Game" type="Node"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbkxh"]
+size = Vector2(414, 203)
 
-[node name="CombatManager" type="Node2D" parent="."]
-script = ExtResource("1_ijp7u")
+[node name="Game" type="Node"]
 
 [node name="Player" type="Node2D" parent="."]
 script = ExtResource("4_rp7vx")
 
-[node name="Enemy" type="Node2D" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." groups=["fields"]]
+
+[node name="Enemy" type="Node2D" parent="CanvasLayer"]
 script = ExtResource("2_qkd5y")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." groups=["fields"]]
+[node name="OpponentName" type="Label" parent="CanvasLayer/Enemy"]
+offset_left = 437.0
+offset_top = 51.0
+offset_right = 720.0
+offset_bottom = 120.0
+text = "1"
+label_settings = SubResource("LabelSettings_jh7dp")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_3ri6c")
+
+[node name="OpponentHealthValue" type="Label" parent="CanvasLayer/Enemy"]
+offset_left = 744.0
+offset_top = 53.0
+offset_right = 827.0
+offset_bottom = 118.0
+text = "20"
+label_settings = ExtResource("2_8w6h7")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("7_lqos7")
 
 [node name="Hand" parent="CanvasLayer" instance=ExtResource("1_73c3s")]
 anchor_left = 0.209201
@@ -48,28 +71,9 @@ position = Vector2(616, 74)
 [node name="CollisionShape2D" parent="CanvasLayer/Hand/CardDropAreaLeft" index="0"]
 position = Vector2(275.25, 74)
 
-[node name="Battleground" parent="CanvasLayer" instance=ExtResource("1_73c3s")]
-clip_contents = true
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -210.0
-offset_top = -515.0
-offset_right = 211.0
-offset_bottom = -365.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="PlayerHud" type="Node2D" parent="CanvasLayer"]
 
-[node name="PassButton" type="Button" parent="CanvasLayer"]
-offset_left = 935.0
-offset_top = 455.0
-offset_right = 1110.0
-offset_bottom = 547.0
-text = "Pass"
-
-[node name="HealthValue" type="Label" parent="CanvasLayer"]
+[node name="HealthValue" type="Label" parent="CanvasLayer/PlayerHud"]
 offset_left = 524.0
 offset_top = 489.0
 offset_right = 622.0
@@ -80,36 +84,14 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("4_obuli")
 
-[node name="OpponentHealthValue" type="Label" parent="CanvasLayer"]
-offset_left = 744.0
-offset_top = 53.0
-offset_right = 827.0
-offset_bottom = 118.0
-text = "20"
-label_settings = ExtResource("2_8w6h7")
-horizontal_alignment = 1
-vertical_alignment = 1
-script = ExtResource("7_lqos7")
+[node name="Mana" type="Node2D" parent="CanvasLayer/PlayerHud"]
 
-[node name="OpponentName" type="Label" parent="CanvasLayer"]
-offset_left = 437.0
-offset_top = 51.0
-offset_right = 720.0
-offset_bottom = 120.0
-text = "1"
-label_settings = SubResource("LabelSettings_jh7dp")
-horizontal_alignment = 1
-vertical_alignment = 1
-script = ExtResource("7_3ri6c")
-
-[node name="Mana" type="Node2D" parent="CanvasLayer"]
-
-[node name="ManaSprite" type="Sprite2D" parent="CanvasLayer/Mana"]
+[node name="ManaSprite" type="Sprite2D" parent="CanvasLayer/PlayerHud/Mana"]
 position = Vector2(85.25, 499.75)
 scale = Vector2(6.84375, 6.34375)
 texture = ExtResource("9_nj0rr")
 
-[node name="ManaValue" type="Label" parent="CanvasLayer/Mana"]
+[node name="ManaValue" type="Label" parent="CanvasLayer/PlayerHud/Mana"]
 offset_left = 35.0
 offset_top = 442.0
 offset_right = 140.0
@@ -120,6 +102,33 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("2_ogkjf")
 
-[connection signal="pressed" from="CanvasLayer/PassButton" to="CanvasLayer/Hand" method="_on_button_pressed"]
+[node name="CombatManager" type="Node2D" parent="CanvasLayer"]
+script = ExtResource("1_ijp7u")
+
+[node name="Battleground" type="MarginContainer" parent="CanvasLayer/CombatManager"]
+offset_left = 379.0
+offset_top = 154.0
+offset_right = 792.0
+offset_bottom = 357.0
+script = ExtResource("4_0mwpy")
+
+[node name="Panel" type="Panel" parent="CanvasLayer/CombatManager/Battleground"]
+layout_mode = 2
+
+[node name="DropArea" type="Area2D" parent="CanvasLayer/CombatManager/Battleground"]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="CanvasLayer/CombatManager/Battleground/DropArea"]
+position = Vector2(206, 101.5)
+shape = SubResource("RectangleShape2D_dbkxh")
+
+[node name="PassButton" type="Button" parent="CanvasLayer"]
+offset_left = 935.0
+offset_top = 455.0
+offset_right = 1110.0
+offset_bottom = 547.0
+text = "Pass"
+
+[connection signal="pressed" from="CanvasLayer/PassButton" to="Player" method="_on_pass_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/PassButton" to="CanvasLayer/CombatManager" method="_on_pass_button_pressed"]
 
 [editable path="CanvasLayer/Hand"]
