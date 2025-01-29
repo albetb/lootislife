@@ -5,7 +5,7 @@
 [ext_resource type="LabelSettings" uid="uid://ciji6abhr4pdk" path="res://ref/health.tres" id="2_8w6h7"]
 [ext_resource type="Script" path="res://entity/mana_value.gd" id="2_ogkjf"]
 [ext_resource type="Script" path="res://entity/enemy.gd" id="2_qkd5y"]
-[ext_resource type="Script" path="res://battleground.gd" id="4_0mwpy"]
+[ext_resource type="Script" path="res://scene/battleground.gd" id="4_0mwpy"]
 [ext_resource type="Script" path="res://entity/health_value.gd" id="4_obuli"]
 [ext_resource type="Script" path="res://entity/player.gd" id="4_rp7vx"]
 [ext_resource type="Script" path="res://entity/opponent_name.gd" id="7_3ri6c"]

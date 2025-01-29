@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="7_uh1ts"]
 [ext_resource type="Script" path="res://entity/mana_value.gd" id="8_grllu"]
 [ext_resource type="Script" path="res://entity/combat_manager.gd" id="9_di3du"]
-[ext_resource type="Script" path="res://battleground.gd" id="10_1jfp7"]
+[ext_resource type="Script" path="res://scene/battleground.gd" id="10_1jfp7"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
 font_size = 50
