@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://clu8g2fmpdfwj"]
+
+[ext_resource type="Script" path="res://scene/start/instance_manager.gd" id="1_iqsnu"]
+
+[node name="StartMenu" type="CanvasLayer"]
+
+[node name="InstanceManager" type="Node" parent="."]
+script = ExtResource("1_iqsnu")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 1148.0
+offset_bottom = 646.0
+
+[node name="Start" type="Button" parent="."]
+offset_left = 930.0
+offset_top = 475.0
+offset_right = 1102.0
+offset_bottom = 607.0
+text = "Start"
+
+[connection signal="pressed" from="Start" to="InstanceManager" method="_on_start_pressed"]

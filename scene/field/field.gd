@@ -4,7 +4,6 @@ extends MarginContainer
 @onready var card_drop_area_right: Area2D = $CardDropAreaRight
 @onready var card_drop_area_left: Area2D = $CardDropAreaLeft
 @onready var cards_holder: HBoxContainer = $CardsHolder
-@onready var player_node: Node2D = $"../../Player"
 @onready var combat_manager = $".."
 
 func _ready():
@@ -12,7 +11,7 @@ func _ready():
 	$CardDropAreaRight/CollisionShape2D.shape.size.x = self.size.x / 2
 
 func add_card(card: Card) -> bool:
-	if cards_holder.get_children().size() < player_node.max_hand_size:
+	if cards_holder.get_children().size() < Player.max_hand_size:
 		self.cards_holder.add_child(card)
 		return true
 	return false
