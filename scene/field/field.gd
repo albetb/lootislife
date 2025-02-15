@@ -11,7 +11,7 @@ func _ready():
 	$CardDropAreaRight/CollisionShape2D.shape.size.x = self.size.x / 2
 
 func add_card(card: Card) -> bool:
-	if cards_holder.get_children().size() < Player.max_hand_size:
+	if cards_holder.get_children().size() < Player.data.max_hand_size:
 		self.cards_holder.add_child(card)
 		return true
 	return false

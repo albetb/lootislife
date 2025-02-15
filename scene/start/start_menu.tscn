@@ -12,11 +12,19 @@ z_index = -2
 offset_right = 1148.0
 offset_bottom = 646.0
 
+[node name="ColorRect2" type="ColorRect" parent="."]
+z_index = -2
+offset_left = 21.0
+offset_top = 25.0
+offset_right = 1123.0
+offset_bottom = 624.0
+color = Color(0.615686, 0.905882, 0.529412, 1)
+
 [node name="Start" type="Button" parent="."]
-offset_left = 930.0
-offset_top = 475.0
-offset_right = 1102.0
-offset_bottom = 607.0
+offset_left = 482.0
+offset_top = 103.0
+offset_right = 654.0
+offset_bottom = 235.0
 text = "Start"
 
 [connection signal="pressed" from="Start" to="InstanceManager" method="_on_start_pressed"]
