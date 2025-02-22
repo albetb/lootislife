@@ -1,11 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://buh3412b0qtpp"]
+[gd_scene load_steps=2 format=3 uid="uid://buh3412b0qtpp"]
 
-[ext_resource type="Script" path="res://entity/player.gd" id="2_i65sa"]
 [ext_resource type="PackedScene" uid="uid://clu8g2fmpdfwj" path="res://scene/start/start_menu.tscn" id="3_8thcd"]
 
 [node name="Game" type="Node"]
 
 [node name="StartMenu" parent="." instance=ExtResource("3_8thcd")]
-
-[node name="Player" type="Node2D" parent="."]
-script = ExtResource("2_i65sa")

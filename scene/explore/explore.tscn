@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://dk0iotlgj0omy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kyb3j"]
+font_size = 50
+font_color = Color(0, 0, 0, 1)
+
+[node name="Explore" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 1148.0
+offset_bottom = 646.0
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+z_index = -2
+offset_left = 21.0
+offset_top = 25.0
+offset_right = 1123.0
+offset_bottom = 624.0
+color = Color(0.881062, 0.826031, 0.438953, 1)
+
+[node name="SceneLabel" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 390.0
+offset_bottom = 123.0
+text = "Explore"
+label_settings = SubResource("LabelSettings_kyb3j")

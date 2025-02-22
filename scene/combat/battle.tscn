@@ -125,6 +125,7 @@ offset_right = 1110.0
 offset_bottom = 547.0
 text = "Pass"
 
+[connection signal="update_mana" from="CombatManager" to="PlayerHud/Mana/ManaValue" method="_on_combat_manager_update_mana"]
 [connection signal="pressed" from="PassButton" to="CombatManager" method="_on_pass_button_pressed"]
 
 [editable path="Hand"]

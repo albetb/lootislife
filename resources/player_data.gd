@@ -8,10 +8,10 @@ class_name PlayerData
 @export var level: int = 1
 @export var current_health: int = 20
 @export var max_health: int = 20
-@export var current_mana: int = 3
 @export var max_mana: int = 3
 @export var hand_size: int = 5
 @export var max_hand_size: int = 10
+@export var coins: int = 0
 
 func change_points(value: int):
 	points += value
@@ -28,7 +28,7 @@ func reset_attributes():
 	level = 1
 	current_health = 20
 	max_health = 20
-	current_mana = 3
 	max_mana = 3
 	hand_size = 5
 	max_hand_size = 10
+	coins = 0

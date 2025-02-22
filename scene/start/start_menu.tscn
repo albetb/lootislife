@@ -1,11 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://clu8g2fmpdfwj"]
+[gd_scene load_steps=3 format=3 uid="uid://clu8g2fmpdfwj"]
 
 [ext_resource type="Script" path="res://scene/start/instance_manager.gd" id="1_iqsnu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_5rwlq"]
+font_size = 50
+font_color = Color(0, 0, 0, 1)
 
 [node name="StartMenu" type="CanvasLayer"]
 
 [node name="InstanceManager" type="Node" parent="."]
 script = ExtResource("1_iqsnu")
+
+[node name="SceneLabel" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 390.0
+offset_bottom = 123.0
+text = "Main menu"
+label_settings = SubResource("LabelSettings_5rwlq")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -2

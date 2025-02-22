@@ -17,7 +17,7 @@ func _ready():
 					states[child.name.to_lower() + '/' + sub_child.name.to_lower()] = sub_child
 					sub_child.transitioned.connect(on_child_transition)
 
-	print(states)
+	#print(states)
 
 	if initial_state:
 		initial_state.call_deferred("_enter")
@@ -42,7 +42,7 @@ func on_mouse_exited():
 func on_child_transition(new_state_name):
 	var new_state: CardState = states.get(new_state_name.to_lower())
 	if !new_state:
-		prints(current_state, "transition to no state")
+		#prints(current_state, "transition to no state")
 		return
 	
 	if current_state:
@@ -52,4 +52,4 @@ func on_child_transition(new_state_name):
 	
 	current_state = new_state
 	
-	prints(get_parent() ,"current state", current_state)
+	#prints(get_parent() ,"current state", current_state)

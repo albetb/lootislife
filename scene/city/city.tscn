@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=3 uid="uid://bif86dxs2g1ve"]
+
+[ext_resource type="Script" path="res://scene/start/instance_manager.gd" id="1_yw81m"]
+[ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="2_sfa3n"]
+[ext_resource type="Script" path="res://scene/city/coin_label.gd" id="3_gdyvn"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bp43v"]
+font_size = 50
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_60ylx"]
+line_spacing = 30.0
+font_size = 35
+
+[node name="City" type="CanvasLayer"]
+
+[node name="Instance Manager" type="Node" parent="."]
+script = ExtResource("1_yw81m")
+
+[node name="SceneLabel" type="Label" parent="."]
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 390.0
+offset_bottom = 123.0
+text = "City"
+label_settings = SubResource("LabelSettings_bp43v")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 1148.0
+offset_bottom = 646.0
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+z_index = -2
+offset_left = 21.0
+offset_top = 25.0
+offset_right = 1123.0
+offset_bottom = 624.0
+color = Color(0.463429, 0.897036, 0.906352, 1)
+
+[node name="Battle" type="Button" parent="."]
+offset_left = 784.0
+offset_top = 139.0
+offset_right = 946.0
+offset_bottom = 260.0
+text = "Battle"
+
+[node name="Adventure" type="Button" parent="."]
+offset_left = 249.0
+offset_top = 131.0
+offset_right = 474.0
+offset_bottom = 274.0
+text = "Adventure
+"
+
+[node name="Coin" type="Sprite2D" parent="."]
+position = Vector2(1085.25, 60.25)
+scale = Vector2(0.15303, 0.15)
+texture = ExtResource("2_sfa3n")
+
+[node name="CoinLabel" type="Label" parent="."]
+offset_left = 814.0
+offset_top = 29.0
+offset_right = 1055.0
+offset_bottom = 87.0
+text = "0"
+label_settings = SubResource("LabelSettings_60ylx")
+horizontal_alignment = 2
+vertical_alignment = 1
+script = ExtResource("3_gdyvn")
+
+[connection signal="pressed" from="Battle" to="Instance Manager" method="_on_battle_pressed"]
+[connection signal="pressed" from="Adventure" to="Instance Manager" method="_on_adventure_pressed"]
