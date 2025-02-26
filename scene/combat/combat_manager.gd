@@ -60,4 +60,4 @@ func _on_pass_button_pressed() -> void:
 	if enemy_node.current_health <= 0:
 		Player.data.coins += randi_range(20, 100)
 		Player.save()
-		SceneManager.switch("res://scene/city/city.tscn")
+		SceneManager.switch("res://scene/explore/explore.tscn")

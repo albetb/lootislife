@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh6gs370ecalr"]
+
+[ext_resource type="Script" path="res://scene/room/room_card.gd" id="1_uwnfo"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_h3hgc"]
+font_size = 15
+font_color = Color(0.117647, 0.145098, 0.141176, 1)
+
+[node name="RoomCard" type="Control"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uwnfo")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 76.0
+offset_bottom = 78.0
+color = Color(0.940686, 0.525096, 0.383345, 1)
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.0
+offset_top = 26.0
+offset_right = 79.0
+offset_bottom = 57.0
+text = "text"
+label_settings = SubResource("LabelSettings_h3hgc")
+horizontal_alignment = 1

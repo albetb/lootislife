@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bif86dxs2g1ve"]
+[gd_scene load_steps=7 format=3 uid="uid://bif86dxs2g1ve"]
 
+[ext_resource type="Script" path="res://scene/city/city.gd" id="1_ano1l"]
 [ext_resource type="Script" path="res://scene/start/instance_manager.gd" id="1_yw81m"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="2_sfa3n"]
 [ext_resource type="Script" path="res://scene/city/coin_label.gd" id="3_gdyvn"]
@@ -13,6 +14,7 @@ line_spacing = 30.0
 font_size = 35
 
 [node name="City" type="CanvasLayer"]
+script = ExtResource("1_ano1l")
 
 [node name="Instance Manager" type="Node" parent="."]
 script = ExtResource("1_yw81m")

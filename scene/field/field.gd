@@ -13,7 +13,7 @@ func _ready():
 func add_card(card: Card) -> bool:
 	if cards_holder.get_children().size() < Player.data.max_hand_size:
 		card.home_field = self
-		self.cards_holder.add_child(card)
+		cards_holder.add_child(card)
 		return true
 	return false
 

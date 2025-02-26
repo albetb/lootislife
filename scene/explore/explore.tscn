@@ -1,8 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=4 format=3 uid="uid://dk0iotlgj0omy"]
+
+[ext_resource type="Script" path="res://scene/explore/exploration.gd" id="1_u1wya"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kyb3j"]
-font_size = 50
+font_size = 49
 font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_k4akk"]
+font_size = 31
+font_color = Color(0.0980392, 0.0313726, 0.0980392, 1)
 
 [node name="Explore" type="CanvasLayer"]
 
@@ -26,3 +32,71 @@ offset_right = 390.0
 offset_bottom = 123.0
 text = "Explore"
 label_settings = SubResource("LabelSettings_kyb3j")
+
+[node name="Exploration" type="Node" parent="." groups=["exploration"]]
+script = ExtResource("1_u1wya")
+
+[node name="Path" type="MarginContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.201
+anchor_top = 0.072
+anchor_right = 0.201
+anchor_bottom = 0.072
+offset_left = 69.448
+offset_top = 63.344
+offset_right = 804.448
+offset_bottom = 149.344
+
+[node name="Panel" type="Panel" parent="Path"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Path"]
+layout_direction = 2
+layout_mode = 2
+
+[node name="UpcomingLabel" type="Label" parent="."]
+offset_left = 77.0
+offset_top = 127.0
+offset_right = 237.0
+offset_bottom = 173.0
+text = "Upcoming"
+label_settings = SubResource("LabelSettings_k4akk")
+
+[node name="Passed" type="MarginContainer" parent="."]
+offset_left = 301.0
+offset_top = 207.0
+offset_right = 1036.0
+offset_bottom = 293.0
+
+[node name="Panel" type="Panel" parent="Passed"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Passed"]
+layout_direction = 2
+layout_mode = 2
+
+[node name="UpcomingLabel" type="Label" parent="Passed/HBoxContainer"]
+layout_mode = 2
+text = "Upcoming"
+label_settings = SubResource("LabelSettings_k4akk")
+
+[node name="PassedLabel" type="Label" parent="."]
+offset_left = 82.0
+offset_top = 223.0
+offset_right = 266.0
+offset_bottom = 267.0
+text = "Passed"
+label_settings = SubResource("LabelSettings_k4akk")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_left = 108.0
+offset_top = 303.0
+offset_right = 1030.0
+offset_bottom = 595.0
+
+[node name="Panel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4

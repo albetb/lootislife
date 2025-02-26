@@ -11,8 +11,8 @@ extends Node2D
 func _ready() -> void:
 	enemy_name = "CATTIVONE"
 	level = 1
-	current_health = 20
-	max_health = 20
+	current_health = 5
+	max_health = 5
 
 func _process(delta: float) -> void:
 	if current_health <= 0:

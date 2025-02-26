@@ -13,6 +13,10 @@ class_name PlayerData
 @export var max_hand_size: int = 10
 @export var coins: int = 0
 
+@export var path: Array[Room] = []
+@export var current_path: Array[Room] = []
+@export var past_path: Array[Room] = []
+
 func change_points(value: int):
 	points += value
 	max_points = max(points, max_points)
