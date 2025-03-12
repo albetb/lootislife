@@ -78,7 +78,7 @@ func select_new_scene(room: Room) -> void:
 	if room.type == Room.Type.Battle:
 		SceneManager.switch("res://scene/combat/battle.tscn")
 	if room.type == Room.Type.Boss:
-		SceneManager.switch("res://scene/city/city.tscn")
+		SceneManager.switch("res://scene/explore/explore.tscn")
 	
 func display_path() -> void:
 	for child in path_container.get_children():

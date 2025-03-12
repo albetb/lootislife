@@ -1,0 +1,91 @@
+[gd_scene load_steps=9 format=3 uid="uid://comhmd4npw7y"]
+
+[ext_resource type="Script" path="res://scene/statsbar/stat_container.gd" id="1_5wqfq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_liibg"]
+font_size = 19
+font_color = Color(0.0235294, 0.027451, 0.0313726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v6j4f"]
+bg_color = Color(0.515141, 0.616581, 0.685831, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5hq5"]
+bg_color = Color(2.88785e-07, 0.361198, 0.34284, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_y16nj"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_v6j4f")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_k5hq5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5vh3"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_344y8"]
+bg_color = Color(3.60981e-06, 0.500601, 0.459004, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_611e3"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_l5vh3")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_344y8")
+
+[node name="StatContainer" type="VBoxContainer" groups=["lateral_bar"]]
+script = ExtResource("1_5wqfq")
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Forza"
+label_settings = SubResource("LabelSettings_liibg")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="MinusButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+text = "-"
+
+[node name="ValueLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "5"
+label_settings = SubResource("LabelSettings_liibg")
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+text = "+"
+
+[node name="ModifiedBar" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme = SubResource("Theme_y16nj")
+step = 1.0
+value = 56.0
+show_percentage = false
+
+[node name="ActualBar" type="ProgressBar" parent="ModifiedBar"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+offset_right = 78.0
+offset_bottom = 5.0
+theme = SubResource("Theme_611e3")
+step = 1.0
+value = 34.0
+show_percentage = false
+
+[connection signal="pressed" from="HBoxContainer/MinusButton" to="." method="_on_minus_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/PlusButton" to="." method="_on_plus_button_pressed"]

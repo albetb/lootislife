@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://scene/combat/enemy.gd" id="1_hdxvr"]
 [ext_resource type="Script" path="res://scene/combat/opponent_name.gd" id="2_nb8j0"]
-[ext_resource type="LabelSettings" uid="uid://ciji6abhr4pdk" path="res://ref/health.tres" id="3_8dkwp"]
 [ext_resource type="Script" path="res://scene/combat/opponent_health_value.gd" id="4_1v6md"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/field/field.tscn" id="5_f0ybc"]
 [ext_resource type="Script" path="res://scene/combat/health_value.gd" id="6_a6o6i"]
@@ -13,6 +12,10 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
 font_size = 50
+
+[sub_resource type="LabelSettings" id="LabelSettings_4bnni"]
+font_size = 40
+font_color = Color(0.96, 0.0384, 0.22272, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_q2lf6"]
 font_size = 75
@@ -42,7 +45,7 @@ offset_top = 53.0
 offset_right = 827.0
 offset_bottom = 118.0
 text = "20"
-label_settings = ExtResource("3_8dkwp")
+label_settings = SubResource("LabelSettings_4bnni")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("4_1v6md")
@@ -71,12 +74,12 @@ position = Vector2(275.25, 74)
 [node name="PlayerHud" type="Node2D" parent="."]
 
 [node name="HealthValue" type="Label" parent="PlayerHud"]
-offset_left = 524.0
+offset_left = 269.0
 offset_top = 489.0
-offset_right = 622.0
+offset_right = 911.0
 offset_bottom = 553.0
 text = "20"
-label_settings = ExtResource("3_8dkwp")
+label_settings = SubResource("LabelSettings_4bnni")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("6_a6o6i")

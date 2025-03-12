@@ -1,14 +1,62 @@
-[gd_scene load_steps=4 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=14 format=3 uid="uid://dk0iotlgj0omy"]
 
 [ext_resource type="Script" path="res://scene/explore/exploration.gd" id="1_u1wya"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_kyb3j"]
-font_size = 49
-font_color = Color(0, 0, 0, 1)
+[ext_resource type="Script" path="res://scene/explore/top_menu_background.gd" id="2_ysj00"]
+[ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="3_clcby"]
+[ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/statsbar/lateral_stats_bar.tscn" id="4_fnw12"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_k4akk"]
 font_size = 31
 font_color = Color(0.0980392, 0.0313726, 0.0980392, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tlphh"]
+font_size = 32
+font_color = Color(0.0431373, 0.0235294, 0.0470588, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tpexw"]
+line_spacing = 30.0
+font_size = 35
+font_color = Color(0.0431373, 0.027451, 0.027451, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8brc6"]
+bg_color = Color(0.515141, 0.616581, 0.685831, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtd4f"]
+bg_color = Color(0.928655, 0.204271, 0.262771, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_imwbv"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_8brc6")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_xtd4f")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqdji"]
+bg_color = Color(0.515141, 0.616581, 0.685831, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_si8ep"]
+bg_color = Color(0.299926, 0.460557, 0.877095, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_70n52"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_eqdji")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_si8ep")
 
 [node name="Explore" type="CanvasLayer"]
 
@@ -19,19 +67,10 @@ offset_bottom = 646.0
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 z_index = -2
-offset_left = 21.0
-offset_top = 25.0
-offset_right = 1123.0
-offset_bottom = 624.0
+offset_top = 47.0
+offset_right = 1102.0
+offset_bottom = 646.0
 color = Color(0.881062, 0.826031, 0.438953, 1)
-
-[node name="SceneLabel" type="Label" parent="."]
-offset_left = 44.0
-offset_top = 36.0
-offset_right = 390.0
-offset_bottom = 123.0
-text = "Explore"
-label_settings = SubResource("LabelSettings_kyb3j")
 
 [node name="Exploration" type="Node" parent="." groups=["exploration"]]
 script = ExtResource("1_u1wya")
@@ -42,10 +81,10 @@ anchor_left = 0.201
 anchor_top = 0.072
 anchor_right = 0.201
 anchor_bottom = 0.072
-offset_left = 69.448
-offset_top = 63.344
-offset_right = 804.448
-offset_bottom = 149.344
+offset_left = -177.552
+offset_top = 87.344
+offset_right = 771.448
+offset_bottom = 173.344
 
 [node name="Panel" type="Panel" parent="Path"]
 layout_mode = 2
@@ -55,44 +94,41 @@ layout_direction = 2
 layout_mode = 2
 
 [node name="UpcomingLabel" type="Label" parent="."]
-offset_left = 77.0
-offset_top = 127.0
-offset_right = 237.0
-offset_bottom = 173.0
+offset_left = 66.0
+offset_top = 85.0
+offset_right = 226.0
+offset_bottom = 131.0
 text = "Upcoming"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="Passed" type="MarginContainer" parent="."]
-offset_left = 301.0
-offset_top = 207.0
-offset_right = 1036.0
-offset_bottom = 293.0
+offset_left = 54.0
+offset_top = 134.0
+offset_right = 1003.0
+offset_bottom = 220.0
 
 [node name="Panel" type="Panel" parent="Passed"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Passed"]
 layout_direction = 2
 layout_mode = 2
-
-[node name="UpcomingLabel" type="Label" parent="Passed/HBoxContainer"]
-layout_mode = 2
-text = "Upcoming"
-label_settings = SubResource("LabelSettings_k4akk")
+alignment = 2
 
 [node name="PassedLabel" type="Label" parent="."]
-offset_left = 82.0
-offset_top = 223.0
-offset_right = 266.0
-offset_bottom = 267.0
+offset_left = 883.0
+offset_top = 87.0
+offset_right = 1003.0
+offset_bottom = 131.0
 text = "Passed"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-offset_left = 108.0
-offset_top = 303.0
-offset_right = 1030.0
-offset_bottom = 595.0
+offset_left = 71.0
+offset_top = 297.0
+offset_right = 993.0
+offset_bottom = 589.0
 
 [node name="Panel" type="Panel" parent="MarginContainer"]
 layout_mode = 2
@@ -100,3 +136,72 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+
+[node name="TopMenuBackground" type="ColorRect" parent="."]
+offset_right = 1148.0
+offset_bottom = 65.0
+color = Color(0.790586, 0.567307, 0.457462, 1)
+script = ExtResource("2_ysj00")
+
+[node name="LevelLabel" type="Label" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 31.0
+offset_right = 238.0
+offset_bottom = 45.0
+text = "Livello:"
+label_settings = SubResource("LabelSettings_tlphh")
+
+[node name="HealthLabel" type="Label" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 256.0
+offset_right = 433.0
+offset_bottom = 45.0
+text = "Hp: 30/30"
+label_settings = SubResource("LabelSettings_tlphh")
+
+[node name="Coin" type="Sprite2D" parent="TopMenuBackground"]
+position = Vector2(1117, 32)
+scale = Vector2(0.15303, 0.15)
+texture = ExtResource("3_clcby")
+
+[node name="CoinLabel" type="Label" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 837.0
+offset_top = 3.0
+offset_right = 1078.0
+offset_bottom = 61.0
+text = "0"
+label_settings = SubResource("LabelSettings_tpexw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 47.0
+offset_right = 443.0
+offset_bottom = 61.0
+theme = SubResource("Theme_imwbv")
+step = 1.0
+value = 54.0
+show_percentage = false
+
+[node name="ExpBar" type="ProgressBar" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 47.0
+offset_right = 217.0
+offset_bottom = 61.0
+theme = SubResource("Theme_70n52")
+step = 1.0
+value = 54.0
+show_percentage = false
+
+[node name="LateralStatsBar" parent="." instance=ExtResource("4_fnw12")]
+offset_left = 1059.0
+offset_top = 64.0
+offset_right = 1128.42
+offset_bottom = 605.824
+color = Color(0.792157, 0.568627, 0.458824, 1)
+
+[connection signal="update_ability_points" from="LateralStatsBar" to="TopMenuBackground" method="update_ui"]

@@ -28,5 +28,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		var left = sprite.global_position.x - sprite.get_rect().size.x / 2 
 		var right = sprite.global_position.x + sprite.get_rect().size.x / 2 
-		if left <= event.position.x and event.position.x <= right:
+		var bottom = sprite.global_position.y - sprite.get_rect().size.y / 2 
+		var top = sprite.global_position.y + sprite.get_rect().size.y / 2 
+		var is_in_card = left <= event.position.x and event.position.x <= right
+		var is_over_card = bottom <= event.position.y and event.position.y <= top
+		if is_in_card and is_over_card:
 			get_tree().call_group("exploration", "choice_selected", choice_number)
