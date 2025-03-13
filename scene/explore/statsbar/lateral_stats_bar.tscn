@@ -1,11 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://domsnyqqkmhhp"]
+[gd_scene load_steps=6 format=3 uid="uid://domsnyqqkmhhp"]
 
-[ext_resource type="Script" path="res://scene/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
-[ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/statsbar/stat_container.tscn" id="1_xifav"]
+[ext_resource type="Script" path="res://scene/explore/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
+[ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/explore/statsbar/stat_container.tscn" id="1_xifav"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ftuio"]
 font_size = 18
 font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_mybyp"]
+Button/font_sizes/font_size = 13
+
+[sub_resource type="Theme" id="Theme_gmjvw"]
+Button/font_sizes/font_size = 13
 
 [node name="LateralStatsBar" type="ColorRect"]
 anchors_preset = -1
@@ -54,24 +60,33 @@ layout_mode = 2
 ability_type = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="SaveButton" type="Button" parent="VBoxContainer" groups=["lateral_bar"]]
 layout_mode = 2
-text = "Save"
+theme = SubResource("Theme_mybyp")
+text = "Salva"
 
-[connection signal="update_ability_points" from="." to="VBoxContainer/StrStatContainer" method="_update_ability_points"]
-[connection signal="update_ability_points" from="." to="VBoxContainer/DesStatContainer" method="_update_ability_points"]
-[connection signal="update_ability_points" from="." to="VBoxContainer/CosStatContainer" method="_update_ability_points"]
-[connection signal="update_ability_points" from="." to="VBoxContainer/IntStatContainer" method="_update_ability_points"]
-[connection signal="update_ability_points" from="." to="VBoxContainer/SagStatContainer" method="_update_ability_points"]
-[connection signal="update_ability_points" from="." to="VBoxContainer/CarStatContainer" method="_update_ability_points"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="." groups=["lateral_bar"]]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 546.0
+offset_right = 84.0
+offset_bottom = 572.0
+theme = SubResource("Theme_gmjvw")
+text = "Indietro"
+
 [connection signal="update_ability_points" from="VBoxContainer/StrStatContainer" to="." method="_update_ability_points"]
 [connection signal="update_ability_points" from="VBoxContainer/DesStatContainer" to="." method="_update_ability_points"]
 [connection signal="update_ability_points" from="VBoxContainer/CosStatContainer" to="." method="_update_ability_points"]
 [connection signal="update_ability_points" from="VBoxContainer/IntStatContainer" to="." method="_update_ability_points"]
 [connection signal="update_ability_points" from="VBoxContainer/SagStatContainer" to="." method="_update_ability_points"]
 [connection signal="update_ability_points" from="VBoxContainer/CarStatContainer" to="." method="_update_ability_points"]
-[connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="_update_ability_points"]
 [connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="_update_ability_points"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

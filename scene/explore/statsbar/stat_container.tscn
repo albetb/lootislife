@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://comhmd4npw7y"]
 
-[ext_resource type="Script" path="res://scene/statsbar/stat_container.gd" id="1_5wqfq"]
+[ext_resource type="Script" path="res://scene/explore/statsbar/stat_container.gd" id="1_5wqfq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_liibg"]
 font_size = 19
@@ -40,13 +40,14 @@ corner_radius_bottom_left = 8
 ProgressBar/styles/background = SubResource("StyleBoxFlat_l5vh3")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_344y8")
 
-[node name="StatContainer" type="VBoxContainer" groups=["lateral_bar"]]
+[node name="StatContainer" type="VBoxContainer" groups=["adventure", "lateral_bar"]]
 script = ExtResource("1_5wqfq")
 
 [node name="NameLabel" type="Label" parent="."]
 layout_mode = 2
 text = "Forza"
 label_settings = SubResource("LabelSettings_liibg")
+horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

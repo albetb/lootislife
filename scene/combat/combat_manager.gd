@@ -57,8 +57,8 @@ func _on_pass_button_pressed() -> void:
 	player_mana = Player.data.max_mana
 	emit_signal("update_mana", player_mana)
 	
-	if enemy_node.current_health <= 0:
-		Player.data.coins += randi_range(20, 100)
-		Player.gain_exp(randi_range(10, 40))
+	if enemy_node.current_health <= 0 or true:
+		Player.data.coins += Player.mult_this_loot(randi_range(20, 100))
+		Player.gain_exp(Player.mult_this_loot(randi_range(10, 20)))
 		Player.save()
 		SceneManager.switch("res://scene/explore/explore.tscn")

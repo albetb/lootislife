@@ -24,6 +24,10 @@ Player="*res://entity/player.gd"
 
 window/size/resizable=false
 
+[global_group]
+
+adventure="item inside the adventure scene"
+
 [input]
 
 mouse_left={

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bh6gs370ecalr"]
 
-[ext_resource type="Script" path="res://scene/room/room_card.gd" id="1_uwnfo"]
+[ext_resource type="Script" path="res://scene/explore/room/room_card.gd" id="1_uwnfo"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_h3hgc"]
 font_size = 15

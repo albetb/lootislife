@@ -14,10 +14,12 @@ class_name PlayerData
 @export var path: Array[Room] = []
 @export var current_path: Array[Room] = []
 @export var past_path: Array[Room] = []
+@export var floor: int = 1
 
 @export var ability = {}
 @export var updating_ability = {}
-@export var ability_points: int = 28
+const STARTING_ABILITY_POINTS = 15
+@export var ability_points: int = STARTING_ABILITY_POINTS
 @export var updating_ability_points: int = 0
 
 func _ready() -> void:

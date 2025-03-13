@@ -1,20 +1,22 @@
 extends CanvasLayer
 
 func _ready() -> void:
-	if Player.data.coins <= 0:
+	if !Player.is_game_started():
 		$ContinueButton.disabled = true
-		$NewGameButton.text = "New game"
+		$NewGameButton.text = "Nuova partita"
 		$NewGameLabel.text = ""
 		$Panel.visible = false
 		$Panel/LevelLabel.text = ""
 		$Panel/CoinLabel.text = ""
+		$Panel/Coin.visible = false
 	else:
 		$ContinueButton.disabled = false
-		$NewGameButton.text = "* New game"
-		$NewGameLabel.text = "* This will overwrite any saved game"
+		$NewGameButton.text = "* Nuova partita"
+		$NewGameLabel.text = "* Sovrascriverà i dati di gioco"
 		$Panel.visible = true
-		$Panel/LevelLabel.text = "Level: " + str(Player.data.level)
-		$Panel/CoinLabel.text = "Coin: " + str(Player.data.coins)
+		$Panel/LevelLabel.text = "Lv " + str(Player.data.level)
+		$Panel/CoinLabel.text = str(Player.data.coins)
+		$Panel/Coin.visible = true
 
 
 func _new_game() -> void:

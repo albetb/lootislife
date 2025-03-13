@@ -7,11 +7,14 @@ extends Node
 @onready var path_container: HBoxContainer = $"../Path/HBoxContainer"
 @onready var past_path_container: HBoxContainer = $"../Passed/HBoxContainer"
 @onready var choice_container: HBoxContainer = $"../MarginContainer/HBoxContainer"
-@onready var instance_manager: Node = $"../InstanceManager"
-@onready var room_scene: PackedScene = preload("res://scene/room/room_card.tscn")
+@onready var room_scene: PackedScene = preload("res://scene/explore/room/room_card.tscn")
 @onready var choice_scene: PackedScene = preload("res://scene/explore/choice/choice.tscn")
 
 func _ready() -> void:
+	begin()
+	update_ui()
+	
+func begin() -> void:
 	if Player.data.path.size() == 0 and Player.data.current_path.size() == 0 and Player.data.past_path.size() > 0:
 		clear_path()
 		
@@ -22,8 +25,6 @@ func _ready() -> void:
 	else:
 		load_path()
 	
-	display()
-	
 func clear_path() -> void:
 	Player.data.path = []
 	Player.data.past_path = []
@@ -32,11 +33,11 @@ func clear_path() -> void:
 	past_path = []
 	current_path = []
 	save_path()
-
-func display() -> void:
+	
+func update_ui():
 	display_path()
 	display_past_path()
-	display_choiches() 
+	display_choiches()
 
 func load_path() -> void:
 	path = Player.data.path
@@ -70,15 +71,20 @@ func choice_selected(num: int):
 	path.append_array(current_path)
 	choose_path()
 	save_path()
-	display()
+	
+	get_tree().call_group("adventure", "update_ui")
 	
 	select_new_scene(selected_path)
 	
 func select_new_scene(room: Room) -> void:
+	Player.save()
 	if room.type == Room.Type.Battle:
 		SceneManager.switch("res://scene/combat/battle.tscn")
 	if room.type == Room.Type.Boss:
-		SceneManager.switch("res://scene/explore/explore.tscn")
+		Player.data.floor += 1
+		Player.save()
+		begin()
+		get_tree().call_group("adventure", "update_ui")
 	
 func display_path() -> void:
 	for child in path_container.get_children():
@@ -98,7 +104,6 @@ func display_past_path() -> void:
 	for child in past_path_container.get_children():
 		child.queue_free()
 		
-	print(past_path)
 	for room: Room in past_path:
 		var main_room_card: RoomCard = room_scene.instantiate()
 		main_room_card.set_values(room.type)
@@ -106,6 +111,7 @@ func display_past_path() -> void:
 
 func display_choiches() -> void:
 	for child in choice_container.get_children():
+		choice_container.remove_child(child)
 		child.queue_free()
 		
 	for room: Room in current_path:
@@ -116,23 +122,23 @@ func display_choiches() -> void:
 			choice_card.choice_number = 0
 		choice_container.add_child(choice_card)
 
-func new_exploration(difficult: int = 2):
+func new_exploration():
 	path = []
 	current_path = []
 	past_path = []
 	
-	#length = min(floor(3 * sqrt(Player.data.level)) - 3, 10)
-	length = 5#min(floor(3 * sqrt(5)) - 3, 10)
+	length = 3 + floor((Player.data.floor - 1) / 3)
 
 	for i in range(length):
-		var room_types = Room.Type.values().filter(func(x): return x != Room.Type.Boss)
+		var room_types = Room.Type.values().filter(func(x): return x != Room.Type.Boss and x != Room.Type.Battle)
 		var room = Room.new()
+		room.type = Room.Type.Battle 
+		path.append(room.duplicate(true)) # add a battle
 		room.type = room_types[randi() % room_types.size()]
-		path.append(room.duplicate(true))
-		
-	for room_type in Room.Type.values():
-		var room = Room.new()
-		room.type = room_type
-		path.append(room)
+		path.append(room.duplicate(true)) # add a random other room
+	
+	var boss_room = Room.new()
+	boss_room.type = Room.Type.Boss 
+	path.append(boss_room.duplicate(true)) # add a boss
 	
 	save_path()

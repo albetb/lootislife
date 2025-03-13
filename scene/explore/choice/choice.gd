@@ -10,17 +10,17 @@ class_name Choice
 func set_values(room_type: Room.Type):
 	type = room_type
 	if room_type == Room.Type.Battle:
-		text = "Battle"
+		text = "Battaglia"
 	elif room_type == Room.Type.Rest:
-		text = "Rest"
+		text = "Riposa"
 	elif room_type == Room.Type.Treasure:
-		text = "Treasure"
+		text = "Tesoro"
 	elif room_type == Room.Type.Choice:
-		text = "Choice"
+		text = "Scelta"
 	elif room_type == Room.Type.Boss:
 		text = "Boss"
 
-func _process(delta: float) -> void:
+func _ready() -> void:
 	if label != null and label.text != str(text):
 		label.set_text(str(text))
 

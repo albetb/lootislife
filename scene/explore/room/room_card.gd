@@ -24,16 +24,16 @@ func _ready() -> void:
 func set_values(room_type: Room.Type):
 	type = room_type
 	if room_type == Room.Type.Battle:
-		text = "Battle"
+		text = "Battaglia"
 		color = Color.INDIAN_RED
 	elif room_type == Room.Type.Rest:
-		text = "Rest"
+		text = "Riposa"
 		color = Color.GREEN_YELLOW
 	elif room_type == Room.Type.Treasure:
-		text = "Treasure"
+		text = "Tesoro"
 		color = Color.YELLOW
 	elif room_type == Room.Type.Choice:
-		text = "Choice"
+		text = "Scelta"
 		color = Color.AQUA
 	elif room_type == Room.Type.Boss:
 		text = "Boss"

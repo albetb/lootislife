@@ -1,9 +1,29 @@
-[gd_scene load_steps=14 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=20 format=3 uid="uid://dk0iotlgj0omy"]
 
+[ext_resource type="Script" path="res://scene/explore/room_panel.gd" id="1_q0ojp"]
 [ext_resource type="Script" path="res://scene/explore/exploration.gd" id="1_u1wya"]
 [ext_resource type="Script" path="res://scene/explore/top_menu_background.gd" id="2_ysj00"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="3_clcby"]
-[ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/statsbar/lateral_stats_bar.tscn" id="4_fnw12"]
+[ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/explore/statsbar/lateral_stats_bar.tscn" id="4_fnw12"]
+[ext_resource type="Script" path="res://scene/explore/floor_panel.gd" id="5_nqvb7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pme05"]
+bg_color = Color(0.47451, 0.47451, 0.47451, 0.352941)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_lhpby"]
+Panel/styles/panel = SubResource("StyleBoxFlat_pme05")
+
+[sub_resource type="LabelSettings" id="LabelSettings_g1dy5"]
+font_size = 22
+shadow_color = Color(0.176471, 0.176471, 0.176471, 0.427451)
+
+[sub_resource type="LabelSettings" id="LabelSettings_y4bjt"]
+font_size = 17
+shadow_color = Color(0.176419, 0.176419, 0.176419, 0.427451)
 
 [sub_resource type="LabelSettings" id="LabelSettings_k4akk"]
 font_size = 31
@@ -65,14 +85,45 @@ z_index = -2
 offset_right = 1148.0
 offset_bottom = 646.0
 
-[node name="ColorRect2" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 z_index = -2
 offset_top = 47.0
 offset_right = 1102.0
 offset_bottom = 646.0
 color = Color(0.881062, 0.826031, 0.438953, 1)
 
-[node name="Exploration" type="Node" parent="." groups=["exploration"]]
+[node name="RoomPanel" type="Panel" parent="Background" groups=["adventure"]]
+layout_mode = 0
+offset_left = 458.0
+offset_top = 24.0
+offset_right = 626.0
+offset_bottom = 83.0
+theme = SubResource("Theme_lhpby")
+script = ExtResource("1_q0ojp")
+
+[node name="RoomLabel" type="Label" parent="Background/RoomPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = -3.0
+offset_right = 164.0
+offset_bottom = 32.0
+text = "Stanza 1"
+label_settings = SubResource("LabelSettings_g1dy5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LootLabel" type="Label" parent="Background/RoomPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 24.0
+offset_right = 164.0
+offset_bottom = 59.0
+text = "Loot +20%"
+label_settings = SubResource("LabelSettings_y4bjt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Exploration" type="Node" parent="." groups=["adventure", "exploration"]]
 script = ExtResource("1_u1wya")
 
 [node name="Path" type="MarginContainer" parent="."]
@@ -94,11 +145,11 @@ layout_direction = 2
 layout_mode = 2
 
 [node name="UpcomingLabel" type="Label" parent="."]
-offset_left = 66.0
-offset_top = 85.0
-offset_right = 226.0
-offset_bottom = 131.0
-text = "Upcoming"
+offset_left = 61.0
+offset_top = 86.0
+offset_right = 221.0
+offset_bottom = 132.0
+text = "In arrivo"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="Passed" type="MarginContainer" parent="."]
@@ -117,11 +168,11 @@ layout_mode = 2
 alignment = 2
 
 [node name="PassedLabel" type="Label" parent="."]
-offset_left = 883.0
+offset_left = 880.0
 offset_top = 87.0
-offset_right = 1003.0
+offset_right = 1000.0
 offset_bottom = 131.0
-text = "Passed"
+text = "Passate"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -137,7 +188,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="TopMenuBackground" type="ColorRect" parent="."]
+[node name="TopMenuBackground" type="ColorRect" parent="." groups=["adventure"]]
 offset_right = 1148.0
 offset_bottom = 65.0
 color = Color(0.790586, 0.567307, 0.457462, 1)
@@ -197,11 +248,30 @@ step = 1.0
 value = 54.0
 show_percentage = false
 
-[node name="LateralStatsBar" parent="." instance=ExtResource("4_fnw12")]
+[node name="FloorPanel" type="Panel" parent="TopMenuBackground" groups=["adventure"]]
+z_index = 3
+layout_mode = 0
+offset_left = 458.0
+offset_top = 13.0
+offset_right = 626.0
+offset_bottom = 51.0
+theme = SubResource("Theme_lhpby")
+script = ExtResource("5_nqvb7")
+
+[node name="FloorLabel" type="Label" parent="TopMenuBackground/FloorPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 164.0
+offset_bottom = 36.0
+text = "Piano 1/10"
+label_settings = SubResource("LabelSettings_g1dy5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LateralStatsBar" parent="." groups=["adventure"] instance=ExtResource("4_fnw12")]
 offset_left = 1059.0
 offset_top = 64.0
 offset_right = 1128.42
 offset_bottom = 605.824
 color = Color(0.792157, 0.568627, 0.458824, 1)
-
-[connection signal="update_ability_points" from="LateralStatsBar" to="TopMenuBackground" method="update_ui"]

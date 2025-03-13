@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://clu8g2fmpdfwj"]
+[gd_scene load_steps=10 format=3 uid="uid://clu8g2fmpdfwj"]
 
 [ext_resource type="Script" path="res://scene/start/start_menu.gd" id="1_bp2fb"]
+[ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="2_oqujt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5rwlq"]
 font_size = 50
@@ -8,15 +9,32 @@ font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_4d0rr"]
 font_size = 13
-font_color = Color(0.0470588, 0, 0.0745098, 1)
+font_color = Color(0.0470588, 0, 0.0745098, 0.717647)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o61f8"]
+bg_color = Color(0.47451, 0.47451, 0.47451, 0.352941)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_xhfbv"]
+Panel/styles/panel = SubResource("StyleBoxFlat_o61f8")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kft08"]
+font_size = 20
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0.25098, 0.25098, 0.25098, 0.427451)
 
 [sub_resource type="LabelSettings" id="LabelSettings_xhr5p"]
 font_size = 23
+shadow_color = Color(0.25098, 0.25098, 0.25098, 0.427451)
 
 [sub_resource type="LabelSettings" id="LabelSettings_dfm42"]
 font_size = 23
+shadow_color = Color(0.25098, 0.25098, 0.25098, 0.427451)
 
-[node name="StartMenu" type="CanvasLayer"]
+[node name="StartMenu" type="CanvasLayer" groups=["adventure"]]
 script = ExtResource("1_bp2fb")
 
 [node name="SceneLabel" type="Label" parent="."]
@@ -45,45 +63,64 @@ offset_left = 183.0
 offset_top = 414.0
 offset_right = 355.0
 offset_bottom = 546.0
-text = "New game"
+text = "Nuovo gioco"
 
 [node name="ContinueButton" type="Button" parent="."]
 offset_left = 434.0
 offset_top = 423.0
 offset_right = 600.0
 offset_bottom = 542.0
-text = "Continue"
+text = "Continua"
 
 [node name="NewGameLabel" type="Label" parent="."]
 offset_left = 155.0
 offset_top = 388.0
 offset_right = 384.0
 offset_bottom = 411.0
+text = "* Sovrascriverà i dati di gioco"
 label_settings = SubResource("LabelSettings_4d0rr")
+horizontal_alignment = 1
 
 [node name="Panel" type="Panel" parent="."]
 offset_left = 635.0
 offset_top = 435.0
 offset_right = 803.0
 offset_bottom = 527.0
+theme = SubResource("Theme_xhfbv")
+
+[node name="ContinueLabel" type="Label" parent="Panel"]
+offset_left = 4.0
+offset_top = -1.0
+offset_right = 164.0
+offset_bottom = 34.0
+text = "Partita salvata"
+label_settings = SubResource("LabelSettings_kft08")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LevelLabel" type="Label" parent="Panel"]
 layout_mode = 0
 offset_left = 11.0
-offset_top = 11.0
+offset_top = 28.0
 offset_right = 169.0
-offset_bottom = 46.0
-text = "Level: 1"
+offset_bottom = 63.0
+text = "Lv: 1"
 label_settings = SubResource("LabelSettings_xhr5p")
 
 [node name="CoinLabel" type="Label" parent="Panel"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 50.0
-offset_right = 171.0
-offset_bottom = 85.0
-text = "Coin: 1234"
+offset_left = 39.0
+offset_top = 57.0
+offset_right = 168.0
+offset_bottom = 92.0
+text = "1234"
 label_settings = SubResource("LabelSettings_dfm42")
+
+[node name="Coin" type="Sprite2D" parent="Panel"]
+z_index = 4
+position = Vector2(21, 74)
+scale = Vector2(0.0729168, 0.0717804)
+texture = ExtResource("2_oqujt")
 
 [connection signal="pressed" from="NewGameButton" to="." method="_new_game"]
 [connection signal="pressed" from="ContinueButton" to="." method="_continue"]
