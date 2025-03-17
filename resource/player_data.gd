@@ -2,10 +2,10 @@ extends Resource
 class_name PlayerData
 
 @export var level: int = 1
-@export var exp: int = 0
+@export var experience: int = 0
 
 @export var coins: int = 0
-@export var damage: int = 0
+@export var damage: int = 0 # damage received
 
 @export var max_mana: int = 3
 @export var hand_size: int = 5
@@ -16,10 +16,10 @@ class_name PlayerData
 @export var past_path: Array[Room] = []
 @export var floor: int = 1
 
-@export var ability = {}
-@export var updating_ability = {}
 const STARTING_ABILITY_POINTS = 15
+@export var ability = {}
 @export var ability_points: int = STARTING_ABILITY_POINTS
+@export var updating_ability = {}
 @export var updating_ability_points: int = 0
 
 func _ready() -> void:

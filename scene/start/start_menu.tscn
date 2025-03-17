@@ -34,7 +34,7 @@ shadow_color = Color(0.25098, 0.25098, 0.25098, 0.427451)
 font_size = 23
 shadow_color = Color(0.25098, 0.25098, 0.25098, 0.427451)
 
-[node name="StartMenu" type="CanvasLayer" groups=["adventure"]]
+[node name="StartMenu" type="CanvasLayer"]
 script = ExtResource("1_bp2fb")
 
 [node name="SceneLabel" type="Label" parent="."]
@@ -89,6 +89,7 @@ offset_bottom = 527.0
 theme = SubResource("Theme_xhfbv")
 
 [node name="ContinueLabel" type="Label" parent="Panel"]
+layout_mode = 0
 offset_left = 4.0
 offset_top = -1.0
 offset_right = 164.0

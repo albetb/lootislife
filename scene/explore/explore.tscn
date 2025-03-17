@@ -1,9 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=22 format=3 uid="uid://dk0iotlgj0omy"]
 
-[ext_resource type="Script" path="res://scene/explore/room_panel.gd" id="1_q0ojp"]
 [ext_resource type="Script" path="res://scene/explore/exploration.gd" id="1_u1wya"]
+[ext_resource type="Script" path="res://scene/explore/path.gd" id="2_gqcq7"]
 [ext_resource type="Script" path="res://scene/explore/top_menu_background.gd" id="2_ysj00"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="3_clcby"]
+[ext_resource type="Script" path="res://scene/explore/passed.gd" id="3_cncri"]
+[ext_resource type="Script" path="res://scene/explore/choices.gd" id="4_bf2ox"]
 [ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/explore/statsbar/lateral_stats_bar.tscn" id="4_fnw12"]
 [ext_resource type="Script" path="res://scene/explore/floor_panel.gd" id="5_nqvb7"]
 
@@ -92,14 +94,13 @@ offset_right = 1102.0
 offset_bottom = 646.0
 color = Color(0.881062, 0.826031, 0.438953, 1)
 
-[node name="RoomPanel" type="Panel" parent="Background" groups=["adventure"]]
+[node name="RoomPanel" type="Panel" parent="Background"]
 layout_mode = 0
 offset_left = 458.0
 offset_top = 24.0
 offset_right = 626.0
 offset_bottom = 83.0
 theme = SubResource("Theme_lhpby")
-script = ExtResource("1_q0ojp")
 
 [node name="RoomLabel" type="Label" parent="Background/RoomPanel"]
 layout_mode = 0
@@ -123,7 +124,7 @@ label_settings = SubResource("LabelSettings_y4bjt")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Exploration" type="Node" parent="." groups=["adventure", "exploration"]]
+[node name="Exploration" type="Node" parent="."]
 script = ExtResource("1_u1wya")
 
 [node name="Path" type="MarginContainer" parent="."]
@@ -136,6 +137,7 @@ offset_left = -177.552
 offset_top = 87.344
 offset_right = 771.448
 offset_bottom = 173.344
+script = ExtResource("2_gqcq7")
 
 [node name="Panel" type="Panel" parent="Path"]
 layout_mode = 2
@@ -157,6 +159,7 @@ offset_left = 54.0
 offset_top = 134.0
 offset_right = 1003.0
 offset_bottom = 220.0
+script = ExtResource("3_cncri")
 
 [node name="Panel" type="Panel" parent="Passed"]
 visible = false
@@ -175,32 +178,25 @@ offset_bottom = 131.0
 text = "Passate"
 label_settings = SubResource("LabelSettings_k4akk")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Choices" type="MarginContainer" parent="."]
 offset_left = 71.0
 offset_top = 297.0
 offset_right = 993.0
 offset_bottom = 589.0
+script = ExtResource("4_bf2ox")
 
-[node name="Panel" type="Panel" parent="MarginContainer"]
+[node name="Panel" type="Panel" parent="Choices"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Choices"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="TopMenuBackground" type="ColorRect" parent="." groups=["adventure"]]
+[node name="TopMenuBackground" type="ColorRect" parent="."]
 offset_right = 1148.0
 offset_bottom = 65.0
 color = Color(0.790586, 0.567307, 0.457462, 1)
 script = ExtResource("2_ysj00")
-
-[node name="LevelLabel" type="Label" parent="TopMenuBackground"]
-layout_mode = 0
-offset_left = 31.0
-offset_right = 238.0
-offset_bottom = 45.0
-text = "Livello:"
-label_settings = SubResource("LabelSettings_tlphh")
 
 [node name="HealthLabel" type="Label" parent="TopMenuBackground"]
 layout_mode = 0
@@ -208,6 +204,14 @@ offset_left = 256.0
 offset_right = 433.0
 offset_bottom = 45.0
 text = "Hp: 30/30"
+label_settings = SubResource("LabelSettings_tlphh")
+
+[node name="LevelLabel" type="Label" parent="TopMenuBackground"]
+layout_mode = 0
+offset_left = 31.0
+offset_right = 238.0
+offset_bottom = 45.0
+text = "Livello:"
 label_settings = SubResource("LabelSettings_tlphh")
 
 [node name="Coin" type="Sprite2D" parent="TopMenuBackground"]
@@ -248,7 +252,7 @@ step = 1.0
 value = 54.0
 show_percentage = false
 
-[node name="FloorPanel" type="Panel" parent="TopMenuBackground" groups=["adventure"]]
+[node name="FloorPanel" type="Panel" parent="TopMenuBackground"]
 z_index = 3
 layout_mode = 0
 offset_left = 458.0
@@ -269,7 +273,7 @@ label_settings = SubResource("LabelSettings_g1dy5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LateralStatsBar" parent="." groups=["adventure"] instance=ExtResource("4_fnw12")]
+[node name="LateralStatsBar" parent="." instance=ExtResource("4_fnw12")]
 offset_left = 1059.0
 offset_top = 64.0
 offset_right = 1128.42

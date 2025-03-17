@@ -19,14 +19,11 @@ config/icon="res://icon.svg"
 
 SceneManager="*res://entity/scene_manager.gd"
 Player="*res://entity/player.gd"
+Events="*res://entity/events.gd"
 
 [display]
 
 window/size/resizable=false
-
-[global_group]
-
-adventure="item inside the adventure scene"
 
 [input]
 

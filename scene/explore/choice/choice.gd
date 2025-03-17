@@ -33,4 +33,4 @@ func _input(event: InputEvent) -> void:
 		var is_in_card = left <= event.position.x and event.position.x <= right
 		var is_over_card = bottom <= event.position.y and event.position.y <= top
 		if is_in_card and is_over_card:
-			get_tree().call_group("exploration", "choice_selected", choice_number)
+			Events.emit_signal("choice_selected", choice_number)

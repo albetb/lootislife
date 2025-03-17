@@ -4,6 +4,7 @@ extends ColorRect
 @onready var save_button = $VBoxContainer/SaveButton
 
 func _ready() -> void:
+	Events.update_ui.connect(update_ui)
 	update_ui()
 		
 func update_ui():
@@ -23,7 +24,7 @@ func update_ui():
 
 func _update_ability_points():
 	if Player.data.ability_points > 0:
-		get_tree().call_group("adventure", "update_ui")
+		Events.emit_signal("update_ui")
 	else:
 		update_ui()
 
@@ -33,7 +34,7 @@ func _on_save_button_pressed() -> void:
 	for i in range(Player.data.Ability.size()):
 		Player.data.ability[i] = Player.data.ability[i] + Player.data.updating_ability[i]
 		Player.data.updating_ability[i] = 0
-	get_tree().call_group("adventure", "update_ui")
+	Events.emit_signal("update_ui")
 	Player.save()
 
 

@@ -5,8 +5,6 @@ extends Node
 @onready var card_scene: PackedScene = preload("res://scene/card/card.tscn")
 @onready var player_mana: int = Player.data.max_mana
 
-signal update_mana
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	new_hand()

@@ -45,10 +45,10 @@ func max_ability() -> int:
 	return data.level + 4
 	
 func gain_exp(amount: int):
-	data.exp += amount
+	data.experience += amount
 	var _exp_needed = exp_needed()
-	while data.exp >= _exp_needed:
-		data.exp -= _exp_needed
+	while data.experience >= _exp_needed:
+		data.experience -= _exp_needed
 		gain_level()
 
 func gain_level():

@@ -7,6 +7,7 @@ extends ColorRect
 @onready var exp_bar: ProgressBar = $ExpBar
 
 func _ready() -> void:
+	Events.update_ui.connect(update_ui)
 	update_ui()
 	
 func update_ui():
@@ -26,5 +27,5 @@ func update_ui():
 		health_bar.tooltip_text = "%d/%d" % [Player.current_health(), Player.max_health()]
 	if exp_bar != null:
 		exp_bar.max_value = Player.exp_needed()
-		exp_bar.value = Player.data.exp
-		exp_bar.tooltip_text = "%d/%d" % [Player.data.exp, Player.exp_needed()]
+		exp_bar.value = Player.data.experience
+		exp_bar.tooltip_text = "%d/%d" % [Player.data.experience, Player.exp_needed()]

@@ -1,9 +1,7 @@
 extends VBoxContainer
-signal update_ability_points
 
 @export var ability_type: PlayerData.Ability
 @onready var name_label: Label = $NameLabel
-@onready var add_label: Label = $HBoxContainer/AddLabel
 @onready var stats_bar: ColorRect = $"../.."
 @onready var value_label: Label = $HBoxContainer/ValueLabel
 @onready var minus_button: Button = $HBoxContainer/MinusButton
@@ -12,6 +10,7 @@ signal update_ability_points
 @onready var actual_bar: ProgressBar = $ModifiedBar/ActualBar
 
 func _ready() -> void:
+	Events.update_ui.connect(self.update_ui)
 	update_ui()
 	
 func update_ui() -> void:
