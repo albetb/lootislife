@@ -1,14 +1,14 @@
 [gd_scene load_steps=14 format=3 uid="uid://3trgkf0u68ry"]
 
-[ext_resource type="Script" path="res://scene/card/card.gd" id="1_gelhr"]
+[ext_resource type="Script" uid="uid://bbqkclxfgiget" path="res://scene/card/card.gd" id="1_gelhr"]
 [ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="2_ak6k4"]
-[ext_resource type="Script" path="res://scene/card/state_machine/card_state_machine.gd" id="2_vqdgh"]
-[ext_resource type="Script" path="res://scene/card/state_machine/states/idle_card_state.gd" id="3_bx54l"]
+[ext_resource type="Script" uid="uid://da23nn87gylmo" path="res://scene/card/state_machine/card_state_machine.gd" id="2_vqdgh"]
+[ext_resource type="Script" uid="uid://d2xya05kxomr7" path="res://scene/card/state_machine/states/idle_card_state.gd" id="3_bx54l"]
 [ext_resource type="Texture2D" uid="uid://b46ukv88ys66g" path="res://sprite/attack_card_image.png" id="3_l87kj"]
-[ext_resource type="Script" path="res://scene/card/state_machine/states/clicked_card_state.gd" id="4_2bop5"]
-[ext_resource type="Script" path="res://scene/card/state_machine/states/drag_card_state.gd" id="5_f7w2d"]
-[ext_resource type="Script" path="res://scene/card/state_machine/states/release_card_state.gd" id="6_r0y7t"]
-[ext_resource type="Script" path="res://scene/card/state_machine/states/hover_card_state.gd" id="7_xjssr"]
+[ext_resource type="Script" uid="uid://bbpalvco58wdf" path="res://scene/card/state_machine/states/clicked_card_state.gd" id="4_2bop5"]
+[ext_resource type="Script" uid="uid://q2vjob630rbm" path="res://scene/card/state_machine/states/drag_card_state.gd" id="5_f7w2d"]
+[ext_resource type="Script" uid="uid://cl3l51m38gr3" path="res://scene/card/state_machine/states/release_card_state.gd" id="6_r0y7t"]
+[ext_resource type="Script" uid="uid://1p42afai6543" path="res://scene/card/state_machine/states/hover_card_state.gd" id="7_xjssr"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_g70p4"]
 load_path = "res://.godot/imported/card_base.png-1af9a569f6a3c2f40522db7f0a094bb0.ctex"

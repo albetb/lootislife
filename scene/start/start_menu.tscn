@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://clu8g2fmpdfwj"]
 
-[ext_resource type="Script" path="res://scene/start/start_menu.gd" id="1_bp2fb"]
+[ext_resource type="Script" uid="uid://cfa4smr6hts2m" path="res://scene/start/start_menu.gd" id="1_bp2fb"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="2_oqujt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5rwlq"]

@@ -1,14 +1,14 @@
 [gd_scene load_steps=14 format=3 uid="uid://b6bl6fl4ey2qf"]
 
-[ext_resource type="Script" path="res://scene/combat/enemy.gd" id="1_hdxvr"]
-[ext_resource type="Script" path="res://scene/combat/opponent_name.gd" id="2_nb8j0"]
-[ext_resource type="Script" path="res://scene/combat/opponent_health_value.gd" id="4_1v6md"]
+[ext_resource type="Script" uid="uid://dl2kw8cbq313d" path="res://scene/combat/enemy.gd" id="1_hdxvr"]
+[ext_resource type="Script" uid="uid://isynof58h0ft" path="res://scene/combat/opponent_name.gd" id="2_nb8j0"]
+[ext_resource type="Script" uid="uid://dusedm82ea3kf" path="res://scene/combat/opponent_health_value.gd" id="4_1v6md"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/field/field.tscn" id="5_f0ybc"]
-[ext_resource type="Script" path="res://scene/combat/health_value.gd" id="6_a6o6i"]
+[ext_resource type="Script" uid="uid://sb6ag0xv7wbd" path="res://scene/combat/health_value.gd" id="6_a6o6i"]
 [ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="7_uh1ts"]
-[ext_resource type="Script" path="res://scene/combat/mana_value.gd" id="8_grllu"]
-[ext_resource type="Script" path="res://scene/combat/combat_manager.gd" id="9_di3du"]
-[ext_resource type="Script" path="res://scene/combat/battleground.gd" id="10_1jfp7"]
+[ext_resource type="Script" uid="uid://bmt65rwqafdum" path="res://scene/combat/mana_value.gd" id="8_grllu"]
+[ext_resource type="Script" uid="uid://cmdvf33ncw1q7" path="res://scene/combat/combat_manager.gd" id="9_di3du"]
+[ext_resource type="Script" uid="uid://crhry7x41g4hh" path="res://scene/combat/battleground.gd" id="10_1jfp7"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
 font_size = 50

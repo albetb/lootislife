@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://domsnyqqkmhhp"]
 
-[ext_resource type="Script" path="res://scene/explore/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
+[ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/explore/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
 [ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/explore/statsbar/stat_container.tscn" id="1_xifav"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ftuio"]

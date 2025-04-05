@@ -22,12 +22,6 @@ func update_ui():
 			if Player.data.updating_ability[i] > 0:
 				save_button.disabled = false
 
-func _update_ability_points():
-	if Player.data.ability_points > 0:
-		Events.emit_signal("update_ui")
-	else:
-		update_ui()
-
 func _on_save_button_pressed() -> void:
 	Player.data.ability_points -= Player.data.updating_ability_points
 	Player.data.updating_ability_points = 0

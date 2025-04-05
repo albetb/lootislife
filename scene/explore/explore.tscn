@@ -1,13 +1,14 @@
-[gd_scene load_steps=22 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=23 format=3 uid="uid://dk0iotlgj0omy"]
 
-[ext_resource type="Script" path="res://scene/explore/exploration.gd" id="1_u1wya"]
-[ext_resource type="Script" path="res://scene/explore/path.gd" id="2_gqcq7"]
-[ext_resource type="Script" path="res://scene/explore/top_menu_background.gd" id="2_ysj00"]
+[ext_resource type="Script" uid="uid://hbwumtykd6td" path="res://scene/explore/exploration.gd" id="1_u1wya"]
+[ext_resource type="Script" uid="uid://i25mt3olv64p" path="res://scene/explore/room_panel.gd" id="1_wfrkh"]
+[ext_resource type="Script" uid="uid://du20ugncge8uv" path="res://scene/explore/path.gd" id="2_gqcq7"]
+[ext_resource type="Script" uid="uid://cok3yew21j3t3" path="res://scene/explore/top_menu_background.gd" id="2_ysj00"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="3_clcby"]
-[ext_resource type="Script" path="res://scene/explore/passed.gd" id="3_cncri"]
-[ext_resource type="Script" path="res://scene/explore/choices.gd" id="4_bf2ox"]
+[ext_resource type="Script" uid="uid://b2i2mfy4pk61c" path="res://scene/explore/passed.gd" id="3_cncri"]
+[ext_resource type="Script" uid="uid://bxjbbej5jahdt" path="res://scene/explore/choices.gd" id="4_bf2ox"]
 [ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/explore/statsbar/lateral_stats_bar.tscn" id="4_fnw12"]
-[ext_resource type="Script" path="res://scene/explore/floor_panel.gd" id="5_nqvb7"]
+[ext_resource type="Script" uid="uid://b1ox5xkn2dt0q" path="res://scene/explore/floor_panel.gd" id="5_nqvb7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pme05"]
 bg_color = Color(0.47451, 0.47451, 0.47451, 0.352941)
@@ -101,6 +102,7 @@ offset_top = 24.0
 offset_right = 626.0
 offset_bottom = 83.0
 theme = SubResource("Theme_lhpby")
+script = ExtResource("1_wfrkh")
 
 [node name="RoomLabel" type="Label" parent="Background/RoomPanel"]
 layout_mode = 0

@@ -54,8 +54,7 @@ func _on_minus_button_pressed() -> void:
 	if Player.data.updating_ability[ability_type] > 0:
 		Player.data.updating_ability[ability_type] = Player.data.updating_ability[ability_type] - 1
 		Player.data.updating_ability_points -= 1
-		update_ui()
-		emit_signal("update_ability_points")
+		Events.emit_signal("update_ui")
 
 func _on_plus_button_pressed() -> void:
 	var remaining_points = Player.data.ability_points - Player.data.updating_ability_points
@@ -64,9 +63,4 @@ func _on_plus_button_pressed() -> void:
 	if remaining_points > 0 and current_points < max_points:
 		Player.data.updating_ability[ability_type] = Player.data.updating_ability[ability_type] + 1
 		Player.data.updating_ability_points += 1
-		update_ui()
-		emit_signal("update_ability_points")
-
-
-func _update_ability_points() -> void:
-	update_ui()
+		Events.emit_signal("update_ui")
