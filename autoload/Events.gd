@@ -5,6 +5,5 @@ extends Node
  Events.emit_signal("signal_name") # To emit
 '''
 
-
 signal update_ui
 signal choice_selected(number: int)

@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://sb6ag0xv7wbd" path="res://scene/combat/health_value.gd" id="6_a6o6i"]
 [ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="7_uh1ts"]
 [ext_resource type="Script" uid="uid://bmt65rwqafdum" path="res://scene/combat/mana_value.gd" id="8_grllu"]
-[ext_resource type="Script" uid="uid://cmdvf33ncw1q7" path="res://scene/combat/combat_manager.gd" id="9_di3du"]
+[ext_resource type="Script" uid="uid://cmdvf33ncw1q7" path="res://core/combat/CombatManager.gd" id="9_di3du"]
 [ext_resource type="Script" uid="uid://crhry7x41g4hh" path="res://scene/combat/battleground.gd" id="10_1jfp7"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
@@ -128,7 +128,6 @@ offset_right = 1110.0
 offset_bottom = 547.0
 text = "Pass"
 
-[connection signal="update_mana" from="CombatManager" to="PlayerHud/Mana/ManaValue" method="_on_combat_manager_update_mana"]
 [connection signal="pressed" from="PassButton" to="CombatManager" method="_on_pass_button_pressed"]
 
 [editable path="Hand"]

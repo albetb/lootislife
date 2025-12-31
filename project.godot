@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SceneManager="*res://entity/scene_manager.gd"
-Player="*res://entity/player.gd"
-Events="*res://entity/events.gd"
+SceneManager="*res://autoload/SceneManager.gd"
+Player="*res://autoload/Player.gd"
+Events="*res://autoload/Events.gd"
 
 [display]
 

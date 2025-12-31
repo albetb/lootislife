@@ -90,3 +90,8 @@ This document summarizes the design practices adopted for our Godot 4 applicatio
   parent.remove_child(child)
   child.queue_free()
   ```
+
+## 11. Separate Game Rules from Presentation
+  Rules layer: Cards effects, Status calculations, RNG, Turn system
+  Presentation layer: Animations, UI, Card movement
+  Rules should run without nodes if possible.
