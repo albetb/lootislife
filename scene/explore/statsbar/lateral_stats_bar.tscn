@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://domsnyqqkmhhp"]
+[gd_scene load_steps=5 format=3 uid="uid://domsnyqqkmhhp"]
 
 [ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/explore/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
 [ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/explore/statsbar/stat_container.tscn" id="1_xifav"]
@@ -6,9 +6,6 @@
 [sub_resource type="LabelSettings" id="LabelSettings_ftuio"]
 font_size = 18
 font_color = Color(0, 0, 0, 1)
-
-[sub_resource type="Theme" id="Theme_mybyp"]
-Button/font_sizes/font_size = 13
 
 [sub_resource type="Theme" id="Theme_gmjvw"]
 Button/font_sizes/font_size = 13
@@ -38,35 +35,27 @@ horizontal_alignment = 1
 
 [node name="StrStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
 layout_mode = 2
+stat_key = "strength"
+display_name = "For"
 
 [node name="DesStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
 layout_mode = 2
-ability_type = 1
+stat_key = "dexterity"
+display_name = "Des"
 
 [node name="CosStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
 layout_mode = 2
-ability_type = 2
+stat_key = "constitution"
+display_name = "Cos"
 
 [node name="IntStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
 layout_mode = 2
-ability_type = 3
-
-[node name="SagStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
-layout_mode = 2
-ability_type = 4
-
-[node name="CarStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
-layout_mode = 2
-ability_type = 5
+stat_key = "intelligence"
+display_name = "Int"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
-
-[node name="SaveButton" type="Button" parent="VBoxContainer" groups=["lateral_bar"]]
-layout_mode = 2
-theme = SubResource("Theme_mybyp")
-text = "Salva"
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
@@ -81,6 +70,4 @@ offset_bottom = 572.0
 theme = SubResource("Theme_gmjvw")
 text = "Indietro"
 
-[connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="_update_ability_points"]
-[connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

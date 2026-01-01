@@ -32,7 +32,7 @@ func set_values(room_type: Room.Type):
 	elif room_type == Room.Type.Treasure:
 		text = "Tesoro"
 		color = Color.YELLOW
-	elif room_type == Room.Type.Choice:
+	elif room_type == Room.Type.Selection:
 		text = "Scelta"
 		color = Color.AQUA
 	elif room_type == Room.Type.Boss:

@@ -7,4 +7,4 @@ func _ready():
 	pass
 
 func set_new_card(card: Card):
-	combat_manager.cast_card(card)
+	combat_manager.request_play_card(card)

@@ -1,12 +1,12 @@
 extends Resource
 class_name Room
 
-@export var type: Type = Type.Choice
+@export var type: Type = Type.Selection
 
 enum Type {
 	Battle,
 	Rest,
 	Treasure,
-	Choice,
+	Selection,
 	Boss
 }

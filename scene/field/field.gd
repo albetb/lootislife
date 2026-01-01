@@ -4,36 +4,56 @@ extends MarginContainer
 @onready var card_drop_area_right: Area2D = $CardDropAreaRight
 @onready var card_drop_area_left: Area2D = $CardDropAreaLeft
 @onready var cards_holder: HBoxContainer = $CardsHolder
-@onready var combat_manager = $".."
 
-func _ready():
-	$CardDropAreaLeft/CollisionShape2D.shape.size.x = self.size.x / 2
-	$CardDropAreaRight/CollisionShape2D.shape.size.x = self.size.x / 2
+var combat_manager: CombatManager = null
+
+func _ready() -> void:
+	$CardDropAreaLeft/CollisionShape2D.shape.size.x = size.x / 2
+	$CardDropAreaRight/CollisionShape2D.shape.size.x = size.x / 2
+
+# -------------------------
+# INJECTION
+# -------------------------
+
+func bind_combat_manager(manager: CombatManager) -> void:
+	combat_manager = manager
+
+# -------------------------
+# CARD MANAGEMENT
+# -------------------------
 
 func add_card(card: Card) -> bool:
-	if cards_holder.get_children().size() < Player.data.max_hand_size:
-		card.home_field = self
-		cards_holder.add_child(card)
-		return true
-	return false
+	if Player.data.max_hand_size <= 0:
+		push_error("max_hand_size <= 0")
+		return false
+		
+	if cards_holder.get_children().size() >= Player.data.max_hand_size:
+		return false
+
+	card.home_field = self
+	cards_holder.add_child(card)
+	return true
 
 func discard_all_cards() -> void:
 	for child in cards_holder.get_children():
-		cards_holder.remove_child(child)
+		child.queue_free()
 
-# card positioning
-func return_card_starting_position(card: Card):
+# -------------------------
+# CARD POSITIONING
+# -------------------------
+
+func return_card_starting_position(card: Card) -> void:
 	card.reparent(cards_holder)
 	cards_holder.move_child(card, card.index)
 
-func set_new_card(card: Card):
+func set_new_card(card: Card) -> void:
 	card_reposition(card)
 	card.home_field = self
 
-func card_reposition(card: Card):
+func card_reposition(card: Card) -> void:
 	var field_areas = card.drop_point_detector.get_overlapping_areas()
 	var cards_areas = card.card_detector.get_overlapping_areas()
-	var index: int = 0
+	var index := 0
 
 	if cards_areas.is_empty():
 		if field_areas.has(card_drop_area_right):
@@ -47,7 +67,6 @@ func card_reposition(card: Card):
 		index = cards_areas[0].get_parent().get_index()
 		if index > cards_areas[1].get_parent().get_index():
 			index = cards_areas[1].get_parent().get_index()
-
 		index += 1
 
 	card.reparent(cards_holder)

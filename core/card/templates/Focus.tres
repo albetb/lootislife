@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CardTemplate" load_steps=5 format=3 uid="uid://sku5t6exdgv5"]
+
+[ext_resource type="Script" uid="uid://h0mbh1qv6wsj" path="res://core/card/CardEffect.gd" id="1_o6kuf"]
+[ext_resource type="Script" uid="uid://bfw0m6h8cavyi" path="res://core/card/effects/DrawEffect.gd" id="2_my4nf"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="2_sq411"]
+
+[sub_resource type="Resource" id="Resource_nxy6p"]
+script = ExtResource("2_my4nf")
+amount = 2
+metadata/_custom_type_script = "uid://bfw0m6h8cavyi"
+
+[resource]
+script = ExtResource("2_sq411")
+id = ""
+display_name = "Focus"
+description = "Pesca 2 carte"
+cost = 1
+type = 1
+retain = false
+exhaust = false
+charges = -1
+copies = 3
+effects = Array[ExtResource("1_o6kuf")]([SubResource("Resource_nxy6p")])
+metadata/_custom_type_script = "uid://c61j8yd47bwva"

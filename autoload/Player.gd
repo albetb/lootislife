@@ -6,6 +6,7 @@ const SAVE_FILE := "PlayerSave.tres"
 
 # --- Data ---
 @export var data: PlayerData
+var pending_combat_deck: Array[CardInstance] = []
 
 func _ready() -> void:
 	DirAccess.make_dir_absolute(SAVE_DIR)
@@ -32,7 +33,19 @@ func save() -> void:
 
 func reset() -> void:
 	data = PlayerData.new()
+	_setup_starting_equipment()
 	save()
+
+func _setup_starting_equipment() -> void:
+	var build := data.build
+
+	var weapon := preload("res://equipment/templates/short_sword.tres")
+	var armor := preload("res://equipment/templates/armor_base.tres")
+	var relic := preload("res://equipment/templates/ninnolo_base.tres")
+
+	build.equip(weapon)
+	build.equip(armor)
+	build.equip(relic)
 
 # -------------------------
 # PROGRESSION
@@ -68,6 +81,9 @@ func physical_damage_bonus() -> int:
 
 func block_bonus() -> int:
 	return data.stats.dexterity
+	
+func max_ability() -> int:
+	return data.level + 4
 
 # -------------------------
 # VITA
@@ -90,10 +106,24 @@ func current_room() -> int:
 	return data.past_path.size() + 1
 
 func loot_multiplier() -> float:
-	return data.floor + (current_room() - 1) * 0.1
+	return data.floor_number + (current_room() - 1) * 0.1
 
 func apply_loot_multiplier(value: int) -> int:
 	return int(floor(value * loot_multiplier()))
 
 func is_game_started() -> bool:
-	return data.floor > 1 or data.past_path.size() > 0
+	return data.floor_number > 1 or data.past_path.size() > 0
+
+# -------------------------
+# DECK / COMBAT
+# -------------------------
+
+func generate_deck() -> Array[CardInstance]:
+	if data == null or data.build == null:
+		return []
+
+	# Genera il mazzo a partire dall'equipaggiamento
+	var deck: Array[CardInstance] = data.build.generate_deck()
+	print("Generated deck size:", deck.size())
+
+	return deck

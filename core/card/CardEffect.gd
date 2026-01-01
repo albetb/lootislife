@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name CardEffect
 
 func apply(source, target) -> void:

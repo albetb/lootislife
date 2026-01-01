@@ -11,7 +11,7 @@ extends Control
 
 ## === DATA BINDING ===
 var card_data: Object
-var home_field: Field
+@export var home_field: Field
 var index: int = 0
 
 func _ready():
@@ -33,7 +33,7 @@ func _on_mouse_exited():
 ## === BINDING ===
 func bind(data: Object) -> void:
 	card_data = data
-	_update_visuals()
+	call_deferred("_update_visuals")
 
 func _update_visuals() -> void:
 	if card_data == null:

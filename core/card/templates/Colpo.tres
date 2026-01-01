@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CardTemplate" load_steps=5 format=3 uid="uid://dg7tdnk25eiav"]
+
+[ext_resource type="Script" uid="uid://h0mbh1qv6wsj" path="res://core/card/CardEffect.gd" id="1_0jwt6"]
+[ext_resource type="Script" uid="uid://vppo1xyrw68q" path="res://core/card/effects/DamageEffect.gd" id="2_egych"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="2_o07qx"]
+
+[sub_resource type="Resource" id="Resource_j0dd8"]
+script = ExtResource("2_egych")
+amount = 4
+metadata/_custom_type_script = "uid://vppo1xyrw68q"
+
+[resource]
+script = ExtResource("2_o07qx")
+id = ""
+display_name = "Colpo"
+description = "Infligge 4 danni"
+cost = 1
+type = 0
+retain = false
+exhaust = false
+charges = -1
+copies = 4
+effects = Array[ExtResource("1_0jwt6")]([SubResource("Resource_j0dd8")])
+metadata/_custom_type_script = "uid://c61j8yd47bwva"

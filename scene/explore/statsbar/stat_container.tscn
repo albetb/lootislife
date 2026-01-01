@@ -44,21 +44,16 @@ ProgressBar/styles/fill = SubResource("StyleBoxFlat_344y8")
 [node name="StatContainer" type="VBoxContainer"]
 script = ExtResource("1_5wqfq")
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="HBoxContainer"]
 layout_mode = 2
 text = "Forza"
 label_settings = SubResource("LabelSettings_liibg")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 2
-alignment = 1
-
-[node name="MinusButton" type="Button" parent="HBoxContainer"]
-custom_minimum_size = Vector2(25, 0)
-layout_mode = 2
-text = "-"
 
 [node name="ValueLabel" type="Label" parent="HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
@@ -90,5 +85,4 @@ step = 1.0
 value = 34.0
 show_percentage = false
 
-[connection signal="pressed" from="HBoxContainer/MinusButton" to="." method="_on_minus_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/PlusButton" to="." method="_on_plus_button_pressed"]

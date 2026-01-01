@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://cur5bpiop7qbo"]
+
+[ext_resource type="Script" uid="uid://myd3mxco7w7j" path="res://equipment/WeaponData.gd" id="1_lbjav"]
+[ext_resource type="Resource" uid="uid://dg7tdnk25eiav" path="res://core/card/templates/Colpo.tres" id="1_s6fkg"]
+[ext_resource type="Resource" uid="uid://icl6r6g5nyk6" path="res://core/card/templates/Mazzata.tres" id="2_wfjvh"]
+
+[resource]
+script = ExtResource("1_lbjav")
+hand_usage = 0
+base_damage = 0
+id = ""
+display_name = "Spada corta"
+slot_type = 0
+description = ""
+rarity = 1
+card_templates = Array[Resource]([ExtResource("1_s6fkg"), ExtResource("2_wfjvh")])
+metadata/_custom_type_script = "uid://myd3mxco7w7j"

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CardTemplate" load_steps=5 format=3 uid="uid://icl6r6g5nyk6"]
+
+[ext_resource type="Script" uid="uid://h0mbh1qv6wsj" path="res://core/card/CardEffect.gd" id="1_2uln0"]
+[ext_resource type="Script" uid="uid://vppo1xyrw68q" path="res://core/card/effects/DamageEffect.gd" id="2_eludi"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="2_h4d2n"]
+
+[sub_resource type="Resource" id="Resource_34h2t"]
+script = ExtResource("2_eludi")
+amount = 9
+metadata/_custom_type_script = "uid://vppo1xyrw68q"
+
+[resource]
+script = ExtResource("2_h4d2n")
+id = ""
+display_name = "Mazzata"
+description = "Infligge 9 danni"
+cost = 2
+type = 0
+retain = false
+exhaust = false
+charges = -1
+copies = 2
+effects = Array[ExtResource("1_2uln0")]([SubResource("Resource_34h2t")])
+metadata/_custom_type_script = "uid://c61j8yd47bwva"

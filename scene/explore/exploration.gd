@@ -68,10 +68,19 @@ func choice_selected(num: int):
 	
 func select_new_scene(room: Room) -> void:
 	Player.save()
+
 	if room.type == Room.Type.Battle:
+		# 1. Genera il mazzo dal build
+		var deck := Player.generate_deck()
+
+		# 2. Passalo al Player come payload temporaneo
+		Player.pending_combat_deck = deck
+
+		# 3. Cambia scena
 		SceneManager.switch("res://scene/combat/battle.tscn")
+
 	if room.type == Room.Type.Boss:
-		Player.data.floor += 1
+		Player.data.floor_number += 1
 		Player.save()
 		begin()
 		Events.emit_signal("update_ui")
@@ -80,8 +89,8 @@ func new_exploration():
 	path = []
 	current_path = []
 	past_path = []
-	
-	length = 3 + floor((Player.data.floor - 1) / 3)
+
+	length = 3 + floor((Player.data.floor_number - 1) / 3)
 
 	for i in range(length):
 		var room_types = Room.Type.values().filter(func(x): return x != Room.Type.Boss and x != Room.Type.Battle)
@@ -90,9 +99,9 @@ func new_exploration():
 		path.append(room.duplicate(true)) # add a battle
 		room.type = room_types[randi() % room_types.size()]
 		path.append(room.duplicate(true)) # add a random other room
-	
+
 	var boss_room = Room.new()
 	boss_room.type = Room.Type.Boss 
 	path.append(boss_room.duplicate(true)) # add a boss
-	
+
 	save_path()

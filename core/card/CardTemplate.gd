@@ -16,9 +16,10 @@ enum CardType {
 
 @export var retain: bool = false
 @export var exhaust: bool = false
+@export var charges: int = -1
 
 # quante copie genera questo template
 @export var copies: int = 1
 
 # lista di CardEffect
-@export var effects: Array[Resource] = []
+@export var effects: Array[CardEffect] = []

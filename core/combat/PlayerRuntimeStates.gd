@@ -26,7 +26,7 @@ var statuses: Dictionary = {}
 # SETUP
 # -------------------------
 
-func setup(player: Player, current_deck: Array[Card]) -> void:
+func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 	player_data = player.data
 
 	max_hp = player.max_health()
@@ -91,9 +91,3 @@ func reshuffle_if_needed():
 		deck = discard.duplicate()
 		discard.clear()
 		deck.shuffle()
-
-func create_card_instance(template: CardTemplate) -> CardInstance:
-	var card = CardInstance.new()
-	card.template = template
-	card.cost = template.cost
-	return card

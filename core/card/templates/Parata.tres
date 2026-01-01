@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CardTemplate" load_steps=5 format=3 uid="uid://nnswg571k72g"]
+
+[ext_resource type="Script" uid="uid://h0mbh1qv6wsj" path="res://core/card/CardEffect.gd" id="1_sw7ye"]
+[ext_resource type="Script" uid="uid://cvmkg7srgciqf" path="res://core/card/effects/BlockEffect.gd" id="2_f77qa"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="2_rgl70"]
+
+[sub_resource type="Resource" id="Resource_5exuf"]
+script = ExtResource("2_f77qa")
+amount = 5
+metadata/_custom_type_script = "uid://cvmkg7srgciqf"
+
+[resource]
+script = ExtResource("2_rgl70")
+id = ""
+display_name = "Parata"
+description = "Blocca 5 danni"
+cost = 1
+type = 1
+retain = false
+exhaust = false
+charges = -1
+copies = 5
+effects = Array[ExtResource("1_sw7ye")]([SubResource("Resource_5exuf")])
+metadata/_custom_type_script = "uid://c61j8yd47bwva"

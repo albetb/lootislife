@@ -1,5 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://b6bl6fl4ey2qf"]
+[gd_scene load_steps=16 format=3 uid="uid://b6bl6fl4ey2qf"]
 
+[ext_resource type="Script" uid="uid://pdbuuklmwghd" path="res://scene/combat/battle.gd" id="1_4gqx4"]
 [ext_resource type="Script" uid="uid://dl2kw8cbq313d" path="res://scene/combat/enemy.gd" id="1_hdxvr"]
 [ext_resource type="Script" uid="uid://isynof58h0ft" path="res://scene/combat/opponent_name.gd" id="2_nb8j0"]
 [ext_resource type="Script" uid="uid://dusedm82ea3kf" path="res://scene/combat/opponent_health_value.gd" id="4_1v6md"]
@@ -9,6 +10,7 @@
 [ext_resource type="Script" uid="uid://bmt65rwqafdum" path="res://scene/combat/mana_value.gd" id="8_grllu"]
 [ext_resource type="Script" uid="uid://cmdvf33ncw1q7" path="res://core/combat/CombatManager.gd" id="9_di3du"]
 [ext_resource type="Script" uid="uid://crhry7x41g4hh" path="res://scene/combat/battleground.gd" id="10_1jfp7"]
+[ext_resource type="PackedScene" uid="uid://3trgkf0u68ry" path="res://scene/card/card.tscn" id="10_5fdpj"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jh7dp"]
 font_size = 50
@@ -24,6 +26,7 @@ font_size = 75
 size = Vector2(414, 203)
 
 [node name="Battle" type="CanvasLayer" groups=["fields"]]
+script = ExtResource("1_4gqx4")
 
 [node name="Enemy" type="Node2D" parent="."]
 script = ExtResource("1_hdxvr")
@@ -104,6 +107,7 @@ script = ExtResource("8_grllu")
 
 [node name="CombatManager" type="Node" parent="."]
 script = ExtResource("9_di3du")
+card_scene = ExtResource("10_5fdpj")
 
 [node name="Battleground" type="MarginContainer" parent="CombatManager"]
 offset_left = 379.0

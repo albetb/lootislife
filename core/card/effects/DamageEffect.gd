@@ -1,9 +1,9 @@
 extends CardEffect
 class_name DamageEffect
 
-var amount: int
+@export var amount: int
 
-func _init(damage: int):
+func _init(damage: int = 0):
 	amount = damage
 
 func apply(source, target) -> void:

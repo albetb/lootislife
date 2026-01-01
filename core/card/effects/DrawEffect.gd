@@ -1,9 +1,9 @@
 extends CardEffect
 class_name DrawEffect
 
-var amount: int
+@export var amount: int
 
-func _init(value: int):
+func _init(value: int = 0):
 	amount = value
 
 func apply(source, _target) -> void:

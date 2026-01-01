@@ -12,4 +12,4 @@ static func play(card: CardInstance, source, target) -> void:
 	for effect in card.effects:
 		effect.apply(source, target)
 
-	card.on_play(source, target)
+	card.on_play()
