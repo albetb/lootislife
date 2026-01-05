@@ -5,16 +5,10 @@ var cards_root: Node2D
 var layout: HandLayoutController
 var drag: HandDragController
 
-@export var min_hand_width := 300.0
-@export var card_spacing := 120.0
-@export var base_hand_height := 160.0
+@export var vertical_tolerance := 200.0   # quanto lontano sopra/sotto accetti l’insert
 
-# moltiplicatori di tolleranza
-@export var horizontal_factor := 0.75
-@export var vertical_factor := 0.5
-
-func update_insert(mouse_x_global: float) -> void:
-	if drag == null or cards_root == null or layout == null:
+func update_insert(mouse_global_pos: Vector2) -> void:
+	if drag == null or layout == null or cards_root == null:
 		return
 
 	if drag.dragging_card == null:
@@ -22,24 +16,38 @@ func update_insert(mouse_x_global: float) -> void:
 		drag.insert_index = -1
 		return
 
-	var card_pos := drag.dragging_card.global_position
-	var hand_origin := cards_root.get_global_transform_with_canvas().origin
+	var cards := cards_root.get_children()
+	if cards.is_empty():
+		drag.insert_active = false
+		drag.insert_index = 0
+		return
 
-	var card_count := cards_root.get_child_count()
-	var hand_width = max(min_hand_width, card_count * card_spacing)
+	# posizione mouse nello spazio della mano
+	var local := cards_root.to_local(mouse_global_pos)
 
-	var dx = abs(card_pos.x - hand_origin.x)
-	var dy = abs(card_pos.y - hand_origin.y)
-
-	var horizontal_range = hand_width * horizontal_factor
-	var vertical_range := base_hand_height * vertical_factor
-
-	if dx < horizontal_range and dy < vertical_range:
-		drag.insert_active = true
-		drag.insert_index = layout.compute_insert_index(
-			cards_root,
-			mouse_x_global
-		)
-	else:
+	# controllo verticale semplice (evita insert da troppo lontano)
+	if abs(local.y) > vertical_tolerance:
 		drag.insert_active = false
 		drag.insert_index = -1
+		return
+
+	# --- FAN GEOMETRICO ---
+	var count := cards.size()
+	var center := (count - 1) * 0.5
+	var card_width := (cards[0] as Card).get_card_width()
+
+	# stessi parametri del layout
+	var arc_step := card_width * (1.0 - layout.overlap)
+	var arc_length := arc_step * (count - 1)
+	var arc_angle := arc_length / layout.fan_radius
+	var half_arc := arc_angle * 0.5 * 2
+
+	# angolo del mouse rispetto al centro del cerchio
+	var angle := atan2(local.x, layout.fan_radius - local.y)
+
+	# normalizza [ -half_arc … +half_arc ] → [0 … count]
+	var t := inverse_lerp(-half_arc, half_arc, angle)
+	var index := int(round(t * count))
+
+	drag.insert_active = true
+	drag.insert_index = clamp(index, 0, count)

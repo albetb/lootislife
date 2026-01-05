@@ -67,7 +67,7 @@ func _process(delta: float) -> void:
 
 	# 3. insert logic (solo se sto trascinando)
 	if drag.dragging_card:
-		insert.update_insert(get_global_mouse_position().x)
+		insert.update_insert(get_global_mouse_position())
 		reposition_cards()
 	elif drag.returning_card:
 		# layout già valido, continua a lerpare
