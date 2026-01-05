@@ -121,6 +121,9 @@ func _on_runtime_draw_requested(amount: int) -> void:
 	hand_ui.draw_cards(_create_card_uis(drawn))
 
 func _on_pass_button_pressed() -> void:
+	if hand_ui != null and hand_ui.is_busy():
+		return
+
 	end_turn()
 
 	if enemy_node != null and enemy_node.current_health <= 0:

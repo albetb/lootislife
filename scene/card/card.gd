@@ -61,6 +61,12 @@ func _on_input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
 			is_dragging = false
 			target_scale = Vector2.ONE
 			drag_released.emit(self)
+		
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		if is_dragging:
+			is_dragging = false
+			target_scale = Vector2.ONE
+			drag_released.emit(self)
 
 func _on_mouse_entered() -> void:
 	if not interaction_enabled:

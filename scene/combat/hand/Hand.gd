@@ -7,15 +7,6 @@ extends Node2D
 signal card_play_requested(card: Card)
 signal card_play_failed(card: Card)
 
-# ---------------- LAYOUT PARAMS ----------------
-
-@export var gap := 10.0
-@export var fan_height := 18.0
-@export var max_rotation := 8.0
-@export var hover_push := 60.0
-@export var layout_lerp_speed := 12.0
-@export var use_fan_layout := true
-
 # ---------------- STATE ----------------
 
 var _layout_dirty := false
@@ -35,14 +26,6 @@ var insert := HandInsertController.new()
 # ------------------------------------------------
 
 func _ready() -> void:
-	# layout setup
-	layout.gap = gap
-	layout.fan_height = fan_height
-	layout.max_rotation = max_rotation
-	layout.hover_push = hover_push
-	layout.layout_lerp_speed = layout_lerp_speed
-	layout.use_fan_layout = use_fan_layout
-
 	# controller wiring
 	interaction.cards_root = cards_root
 	interaction.drag = drag
@@ -288,3 +271,6 @@ func on_card_played(card: Card) -> void:
 
 func is_dragging() -> bool:
 	return drag.dragging_card != null
+	
+func is_busy() -> bool:
+	return draw_controller.is_drawing()

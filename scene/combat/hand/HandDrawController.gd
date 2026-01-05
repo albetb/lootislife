@@ -31,3 +31,6 @@ func _draw_next_card() -> void:
 
 func advance() -> void:
 	_draw_next_card()
+
+func is_drawing() -> bool:
+	return drawing
