@@ -43,7 +43,7 @@ func start_combat(deck: Array[CardInstance]) -> void:
 	start_turn()
 
 func start_turn() -> void:
-	var drawn := runtime.start_turn(Player.base_draw())
+	var drawn = runtime.start_turn()
 
 	hand_ui.draw_cards(
 		_create_card_uis(drawn)

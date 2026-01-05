@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://biim2lxri0akl"]
+[gd_scene load_steps=7 format=3 uid="uid://biim2lxri0akl"]
 
 [ext_resource type="Script" uid="uid://d4cr67i8sc3n2" path="res://scene/combat/hand/Hand.gd" id="1_7p7dw"]
 [ext_resource type="Script" uid="uid://4kp0v7bksdli" path="res://scene/combat/hand/HandDragController.gd" id="2_ofg4e"]
 [ext_resource type="Script" uid="uid://bl2hgtp0mjqmi" path="res://scene/combat/hand/HandLayoutController.gd" id="3_vitx4"]
 [ext_resource type="Script" uid="uid://xy6jtyg4pao1" path="res://scene/combat/hand/HandDrawController.gd" id="4_k0pr5"]
+[ext_resource type="Script" uid="uid://chy46ny585bw8" path="res://scene/combat/hand/HandInsertController.gd" id="5_0frfd"]
+[ext_resource type="Script" uid="uid://cdwrf51u2raib" path="res://scene/combat/hand/HandInteractionController.gd" id="6_7ov20"]
 
 [node name="Hand" type="Node2D"]
 position = Vector2(638, 566)
@@ -32,3 +34,9 @@ script = ExtResource("3_vitx4")
 
 [node name="HandDrawController" type="Node" parent="."]
 script = ExtResource("4_k0pr5")
+
+[node name="HandInsertController" type="Node" parent="."]
+script = ExtResource("5_0frfd")
+
+[node name="HandInteractionController" type="Node" parent="."]
+script = ExtResource("6_7ov20")

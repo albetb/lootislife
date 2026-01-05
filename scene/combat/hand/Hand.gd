@@ -7,6 +7,8 @@ extends Node2D
 signal card_play_requested(card: Card)
 signal card_play_failed(card: Card)
 
+# ---------------- LAYOUT PARAMS ----------------
+
 @export var gap := 10.0
 @export var fan_height := 18.0
 @export var max_rotation := 8.0
@@ -14,14 +16,26 @@ signal card_play_failed(card: Card)
 @export var layout_lerp_speed := 12.0
 @export var use_fan_layout := true
 
+# ---------------- STATE ----------------
+
 var _layout_dirty := false
 var suppress_hover := false
 
-var drag: HandDragController = HandDragController.new()
-var layout: HandLayoutController = HandLayoutController.new()
-var draw_controller: HandDrawController = HandDrawController.new()
+# ---------------- CONTROLLERS ----------------
+
+var drag := HandDragController.new()
+var layout := HandLayoutController.new()
+var draw_controller := HandDrawController.new()
+
+var interaction := HandInteractionController.new()
+var insert := HandInsertController.new()
+
+# ------------------------------------------------
+# READY
+# ------------------------------------------------
 
 func _ready() -> void:
+	# layout setup
 	layout.gap = gap
 	layout.fan_height = fan_height
 	layout.max_rotation = max_rotation
@@ -29,6 +43,16 @@ func _ready() -> void:
 	layout.layout_lerp_speed = layout_lerp_speed
 	layout.use_fan_layout = use_fan_layout
 
+	# controller wiring
+	interaction.cards_root = cards_root
+	interaction.drag = drag
+	interaction.layout = layout
+
+	insert.cards_root = cards_root
+	insert.drag = drag
+	insert.layout = layout
+
+	# signals
 	drag.play_requested.connect(func(card):
 		card_play_requested.emit(card)
 	)
@@ -46,51 +70,35 @@ func _ready() -> void:
 		_layout_dirty = true
 	)
 
+# ------------------------------------------------
+# PROCESS
+# ------------------------------------------------
+
 func _process(delta: float) -> void:
-	var dragging := drag.dragging_card != null or drag.returning_card != null
+	# 1. input / hover control
+	interaction.update_interactions()
+	suppress_hover = not interaction.can_hover()
 
-	for c in cards_root.get_children():
-		if c == drag.dragging_card:
-			c.interaction_enabled = true
-		else:
-			c.interaction_enabled = not dragging
-	
-	suppress_hover = drag.dragging_card != null or drag.returning_card != null
-
+	# 2. drag + return animation
 	drag.update(delta, get_global_mouse_position())
-	_update_layout_motion(delta)
 
+	# 3. insert logic (solo se sto trascinando)
 	if drag.dragging_card:
-		var card_pos := drag.dragging_card.global_position
-		var hand_rect := cards_root.get_global_transform_with_canvas().origin
-
-		# dimensioni approssimate della mano
-		var hand_width = max(300.0, cards_root.get_child_count() * 120.0)
-		var hand_height := 160.0
-
-		# range esteso orizzontalmente
-		var horizontal_range = hand_width * 0.75
-		var vertical_range := hand_height * 0.5
-
-		var dx = abs(card_pos.x - hand_rect.x)
-		var dy = abs(card_pos.y - hand_rect.y)
-
-		if dx < horizontal_range and dy < vertical_range:
-			drag.insert_active = true
-			drag.insert_index = layout.compute_insert_index(
-				cards_root,
-				get_global_mouse_position().x
-			)
-		else:
-			drag.insert_active = false
-
+		insert.update_insert(get_global_mouse_position().x)
 		reposition_cards()
 	elif drag.returning_card:
-		# layout già valido → continua a muoverlo
+		# layout già valido, continua a lerpare
 		pass
 	elif _layout_dirty:
 		reposition_cards()
 		_layout_dirty = false
+
+	# 4. layout motion
+	_update_layout_motion(delta)
+
+# ------------------------------------------------
+# LAYOUT MOTION
+# ------------------------------------------------
 
 func _update_layout_motion(delta: float) -> void:
 	if not layout.layout_initialized:
@@ -105,7 +113,9 @@ func _update_layout_motion(delta: float) -> void:
 			min(1.0, layout.layout_lerp_speed * delta)
 		)
 
-# -------------------- CARD API --------------------
+# ------------------------------------------------
+# CARD API
+# ------------------------------------------------
 
 func add_card(card: Card) -> void:
 	cards_root.add_child(card)
@@ -141,10 +151,10 @@ func _on_draw_card_requested(card: Card) -> void:
 	draw_controller.advance()
 	
 func _on_return_requested(card: Card) -> void:
-	layout.hovered_card = null
-	var data = layout.compute_return_transform(card, cards_root)
-	drag.return_target = data.position
-	drag.return_rotation = data.rotation
+	layout.hovered_card = null 
+	var data = layout.compute_return_transform(card, cards_root) 
+	drag.return_target = data.position 
+	drag.return_rotation = data.rotation 
 
 func clear_hand() -> void:
 	for c in cards_root.get_children():
@@ -153,7 +163,9 @@ func clear_hand() -> void:
 	layout.reset()
 	_layout_dirty = false
 
-# -------------------- HOVER --------------------
+# ------------------------------------------------
+# HOVER
+# ------------------------------------------------
 
 func _on_card_hovered(card: Card) -> void:
 	if suppress_hover:
@@ -166,12 +178,14 @@ func _on_card_hovered(card: Card) -> void:
 func _on_card_unhovered(card: Card) -> void:
 	if suppress_hover:
 		return
-		
+
 	if layout.hovered_card == card:
 		layout.hovered_card = null
 		reposition_cards()
 
-# -------------------- LAYOUT --------------------
+# ------------------------------------------------
+# LAYOUT
+# ------------------------------------------------
 
 func reposition_cards() -> void:
 	var index := drag.insert_index
@@ -195,7 +209,9 @@ func reposition_cards() -> void:
 	layout.apply_initial_layout()
 	_layout_dirty = false
 
-# -------------------- DRAG API --------------------
+# ------------------------------------------------
+# DRAG API
+# ------------------------------------------------
 
 func request_drag(card: Card) -> void:
 	drag.start_drag(card, get_global_mouse_position())
@@ -204,51 +220,52 @@ func release_drag(card: Card) -> void:
 	if drag.dragging_card != card:
 		return
 
-	# caso campo di battaglia
+	# campo di battaglia
 	if battleground and battleground.get_global_rect().has_point(get_global_mouse_position()):
 		card_play_requested.emit(card)
 		return
-		
+
 	var final_index := drag.original_index
 	if drag.insert_active and drag.insert_index != -1:
 		final_index = drag.insert_index
 
-	# smetti di trascinare
+	# termina drag
 	drag.dragging_card = null
 	drag.drag_velocity = Vector2.ZERO
 
-	# applica SUBITO il nuovo ordine logico
+	# applica ordine logico
 	if card.get_parent() == cards_root:
 		cards_root.move_child(card, final_index)
 
-	# disattiva immediatamente lo slot
+	# disattiva slot
 	drag.insert_active = false
 	drag.insert_index = -1
 
-	# ricalcola SUBITO il layout finale
+	# layout finale SUBITO
 	layout.hovered_card = null
 	layout.layout_initialized = false
 	reposition_cards()
 
+	# animazione ritorno
 	var data = layout.compute_return_transform(card, cards_root)
 	drag.return_target = data.position
 	drag.return_rotation = data.rotation
 	drag.returning_card = card
 
 func on_card_play_failed(card: Card) -> void:
-	# 1. termina subito il drag
+	# termina drag
 	drag.dragging_card = null
 	drag.insert_active = false
 	drag.insert_index = -1
 
-	# 2. rimuovi hover e reset layout
+	# reset hover/layout
 	layout.hovered_card = null
 	layout.layout_initialized = false
 
-	# 3. calcola SUBITO il layout finale (senza la carta)
+	# layout finale SUBITO
 	reposition_cards()
 
-	# 4. ora fai tornare la carta verso il suo slot
+	# ritorno animato
 	var data = layout.compute_return_transform(card, cards_root)
 	drag.return_target = data.position
 	drag.return_rotation = data.rotation
@@ -268,6 +285,6 @@ func on_card_played(card: Card) -> void:
 
 	_layout_dirty = true
 	reposition_cards()
-	
+
 func is_dragging() -> bool:
 	return drag.dragging_card != null

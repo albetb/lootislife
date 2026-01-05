@@ -43,7 +43,7 @@ func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 # TURN FLOW
 # -------------------------
 
-func start_turn(draw_amount: int) -> Array[CardInstance]:
+func start_turn() -> Array[CardInstance]:
 	energy = max_energy
 
 	var max_hand_size := player_data.max_hand_size
@@ -52,6 +52,7 @@ func start_turn(draw_amount: int) -> Array[CardInstance]:
 	if space_left <= 0:
 		return []
 
+	var draw_amount := Player.base_draw()
 	var to_draw :int = min(draw_amount, space_left)
 	return draw_cards(to_draw)
 
