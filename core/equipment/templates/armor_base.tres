@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ArmorData" load_steps=3 format=3 uid="uid://d1g2lmsl384n3"]
 
-[ext_resource type="Script" uid="uid://ditylr0ad1erv" path="res://equipment/ArmorData.gd" id="1_4ustb"]
+[ext_resource type="Script" uid="uid://ditylr0ad1erv" path="res://core/equipment/ArmorData.gd" id="1_4ustb"]
 [ext_resource type="Resource" uid="uid://nnswg571k72g" path="res://core/card/templates/Parata.tres" id="1_q57yd"]
 
 [resource]

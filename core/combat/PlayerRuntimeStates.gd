@@ -11,7 +11,7 @@ var max_hp: int
 # --- Risorse ---
 var energy: int
 var max_energy: int
-var block: int
+var block: int = 0
 
 # --- Carte ---
 var deck: Array[CardInstance] = []
@@ -44,8 +44,17 @@ func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 
 func start_turn(draw_amount: int) -> void:
 	energy = max_energy
-	draw_cards(draw_amount)
-		
+
+	var max_hand_size := player_data.max_hand_size
+	var space_left := max_hand_size - hand.size()
+
+	if space_left <= 0:
+		return
+
+	var to_draw :int = min(draw_amount, space_left)
+	draw_cards(to_draw)
+	print("Generated hand size:", hand.size())
+
 func end_turn() -> void:
 	var retained: Array[CardInstance] = []
 
@@ -63,10 +72,16 @@ func end_turn() -> void:
 # -------------------------
 
 func draw_cards(amount: int) -> void:
+	var max_hand_size := player_data.max_hand_size
+
 	for i in range(amount):
+		if hand.size() >= max_hand_size:
+			return
+
 		reshuffle_if_needed()
 		if deck.is_empty():
 			return
+
 		var card = deck.pop_front()
 		hand.append(card)
 
@@ -91,3 +106,11 @@ func reshuffle_if_needed():
 		deck = discard.duplicate()
 		discard.clear()
 		deck.shuffle()
+
+# TODO!!
+func get_damage_bonus():
+	return 0
+	
+func add_block(amount: int) -> void:
+	block += amount
+	

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://domsnyqqkmhhp"]
 
-[ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/explore/statsbar/lateral_stats_bar.gd" id="1_7tqpy"]
+[ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/explore/statsbar/LateralStatsBar.gd" id="1_7tqpy"]
 [ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/explore/statsbar/stat_container.tscn" id="1_xifav"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ftuio"]
@@ -14,24 +14,22 @@ Button/font_sizes/font_size = 13
 anchors_preset = -1
 anchor_right = 0.017
 anchor_bottom = 0.062
-offset_left = 1060.0
-offset_top = 66.0
-offset_right = 1129.42
-offset_bottom = 603.824
-color = Color(0.560784, 0.631373, 0.741176, 1)
+offset_left = 1153.0
+offset_top = 62.0
+offset_right = 1256.24
+offset_bottom = 674.36
+color = Color(0.891957, 0.756793, 0.390645, 1)
 script = ExtResource("1_7tqpy")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 6.0
-offset_right = 84.0
+offset_right = 119.0
 offset_bottom = 574.0
 
-[node name="PointsLabel" type="Label" parent="VBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
-text = "+3"
-label_settings = SubResource("LabelSettings_ftuio")
-horizontal_alignment = 1
 
 [node name="StrStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
 layout_mode = 2
@@ -57,16 +55,24 @@ display_name = "Int"
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
+[node name="PointsLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+text = "5 punti da assegnare"
+label_settings = SubResource("LabelSettings_ftuio")
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="." groups=["lateral_bar"]]
 layout_mode = 2
-offset_left = 6.0
-offset_top = 546.0
-offset_right = 84.0
-offset_bottom = 572.0
+offset_left = 22.0
+offset_top = 619.0
+offset_right = 100.0
+offset_bottom = 645.0
 theme = SubResource("Theme_gmjvw")
 text = "Indietro"
 

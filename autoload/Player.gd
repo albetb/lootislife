@@ -39,9 +39,9 @@ func reset() -> void:
 func _setup_starting_equipment() -> void:
 	var build := data.build
 
-	var weapon := preload("res://equipment/templates/short_sword.tres")
-	var armor := preload("res://equipment/templates/armor_base.tres")
-	var relic := preload("res://equipment/templates/ninnolo_base.tres")
+	var weapon := preload("res://core/equipment/templates/short_sword.tres")
+	var armor := preload("res://core/equipment/templates/armor_base.tres")
+	var relic := preload("res://core/equipment/templates/ninnolo_base.tres")
 
 	build.equip(weapon)
 	build.equip(armor)

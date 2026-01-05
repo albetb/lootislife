@@ -41,7 +41,7 @@ func can_play(runtime) -> bool:
 		return false
 	return true
 
-func on_play() -> void:
+func on_play(runtime, target) -> void:
 	if charges > 0:
 		charges -= 1
 

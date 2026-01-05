@@ -13,7 +13,11 @@ func _ready() -> void:
 	level = 1
 	current_health = 5
 	max_health = 5
+	name_label.text = enemy_name
+	health_label.text = "%s/%s" % [str(current_health), str(max_health)]
 
-func _process(delta: float) -> void:
+func take_damage(amount) -> void:
+	current_health = max(current_health - amount, 0)
+	health_label.text = "%s/%s" % [str(current_health), str(max_health)]
 	if current_health <= 0:
-		enemy_name = "Moooorto!"
+		name_label.text = "Moooorto!"

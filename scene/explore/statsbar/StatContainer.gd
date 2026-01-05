@@ -30,13 +30,18 @@ func update_ui() -> void:
 	name_label.text = display_name
 	value_label.text = str(current_value)
 
-	plus_button.disabled = points_left <= 0 or current_value >= Player.max_ability()
-
 	actual_bar.max_value = Player.max_ability()
 	modified_bar.max_value = Player.max_ability()
 
 	actual_bar.value = current_value
-	modified_bar.value = current_value
+
+	if points_left <= 0 or current_value >= Player.max_ability():
+		plus_button.disabled = true
+		modified_bar.value = current_value
+	else:
+		plus_button.disabled = false
+		modified_bar.value = current_value + 1
+	
 
 func _on_plus_button_pressed() -> void:
 	if Player.data.ability_points <= 0:

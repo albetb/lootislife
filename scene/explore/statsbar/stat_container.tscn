@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://comhmd4npw7y"]
 
-[ext_resource type="Script" uid="uid://c2td7jepwittq" path="res://scene/explore/statsbar/stat_container.gd" id="1_5wqfq"]
+[ext_resource type="Script" uid="uid://c2td7jepwittq" path="res://scene/explore/statsbar/StatContainer.gd" id="1_5wqfq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_liibg"]
 line_spacing = 0.0
@@ -49,14 +49,15 @@ layout_mode = 2
 alignment = 1
 
 [node name="NameLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
-text = "Forza"
+text = "For"
 label_settings = SubResource("LabelSettings_liibg")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ValueLabel" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(20, 0)
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_liibg")
@@ -78,8 +79,8 @@ show_percentage = false
 [node name="ActualBar" type="ProgressBar" parent="ModifiedBar"]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-offset_right = 78.0
-offset_bottom = 5.0
+offset_right = 113.0
+offset_bottom = 8.0
 theme = SubResource("Theme_611e3")
 step = 1.0
 value = 34.0

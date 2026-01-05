@@ -14,7 +14,7 @@ func update_ui() -> void:
 	var points := Player.data.ability_points
 
 	if points > 0:
-		points_label.text = "+%d" % points
+		points_label.text = "%d punti da assegnare" % points
 		points_label.visible = true
 	else:
 		points_label.visible = false

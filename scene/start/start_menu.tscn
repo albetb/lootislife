@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://clu8g2fmpdfwj"]
 
-[ext_resource type="Script" uid="uid://cfa4smr6hts2m" path="res://scene/start/start_menu.gd" id="1_bp2fb"]
+[ext_resource type="Script" uid="uid://cfa4smr6hts2m" path="res://scene/start/StartMenu.gd" id="1_bp2fb"]
 [ext_resource type="Texture2D" uid="uid://c7hp2rwj0c8iy" path="res://sprite/coin.png" id="2_oqujt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5rwlq"]
@@ -47,15 +47,15 @@ label_settings = SubResource("LabelSettings_5rwlq")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -2
-offset_right = 1148.0
-offset_bottom = 646.0
+offset_right = 1277.0
+offset_bottom = 716.0
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 z_index = -2
 offset_left = 21.0
 offset_top = 25.0
-offset_right = 1123.0
-offset_bottom = 624.0
+offset_right = 1253.0
+offset_bottom = 697.0
 color = Color(0.615686, 0.905882, 0.529412, 1)
 
 [node name="NewGameButton" type="Button" parent="."]

@@ -1,8 +1,7 @@
 extends CardState
 
-
 func _enter():
-	card.pivot_offset = Vector2.ZERO
+	card.scale = Vector2(1,1)
 
 func on_mouse_entered():
 	transitioned.emit("hover")
