@@ -108,8 +108,7 @@ func request_play_card(card_ui: Card) -> void:
 	CardResolver.play(card_instance, runtime, enemy_node)
 	runtime.after_card_played(card_instance)
 
-	card_ui.queue_free()
-	hand_ui.mark_layout_dirty()
+	hand_ui.on_card_played(card_ui)
 
 	_refresh_mana_ui()
 	_refresh_health_ui()
@@ -122,24 +121,17 @@ func _on_runtime_draw_requested(amount: int) -> void:
 	hand_ui.draw_cards(_create_card_uis(drawn))
 
 func _on_pass_button_pressed() -> void:
-	# 1. Fine turno giocatore
 	end_turn()
 
-	# 2. (FUTURO) turno del nemico
-	# enemy_take_turn()
-
-	# 3. Controllo vittoria
 	if enemy_node != null and enemy_node.current_health <= 0:
 		_end_combat_victory()
 		return
 
-	# 4. Nuovo turno giocatore
 	start_turn()
 	_refresh_mana_ui()
 	_refresh_health_ui()
 	
 func _end_combat_victory() -> void:
-	# Ricompense (temporanee, come prima)
 	Player.data.coins += Player.apply_loot_multiplier(randi_range(20, 100))
 	Player.gain_exp(Player.apply_loot_multiplier(randi_range(10, 20)))
 	Player.save()

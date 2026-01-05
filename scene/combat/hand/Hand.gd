@@ -7,422 +7,267 @@ extends Node2D
 signal card_play_requested(card: Card)
 signal card_play_failed(card: Card)
 
-# --------------------
-# Layout params
-# --------------------
 @export var gap := 10.0
 @export var fan_height := 18.0
 @export var max_rotation := 8.0
-@export var use_fan_layout := true
-@export var layout_lerp_speed := 12.0
-var layout_initialized := false
-var _layout_dirty := false
-var drawing := false
-var draw_queue: Array[Card] = []
-
-var layout_targets: Dictionary = {}
-
-# --------------------
-# Drag / Return
-# --------------------
-var dragging_card: Card = null
-var drag_offset := Vector2.ZERO
-@export var drag_lerp_speed := 18.0
-
-var returning_card: Card = null
-@export var return_lerp_speed := 14.0
-@export var return_rotation_lerp_speed := 8.0
-var return_target := Vector2.ZERO
-var return_rotation := 0.0
-
-var drag_insert_index := -1
-@export var drag_rotation_lerp_speed := 8.0
-var has_animated_entry := false
-
-var last_mouse_pos := Vector2.ZERO
-var drag_velocity := Vector2.ZERO
-
-@export var drag_tilt_strength := 0.12    # quanto inclina per velocità
-@export var max_drag_tilt := 18.0          # clamp in gradi
-@export var drag_tilt_lerp := 10.0          # smoothing
-var grab_offset_local := Vector2.ZERO
-@export var min_drag_speed := 120.0  # soglia prima che inizi il tilt
-
-# --------------------
-# Hover
-# --------------------
-var hovered_card: Card = null
 @export var hover_push := 60.0
+@export var layout_lerp_speed := 12.0
+@export var use_fan_layout := true
 
-# =========================================================
-# PROCESS
-# =========================================================
+var _layout_dirty := false
+var suppress_hover := false
+
+var drag: HandDragController = HandDragController.new()
+var layout: HandLayoutController = HandLayoutController.new()
+var draw_controller: HandDrawController = HandDrawController.new()
+
+func _ready() -> void:
+	layout.gap = gap
+	layout.fan_height = fan_height
+	layout.max_rotation = max_rotation
+	layout.hover_push = hover_push
+	layout.layout_lerp_speed = layout_lerp_speed
+	layout.use_fan_layout = use_fan_layout
+
+	drag.play_requested.connect(func(card):
+		card_play_requested.emit(card)
+	)
+
+	drag.drag_finished.connect(func(_card):
+		layout.hovered_card = null
+		_layout_dirty = true
+	)
+
+	draw_controller.draw_card_requested.connect(_on_draw_card_requested)
+	drag.return_requested.connect(_on_return_requested)
+
+	draw_controller.draw_finished.connect(func():
+		layout.layout_initialized = false
+		_layout_dirty = true
+	)
 
 func _process(delta: float) -> void:
-	_update_drag(delta)
-	_update_return(delta)
+	var dragging := drag.dragging_card != null or drag.returning_card != null
+
+	for c in cards_root.get_children():
+		if c == drag.dragging_card:
+			c.interaction_enabled = true
+		else:
+			c.interaction_enabled = not dragging
+	
+	suppress_hover = drag.dragging_card != null or drag.returning_card != null
+
+	drag.update(delta, get_global_mouse_position())
 	_update_layout_motion(delta)
 
-	if dragging_card:
+	if drag.dragging_card:
+		var card_pos := drag.dragging_card.global_position
+		var hand_rect := cards_root.get_global_transform_with_canvas().origin
+
+		# dimensioni approssimate della mano
+		var hand_width = max(300.0, cards_root.get_child_count() * 120.0)
+		var hand_height := 160.0
+
+		# range esteso orizzontalmente
+		var horizontal_range = hand_width * 0.75
+		var vertical_range := hand_height * 0.5
+
+		var dx = abs(card_pos.x - hand_rect.x)
+		var dy = abs(card_pos.y - hand_rect.y)
+
+		if dx < horizontal_range and dy < vertical_range:
+			drag.insert_active = true
+			drag.insert_index = layout.compute_insert_index(
+				cards_root,
+				get_global_mouse_position().x
+			)
+		else:
+			drag.insert_active = false
+
 		reposition_cards()
-	elif _layout_dirty and returning_card == null:
+	elif drag.returning_card:
+		# layout già valido → continua a muoverlo
+		pass
+	elif _layout_dirty:
 		reposition_cards()
 		_layout_dirty = false
 
-# --------------------
-
-func _update_drag(delta: float) -> void:
-	if dragging_card == null:
-		return
-
-	drag_insert_index = _compute_insert_index(get_global_mouse_position().x)
-
-	var target := get_global_mouse_position() + drag_offset
-	dragging_card.global_position = dragging_card.global_position.lerp(
-		target,
-		min(1.0, drag_lerp_speed * delta)
-	)
-	
-	var mouse_pos := get_global_mouse_position()
-	drag_velocity = (mouse_pos - last_mouse_pos) / max(delta, 0.0001)
-	last_mouse_pos = mouse_pos
-
-	# incliniamo in base alla velocità orizzontale
-	var speed := drag_velocity.length()
-	if speed < min_drag_speed:
-		# sotto soglia → ritorna verso neutro
-		dragging_card.rotation_degrees = lerp(
-			dragging_card.rotation_degrees,
-			0.0,
-			min(1.0, drag_tilt_lerp * delta)
-		)
-		return
-
-	var card_half_height := dragging_card.get_card_height() * 0.5
-	var lever_strength = clamp(
-		abs(grab_offset_local.y) / card_half_height,
-		0.0,
-		1.0
-	)
-
-	var vertical_sign = sign(grab_offset_local.y)
-	var direction = -sign(drag_velocity.x) * vertical_sign
-
-	var speed_factor = clamp(
-		(speed - min_drag_speed) / min_drag_speed,
-		0.0,
-		1.0
-	)
-
-	var allowed_max_tilt = max_drag_tilt * lever_strength
-	var target_tilt = direction * allowed_max_tilt * speed_factor
-
-	dragging_card.rotation_degrees = lerp(
-		dragging_card.rotation_degrees,
-		target_tilt,
-		min(1.0, drag_tilt_lerp * delta)
-	)
-
-# --------------------
-
-func _update_return(delta: float) -> void:
-	if returning_card == null:
-		return
-
-	returning_card.global_position = returning_card.global_position.lerp(
-		return_target,
-		min(1.0, return_lerp_speed * delta)
-	)
-
-	returning_card.rotation_degrees = lerp(
-		returning_card.rotation_degrees,
-		return_rotation,
-		min(1.0, return_rotation_lerp_speed * delta)
-	)
-
-	if returning_card.global_position.distance_to(return_target) < 1.0:
-		returning_card.global_position = return_target
-		returning_card.rotation_degrees = return_rotation
-
-		var finished := returning_card
-		returning_card = null
-
-		_layout_dirty = true
-
-# --------------------
-
 func _update_layout_motion(delta: float) -> void:
-	if not layout_initialized:
+	if not layout.layout_initialized:
 		return
-	if _layout_dirty:
-		return
-	for card in layout_targets:
-		if card == dragging_card or card == returning_card:
+
+	for card in layout.layout_targets:
+		if card == drag.dragging_card or card == drag.returning_card:
 			continue
 
 		card.position = card.position.lerp(
-			layout_targets[card],
-			min(1.0, layout_lerp_speed * delta)
+			layout.layout_targets[card],
+			min(1.0, layout.layout_lerp_speed * delta)
 		)
 
-# =========================================================
-# CARD MANAGEMENT
-# =========================================================
+# -------------------- CARD API --------------------
 
 func add_card(card: Card) -> void:
-	card.hand = self
 	cards_root.add_child(card)
+
 	card.hovered.connect(_on_card_hovered)
 	card.unhovered.connect(_on_card_unhovered)
+	card.drag_started.connect(request_drag)
+	card.drag_released.connect(release_drag)
 
-func remove_card(card: Card) -> void:
-	if dragging_card == card:
-		dragging_card = null
-	cards_root.remove_child(card)
 	reposition_cards()
-	if cards_root.get_child_count() == 0:
-		layout_initialized = false
-		layout_targets.clear()
-		
+
 func draw_cards(cards: Array[Card]) -> void:
-	if drawing:
-		draw_queue.append_array(cards)
-		return
+	draw_controller.request_draw(cards)
 
-	drawing = true
-	draw_queue = cards.duplicate()
-	_draw_next_card()
-
-func _draw_next_card() -> void:
-	if draw_queue.is_empty():
-		drawing = false
-		layout_initialized = false
-		_layout_dirty = true
-		return
-
-	var card :Card = draw_queue.pop_front()
-	_add_card_with_animation(card)
-
-	await get_tree().create_timer(0.15).timeout
-	_draw_next_card()
-	
-	if draw_queue.is_empty():
-		drawing = false
-		_layout_dirty = true
-	
-func _add_card_with_animation(card: Card) -> void:
-	has_animated_entry = true
-	card.hand = self
+func _on_draw_card_requested(card: Card) -> void:
+	layout.has_animated_entry = true
 	cards_root.add_child(card)
 
-	# posizione di partenza (simula mazzo a destra)
-	var start_pos := Vector2(
+	card.position = Vector2(
 		get_viewport_rect().size.x * 0.5 + 200,
 		0
 	)
-	card.position = start_pos
 	card.rotation_degrees = 0
 
 	card.hovered.connect(_on_card_hovered)
 	card.unhovered.connect(_on_card_unhovered)
+	card.drag_started.connect(request_drag)
+	card.drag_released.connect(release_drag)
 
-	# ricalcola layout FINALE
 	reposition_cards()
+
+	await get_tree().create_timer(draw_controller.draw_delay).timeout
+	draw_controller.advance()
 	
+func _on_return_requested(card: Card) -> void:
+	layout.hovered_card = null
+	var data = layout.compute_return_transform(card, cards_root)
+	drag.return_target = data.position
+	drag.return_rotation = data.rotation
+
 func clear_hand() -> void:
-	for card in cards_root.get_children():
-		card.queue_free()
+	for c in cards_root.get_children():
+		c.queue_free()
 
-	layout_initialized = false
-	layout_targets.clear()
-	has_animated_entry = false 
-	hovered_card = null
-	dragging_card = null
-	returning_card = null
-	
-func mark_layout_dirty() -> void:
-	_layout_dirty = true
+	layout.reset()
+	_layout_dirty = false
 
-# =========================================================
-# HOVER
-# =========================================================
+# -------------------- HOVER --------------------
 
 func _on_card_hovered(card: Card) -> void:
-	if dragging_card or returning_card:
+	if suppress_hover:
 		return
-	hovered_card = card
+
+	layout.hovered_card = card
 	card.z_index = 2000
 	reposition_cards()
 
 func _on_card_unhovered(card: Card) -> void:
-	if hovered_card == card:
-		hovered_card = null
+	if suppress_hover:
+		return
+		
+	if layout.hovered_card == card:
+		layout.hovered_card = null
 		reposition_cards()
 
-# =========================================================
-# LAYOUT
-# =========================================================
+# -------------------- LAYOUT --------------------
 
 func reposition_cards() -> void:
-	if dragging_card == null:
-		drag_insert_index = -1
-	layout_targets.clear()
+	var index := drag.insert_index
+	if not drag.insert_active:
+		index = -1
 
-	var real_cards := cards_root.get_children()
-	if real_cards.is_empty():
-		return
+	layout.layout_targets = layout.compute_layout(
+		cards_root,
+		drag.dragging_card,
+		drag.returning_card,
+		index
+	)
 
-	# build logical layout
-	var layout_cards: Array = []
-	for c in real_cards:
-		if c != dragging_card and c != returning_card:
-			layout_cards.append(c)
-
-	if dragging_card and drag_insert_index != -1:
-		layout_cards.insert(
-			clamp(drag_insert_index, 0, layout_cards.size()),
-			null
-		)
-
-	var count := layout_cards.size()
-	var card_width := (real_cards[0] as Card).get_card_width()
-	var step := card_width * 0.75 + gap
-	var center_index := (count - 1) * 0.5
-
-	var hover_index := -1
-	if hovered_card != null:
-		hover_index = layout_cards.find(hovered_card)
-
-	for i in range(count):
-		var card = layout_cards[i]
-		if card == null:
+	for card in layout.layout_targets:
+		if card == drag.dragging_card or card == drag.returning_card:
 			continue
 
-		var push := 0.0
-		if hover_index != -1:
-			var d := i - hover_index
-			push = sign(d) * hover_push * exp(-abs(d))
+		if not layout.layout_initialized and not layout.has_animated_entry:
+			card.position = layout.layout_targets[card]
 
-		var offset := i - center_index
-
-		if use_fan_layout:
-			var t :float = offset / max(center_index, 1.0)
-			var curve := (1.0 - cos(abs(t) * PI)) * 0.5
-
-			layout_targets[card] = Vector2(
-				offset * step + push,
-				curve * fan_height
-			)
-			card.rotation_degrees = t * max_rotation
-		else:
-			layout_targets[card] = Vector2(offset * step + push, 0.0)
-			card.rotation_degrees = 0.0
-
-		card.z_index = i
-		if card == hovered_card:
-			card.z_index = 2000
-			
-	for card in layout_targets:
-		if not layout_initialized and not has_animated_entry:
-			card.position = layout_targets[card]
-	layout_initialized = true
+	layout.apply_initial_layout()
 	_layout_dirty = false
 
-# =========================================================
-# DRAG CONTROL
-# =========================================================
+# -------------------- DRAG API --------------------
 
 func request_drag(card: Card) -> void:
-	if dragging_card != null:
-		return
-
-	dragging_card = card
-	drag_offset = card.global_position - get_global_mouse_position()
-	# punto di presa in locale carta
-	grab_offset_local = card.to_local(get_global_mouse_position())
-	card.z_index = 1000
-	
-	last_mouse_pos = get_global_mouse_position()
-	drag_velocity = Vector2.ZERO
-
-# --------------------
+	drag.start_drag(card, get_global_mouse_position())
 
 func release_drag(card: Card) -> void:
-	if dragging_card != card:
+	if drag.dragging_card != card:
 		return
 
-	var insert_index := drag_insert_index
-	drag_insert_index = -1
-	drag_velocity = Vector2.ZERO
-	
-	dragging_card = null
-
-	if _is_over_battleground(card):
-		emit_signal("card_play_requested", card)
+	# caso campo di battaglia
+	if battleground and battleground.get_global_rect().has_point(get_global_mouse_position()):
+		card_play_requested.emit(card)
 		return
+		
+	var final_index := drag.original_index
+	if drag.insert_active and drag.insert_index != -1:
+		final_index = drag.insert_index
 
-	layout_targets.erase(card)
+	# smetti di trascinare
+	drag.dragging_card = null
+	drag.drag_velocity = Vector2.ZERO
 
-	if insert_index != -1:
-		cards_root.move_child(card, insert_index)
+	# applica SUBITO il nuovo ordine logico
+	if card.get_parent() == cards_root:
+		cards_root.move_child(card, final_index)
 
-	_compute_return_target(card)
-	returning_card = card
+	# disattiva immediatamente lo slot
+	drag.insert_active = false
+	drag.insert_index = -1
 
-# =========================================================
-# UTILS
-# =========================================================
+	# ricalcola SUBITO il layout finale
+	layout.hovered_card = null
+	layout.layout_initialized = false
+	reposition_cards()
 
-func _compute_return_target(card: Card) -> void:
-	var cards := cards_root.get_children()
-	var index := cards.find(card)
-	var count := cards.size()
-
-	var card_width := card.get_card_width()
-	var step := card_width * 0.75 + gap
-	var center_index := (count - 1) * 0.5
-	var offset := index - center_index
-
-	if use_fan_layout:
-		var t :float = offset / max(center_index, 1.0)
-		var curve := (1.0 - cos(abs(t) * PI)) * 0.5
-
-		return_target = cards_root.to_global(Vector2(
-			offset * step,
-			curve * fan_height
-		))
-		return_rotation = t * max_rotation
-	else:
-		return_target = cards_root.to_global(Vector2(offset * step, 0.0))
-		return_rotation = 0.0
-
-# --------------------
-
-func _is_over_battleground(card: Card) -> bool:
-	return battleground \
-		and battleground.get_global_rect().has_point(get_global_mouse_position())
-
-# --------------------
-
-func _compute_insert_index(mouse_x_global: float) -> int:
-	var local_x := cards_root.to_local(Vector2(mouse_x_global, 0)).x
-	var cards := cards_root.get_children()
-	if cards.is_empty():
-		return 0
-
-	var card_width := (cards[0] as Card).get_card_width()
-	var step := card_width * 0.75 + gap
-	var center_index := (cards.size() - 1) * 0.5
-
-	for i in range(cards.size()):
-		var slot_x := (i - center_index) * step
-		if local_x < slot_x:
-			return i
-
-	return cards.size()
+	var data = layout.compute_return_transform(card, cards_root)
+	drag.return_target = data.position
+	drag.return_rotation = data.rotation
+	drag.returning_card = card
 
 func on_card_play_failed(card: Card) -> void:
-	# la carta DEVE tornare in mano
-	layout_targets.erase(card)
-	_compute_return_target(card)
-	returning_card = card
+	# 1. termina subito il drag
+	drag.dragging_card = null
+	drag.insert_active = false
+	drag.insert_index = -1
+
+	# 2. rimuovi hover e reset layout
+	layout.hovered_card = null
+	layout.layout_initialized = false
+
+	# 3. calcola SUBITO il layout finale (senza la carta)
+	reposition_cards()
+
+	# 4. ora fai tornare la carta verso il suo slot
+	var data = layout.compute_return_transform(card, cards_root)
+	drag.return_target = data.position
+	drag.return_rotation = data.rotation
+	drag.returning_card = card
+
+func on_card_played(card: Card) -> void:
+	drag.dragging_card = null
+	drag.returning_card = null
+	drag.insert_index = -1
+
+	layout.hovered_card = null
+	layout.layout_initialized = false
+
+	if card.get_parent() == cards_root:
+		cards_root.remove_child(card)
+		card.queue_free()
+
+	_layout_dirty = true
+	reposition_cards()
+	
+func is_dragging() -> bool:
+	return drag.dragging_card != null

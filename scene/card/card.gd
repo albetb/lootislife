@@ -9,20 +9,21 @@ extends Node2D
 @onready var cost_label: Label = $VisualRoot/CostLabel
 @onready var effect_label: Label = $VisualRoot/EffectLabel
 
-signal hovered(card)
-signal unhovered(card)
+signal hovered(card: Card)
+signal unhovered(card: Card)
+signal drag_started(card: Card)
+signal drag_released(card: Card)
 
 var card_data
-var hand: Hand
 var _data_bound := false
+var interaction_enabled := true
+var is_dragging := false
 
-# hover / drag visual
 const HOVER_SCALE := 1.15
 const SCALE_LERP := 12.0
 var target_scale := Vector2.ONE
 
 func _ready() -> void:
-	assert(input_area != null)
 	input_area.input_event.connect(_on_input_event)
 	input_area.mouse_entered.connect(_on_mouse_entered)
 	input_area.mouse_exited.connect(_on_mouse_exited)
@@ -45,48 +46,51 @@ func _apply_visuals() -> void:
 	cost_label.text = str(card_data.cost)
 	effect_label.text = card_data.description
 
-# -------------------------------------------------
-# INPUT
-# -------------------------------------------------
+# ---------------- INPUT ----------------
 
 func _on_input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
+	if not interaction_enabled:
+		return
+
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			hand.request_drag(self)
+			is_dragging = true
 			target_scale = Vector2.ONE * HOVER_SCALE
+			drag_started.emit(self)
 		else:
-			hand.release_drag(self)
+			is_dragging = false
 			target_scale = Vector2.ONE
-		
-func _on_mouse_entered():
-	if hand.dragging_card != null:
-		return
-	target_scale = Vector2.ONE * HOVER_SCALE 
-	emit_signal("hovered", self)
+			drag_released.emit(self)
 
-func _on_mouse_exited():
-	if hand.dragging_card != null:
+func _on_mouse_entered() -> void:
+	if not interaction_enabled:
+		return
+	target_scale = Vector2.ONE * HOVER_SCALE
+	hovered.emit(self)
+
+func _on_mouse_exited() -> void:
+	if is_dragging:
+		return
+	if not interaction_enabled:
 		return
 	target_scale = Vector2.ONE
-	emit_signal("unhovered", self)
+	unhovered.emit(self)
 
-# -------------------------------------------------
-# UPDATE
-# -------------------------------------------------
+# ---------------- UPDATE ----------------
 
 func _process(delta: float) -> void:
+	if is_dragging:
+		target_scale = Vector2.ONE * HOVER_SCALE
 	scale = scale.lerp(target_scale, min(1.0, SCALE_LERP * delta))
 
-# -------------------------------------------------
-# UTILS
-# -------------------------------------------------
+# ---------------- UTILS ----------------
 
 func get_card_width() -> float:
 	var shape := input_shape.shape
 	if shape is RectangleShape2D:
 		return shape.size.x
 	return 0.0
-	
+
 func get_card_height() -> float:
 	var shape := input_shape.shape
 	if shape is RectangleShape2D:
