@@ -39,6 +39,15 @@ var drag_insert_index := -1
 @export var drag_rotation_lerp_speed := 8.0
 var has_animated_entry := false
 
+var last_mouse_pos := Vector2.ZERO
+var drag_velocity := Vector2.ZERO
+
+@export var drag_tilt_strength := 0.12    # quanto inclina per velocità
+@export var max_drag_tilt := 18.0          # clamp in gradi
+@export var drag_tilt_lerp := 10.0          # smoothing
+var grab_offset_local := Vector2.ZERO
+@export var min_drag_speed := 120.0  # soglia prima che inizi il tilt
+
 # --------------------
 # Hover
 # --------------------
@@ -73,11 +82,45 @@ func _update_drag(delta: float) -> void:
 		target,
 		min(1.0, drag_lerp_speed * delta)
 	)
+	
+	var mouse_pos := get_global_mouse_position()
+	drag_velocity = (mouse_pos - last_mouse_pos) / max(delta, 0.0001)
+	last_mouse_pos = mouse_pos
+
+	# incliniamo in base alla velocità orizzontale
+	var speed := drag_velocity.length()
+	if speed < min_drag_speed:
+		# sotto soglia → ritorna verso neutro
+		dragging_card.rotation_degrees = lerp(
+			dragging_card.rotation_degrees,
+			0.0,
+			min(1.0, drag_tilt_lerp * delta)
+		)
+		return
+
+	var card_half_height := dragging_card.get_card_height() * 0.5
+	var lever_strength = clamp(
+		abs(grab_offset_local.y) / card_half_height,
+		0.0,
+		1.0
+	)
+
+	var vertical_sign = sign(grab_offset_local.y)
+	var direction = -sign(drag_velocity.x) * vertical_sign
+
+	var speed_factor = clamp(
+		(speed - min_drag_speed) / min_drag_speed,
+		0.0,
+		1.0
+	)
+
+	var allowed_max_tilt = max_drag_tilt * lever_strength
+	var target_tilt = direction * allowed_max_tilt * speed_factor
 
 	dragging_card.rotation_degrees = lerp(
 		dragging_card.rotation_degrees,
-		0.0,
-		min(1.0, drag_rotation_lerp_speed * delta)
+		target_tilt,
+		min(1.0, drag_tilt_lerp * delta)
 	)
 
 # --------------------
@@ -295,7 +338,12 @@ func request_drag(card: Card) -> void:
 
 	dragging_card = card
 	drag_offset = card.global_position - get_global_mouse_position()
+	# punto di presa in locale carta
+	grab_offset_local = card.to_local(get_global_mouse_position())
 	card.z_index = 1000
+	
+	last_mouse_pos = get_global_mouse_position()
+	drag_velocity = Vector2.ZERO
 
 # --------------------
 
@@ -305,6 +353,7 @@ func release_drag(card: Card) -> void:
 
 	var insert_index := drag_insert_index
 	drag_insert_index = -1
+	drag_velocity = Vector2.ZERO
 	
 	dragging_card = null
 

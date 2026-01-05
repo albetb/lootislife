@@ -86,6 +86,12 @@ func get_card_width() -> float:
 	if shape is RectangleShape2D:
 		return shape.size.x
 	return 0.0
+	
+func get_card_height() -> float:
+	var shape := input_shape.shape
+	if shape is RectangleShape2D:
+		return shape.size.y
+	return 0.0
 
 func _center_visual_root() -> void:
 	var shape := input_shape.shape
