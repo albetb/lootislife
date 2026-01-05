@@ -5,6 +5,7 @@ extends Node2D
 @export var battleground: Control
 
 signal card_play_requested(card: Card)
+signal card_play_failed(card: Card)
 
 # --------------------
 # Layout params
@@ -36,6 +37,7 @@ var return_rotation := 0.0
 
 var drag_insert_index := -1
 @export var drag_rotation_lerp_speed := 8.0
+var has_animated_entry := false
 
 # --------------------
 # Hover
@@ -151,6 +153,8 @@ func draw_cards(cards: Array[Card]) -> void:
 func _draw_next_card() -> void:
 	if draw_queue.is_empty():
 		drawing = false
+		layout_initialized = false
+		_layout_dirty = true
 		return
 
 	var card :Card = draw_queue.pop_front()
@@ -159,7 +163,12 @@ func _draw_next_card() -> void:
 	await get_tree().create_timer(0.15).timeout
 	_draw_next_card()
 	
+	if draw_queue.is_empty():
+		drawing = false
+		_layout_dirty = true
+	
 func _add_card_with_animation(card: Card) -> void:
+	has_animated_entry = true
 	card.hand = self
 	cards_root.add_child(card)
 
@@ -176,10 +185,6 @@ func _add_card_with_animation(card: Card) -> void:
 
 	# ricalcola layout FINALE
 	reposition_cards()
-
-	# forza animazione verso il target
-	_layout_dirty = false
-	layout_initialized = true
 	
 func clear_hand() -> void:
 	for card in cards_root.get_children():
@@ -187,6 +192,7 @@ func clear_hand() -> void:
 
 	layout_initialized = false
 	layout_targets.clear()
+	has_animated_entry = false 
 	hovered_card = null
 	dragging_card = null
 	returning_card = null
@@ -274,7 +280,7 @@ func reposition_cards() -> void:
 			card.z_index = 2000
 			
 	for card in layout_targets:
-		if not layout_initialized:
+		if not layout_initialized and not has_animated_entry:
 			card.position = layout_targets[card]
 	layout_initialized = true
 	_layout_dirty = false
@@ -365,3 +371,9 @@ func _compute_insert_index(mouse_x_global: float) -> int:
 			return i
 
 	return cards.size()
+
+func on_card_play_failed(card: Card) -> void:
+	# la carta DEVE tornare in mano
+	layout_targets.erase(card)
+	_compute_return_target(card)
+	returning_card = card

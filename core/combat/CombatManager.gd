@@ -20,6 +20,7 @@ func start(deck: Array[CardInstance]) -> void:
 func bind_hand_ui(hand: Hand) -> void:
 	hand_ui = hand
 	hand_ui.card_play_requested.connect(request_play_card)
+	hand_ui.card_play_failed.connect(hand_ui.on_card_play_failed)
 
 func bind_mana_ui(label: Label) -> void:
 	mana_label = label
@@ -101,6 +102,7 @@ func request_play_card(card_ui: Card) -> void:
 	var card_instance: CardInstance = card_ui.card_data
 
 	if not can_play(card_instance):
+		hand_ui.on_card_play_failed(card_ui)
 		return
 
 	CardResolver.play(card_instance, runtime, enemy_node)
@@ -109,7 +111,6 @@ func request_play_card(card_ui: Card) -> void:
 	card_ui.queue_free()
 	hand_ui.mark_layout_dirty()
 
-	_refresh_hand_ui()
 	_refresh_mana_ui()
 	_refresh_health_ui()
 
