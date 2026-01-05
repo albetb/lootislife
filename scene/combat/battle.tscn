@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://pdbuuklmwghd" path="res://scene/combat/Battle.gd" id="1_4gqx4"]
 [ext_resource type="Script" uid="uid://dl2kw8cbq313d" path="res://scene/combat/Enemy.gd" id="1_hdxvr"]
-[ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/combat/field/field.tscn" id="5_f0ybc"]
+[ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scene/combat/hand/hand.tscn" id="5_f0ybc"]
 [ext_resource type="Texture2D" uid="uid://cslj121v7ppnv" path="res://sprite/mana_slot.png" id="7_uh1ts"]
 [ext_resource type="Script" uid="uid://cmdvf33ncw1q7" path="res://core/combat/CombatManager.gd" id="9_di3du"]
 [ext_resource type="Script" uid="uid://crhry7x41g4hh" path="res://scene/combat/Battleground.gd" id="10_1jfp7"]

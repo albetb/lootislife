@@ -1,7 +1,8 @@
 extends Node
 
 @onready var combat_manager: CombatManager = $CombatManager
-@onready var hand_ui: Field = $Hand
+@onready var battleground: Battleground = $CombatManager/Battleground
+@onready var hand_ui: Hand = $Hand
 @onready var health_label: Label = $PlayerHud/HealthValue
 @onready var mana_label: Label = $PlayerHud/Mana/ManaValue
 @onready var enemy = $Enemy
@@ -21,8 +22,7 @@ func _ready() -> void:
 	combat_manager.bind_mana_ui(mana_label)
 	combat_manager.bind_health_ui(health_label)
 	combat_manager.bind_enemy(enemy)
-
-	hand_ui.bind_combat_manager(combat_manager)
+	hand_ui.battleground = battleground
 
 	# --- Start combat ---
 	var deck := Player.pending_combat_deck

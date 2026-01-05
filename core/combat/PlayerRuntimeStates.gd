@@ -3,6 +3,7 @@ class_name PlayerRuntimeState
 
 # --- Riferimenti ---
 var player_data: PlayerData
+signal draw_requested(amount: int)
 
 # --- Vita ---
 var current_hp: int
@@ -42,18 +43,17 @@ func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 # TURN FLOW
 # -------------------------
 
-func start_turn(draw_amount: int) -> void:
+func start_turn(draw_amount: int) -> Array[CardInstance]:
 	energy = max_energy
 
 	var max_hand_size := player_data.max_hand_size
 	var space_left := max_hand_size - hand.size()
 
 	if space_left <= 0:
-		return
+		return []
 
 	var to_draw :int = min(draw_amount, space_left)
-	draw_cards(to_draw)
-	print("Generated hand size:", hand.size())
+	return draw_cards(to_draw)
 
 func end_turn() -> void:
 	var retained: Array[CardInstance] = []
@@ -71,19 +71,26 @@ func end_turn() -> void:
 # DRAW / DISCARD
 # -------------------------
 
-func draw_cards(amount: int) -> void:
+func draw_cards(amount: int) -> Array[CardInstance]:
+	var drawn: Array[CardInstance] = []
 	var max_hand_size := player_data.max_hand_size
 
 	for i in range(amount):
 		if hand.size() >= max_hand_size:
-			return
+			break
 
 		reshuffle_if_needed()
 		if deck.is_empty():
-			return
+			break
 
 		var card = deck.pop_front()
 		hand.append(card)
+		drawn.append(card)
+
+	return drawn
+	
+func request_draw(amount: int) -> void:
+	draw_requested.emit(amount)
 
 func _discard_non_retain() -> void:
 	for card in hand:

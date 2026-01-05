@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://biim2lxri0akl"]
+
+[ext_resource type="Script" uid="uid://d4cr67i8sc3n2" path="res://scene/combat/hand/Hand.gd" id="1_7p7dw"]
+
+[node name="Hand" type="Node2D"]
+position = Vector2(638, 566)
+script = ExtResource("1_7p7dw")
+
+[node name="Cards" type="Node2D" parent="."]
+top_level = true
+z_index = 10
+position = Vector2(640, 618)
+
+[node name="HandArea" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -598.0
+offset_top = 9.0
+offset_right = 602.0
+offset_bottom = 160.0
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

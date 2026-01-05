@@ -7,4 +7,4 @@ func _init(value: int = 0):
 	amount = value
 
 func apply(source, _target) -> void:
-	source.draw_cards(amount)
+	source.request_draw(amount)
