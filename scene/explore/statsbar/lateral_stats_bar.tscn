@@ -18,44 +18,55 @@ offset_left = 1153.0
 offset_top = 62.0
 offset_right = 1256.24
 offset_bottom = 674.36
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.891957, 0.756793, 0.390645, 1)
 script = ExtResource("1_7tqpy")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 6.0
-offset_right = 119.0
-offset_bottom = 574.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -56.5
+offset_right = 56.5
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
+[node name="StatsPanel" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/StatsPanel"]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="StrStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
+[node name="StrStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
 layout_mode = 2
 stat_key = "strength"
 display_name = "For"
 
-[node name="DesStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
+[node name="DesStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
 layout_mode = 2
 stat_key = "dexterity"
 display_name = "Des"
 
-[node name="CosStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
+[node name="CosStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
 layout_mode = 2
 stat_key = "constitution"
 display_name = "Cos"
 
-[node name="IntStatContainer" parent="VBoxContainer" instance=ExtResource("1_xifav")]
+[node name="IntStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
 layout_mode = 2
 stat_key = "intelligence"
 display_name = "Int"
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/StatsPanel"]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="PointsLabel" type="Label" parent="VBoxContainer"]
+[node name="PointsLabel" type="Label" parent="VBoxContainer/StatsPanel"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 text = "5 punti da assegnare"
@@ -63,8 +74,11 @@ label_settings = SubResource("LabelSettings_ftuio")
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/StatsPanel"]
 custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="EquipmentPanel" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="." groups=["lateral_bar"]]

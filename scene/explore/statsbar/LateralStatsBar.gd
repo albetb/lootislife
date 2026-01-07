@@ -1,6 +1,6 @@
 extends ColorRect
 
-@onready var points_label: Label = $VBoxContainer/PointsLabel
+@onready var points_label: Label = $VBoxContainer/StatsPanel/PointsLabel
 @onready var back_button: Button = $BackButton
 
 func _ready() -> void:

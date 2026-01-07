@@ -38,7 +38,7 @@ var build: PlayerEquipmentManager
 # -------------------------
 # CONSTANTS
 # -------------------------
-const STARTING_ABILITY_POINTS := 5
+const STARTING_ABILITY_POINTS := 3
 
 func _init():
 	build = PlayerEquipmentManager.new()

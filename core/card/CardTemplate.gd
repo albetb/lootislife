@@ -23,3 +23,5 @@ enum CardType {
 
 # lista di CardEffect
 @export var effects: Array[CardEffect] = []
+@export var upgrade_to: CardTemplate
+@export var tags: PackedStringArray

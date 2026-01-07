@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3nhik41pq50h"]
+
+[ext_resource type="Script" uid="uid://dfmjppsc1i3x3" path="res://scene/inventory/PlayerScreen.gd" id="1_mqgyp"]
+[ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/explore/statsbar/lateral_stats_bar.tscn" id="1_ns81l"]
+[ext_resource type="PackedScene" uid="uid://wecshwb6p210" path="res://scene/inventory/inventory_panel.tscn" id="2_wssm1"]
+
+[node name="PlayerScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_mqgyp")
+
+[node name="InventoryToggleButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 797.0
+offset_top = 67.0
+offset_right = 831.0
+offset_bottom = 183.0
+
+[node name="InventoryPanel" parent="." instance=ExtResource("2_wssm1")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="LateralStatsBar" parent="." instance=ExtResource("1_ns81l")]
+z_index = 1000
+layout_mode = 1
+anchor_right = 0.102
+anchor_bottom = 0.5
+offset_right = 1147.44
+offset_bottom = 359.0

@@ -4,7 +4,7 @@ extends Node
 # ---------------- FAN PARAMS ----------------
 
 var overlap := 0.5              # overlap orizzontale (0.4–0.55 consigliato)
-var fan_radius := 1000.0         # raggio base
+var fan_radius := 2000.0         # raggio base
 var radius_growth := 300.0      # quanto cresce il raggio per carta extra
 var safe_count := 5            # fino a questo numero raggio fisso
 
@@ -19,7 +19,6 @@ var layout_targets := {}
 var hovered_card: Card = null
 var has_animated_entry := false
 
-
 # -------------------------------------------------
 # FAN GEOMETRICO PURO (CERCHIO VERO)
 # -------------------------------------------------
@@ -29,7 +28,6 @@ func _effective_radius(count: int) -> float:
 		return fan_radius
 
 	return fan_radius + float(count - safe_count) * radius_growth
-
 
 func _fan_transform(index: int, count: int, card_width: float) -> Dictionary:
 	if count <= 1:
@@ -55,17 +53,16 @@ func _fan_transform(index: int, count: int, card_width: float) -> Dictionary:
 		"rot": rad_to_deg(angle)
 	}
 
-
 # -------------------------------------------------
 # LAYOUT LIVE
 # -------------------------------------------------
 
 func compute_layout(
-	cards_root: Node2D,
-	dragging_card: Card,
-	returning_card: Card,
-	insert_index: int
-) -> Dictionary:
+		cards_root: Node2D,
+		dragging_card: Card,
+		returning_card: Card,
+		insert_index: int
+	) -> Dictionary:
 	layout_targets.clear()
 
 	var real_cards := cards_root.get_children()
@@ -120,7 +117,6 @@ func compute_layout(
 
 	return layout_targets
 
-
 # -------------------------------------------------
 # RETURN TARGET (IDENTICO AL FAN)
 # -------------------------------------------------
@@ -144,7 +140,6 @@ func compute_return_transform(card: Card, cards_root: Node2D) -> Dictionary:
 		"rotation": data.rot
 	}
 
-
 # -------------------------------------------------
 # INSERT (X coerente con fan)
 # -------------------------------------------------
@@ -166,7 +161,6 @@ func compute_insert_index(cards_root: Node2D, mouse_x_global: float) -> int:
 			return i
 
 	return cards.size()
-
 
 # -------------------------------------------------
 # STATE

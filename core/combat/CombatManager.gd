@@ -1,7 +1,7 @@
 extends Node
 class_name CombatManager
 
-@export var card_scene: PackedScene
+@export var card_scene: PackedScene = preload("res://scene/card/card.tscn")
 
 var runtime: PlayerRuntimeState
 var hand_ui: Hand  # assegnato dalla scena
@@ -9,6 +9,7 @@ var mana_label: Label  # assegnato dalla scena
 var health_label: Label  # assegnato dalla scena
 var enemy_node: Node = null
 var drag_layer: Node2D
+var player_actor: CombatActor
 
 func start(deck: Array[CardInstance]) -> void:
 	start_combat(deck)
@@ -39,7 +40,9 @@ func start_combat(deck: Array[CardInstance]) -> void:
 	runtime = PlayerRuntimeState.new()
 	runtime.setup(Player, deck)
 
-	runtime.draw_requested.connect(_on_runtime_draw_requested)
+	player_actor = CombatActor.new(runtime, Player)
+	player_actor.draw_requested.connect(_on_actor_draw_requested)
+	
 	start_turn()
 
 func start_turn() -> void:
@@ -105,7 +108,7 @@ func request_play_card(card_ui: Card) -> void:
 		hand_ui.on_card_play_failed(card_ui)
 		return
 
-	CardResolver.play(card_instance, runtime, enemy_node)
+	card_instance.play(runtime, player_actor, enemy_node)
 	runtime.after_card_played(card_instance)
 
 	hand_ui.on_card_played(card_ui)
@@ -116,7 +119,7 @@ func request_play_card(card_ui: Card) -> void:
 func can_play(card_instance: CardInstance) -> bool:
 	return card_instance.cost <= runtime.energy
 	
-func _on_runtime_draw_requested(amount: int) -> void:
+func _on_actor_draw_requested(amount: int) -> void:
 	var drawn := runtime.draw_cards(amount)
 	hand_ui.draw_cards(_create_card_uis(drawn))
 

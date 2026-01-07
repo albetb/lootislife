@@ -6,5 +6,5 @@ class_name DrawEffect
 func _init(value: int = 0):
 	amount = value
 
-func apply(source, _target) -> void:
+func apply(runtime, source, target) -> void:
 	source.request_draw(amount)

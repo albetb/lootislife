@@ -3,7 +3,6 @@ class_name PlayerRuntimeState
 
 # --- Riferimenti ---
 var player_data: PlayerData
-signal draw_requested(amount: int)
 
 # --- Vita ---
 var current_hp: int
@@ -89,9 +88,6 @@ func draw_cards(amount: int) -> Array[CardInstance]:
 		drawn.append(card)
 
 	return drawn
-	
-func request_draw(amount: int) -> void:
-	draw_requested.emit(amount)
 
 func _discard_non_retain() -> void:
 	for card in hand:
@@ -99,6 +95,9 @@ func _discard_non_retain() -> void:
 			discard.append(card)
 	hand = hand.filter(func(c): return c.retain)
 
+func before_card_played(card: CardInstance) -> void:
+	pass
+	
 func after_card_played(card: CardInstance) -> void:
 	# 1. Rimuovi dalla mano
 	hand.erase(card)

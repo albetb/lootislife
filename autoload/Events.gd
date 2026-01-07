@@ -7,3 +7,4 @@ extends Node
 
 signal update_ui
 signal choice_selected(number: int)
+signal inventory_changed()

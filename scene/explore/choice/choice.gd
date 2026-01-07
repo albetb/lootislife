@@ -21,16 +21,11 @@ func set_values(room_type: Room.Type):
 		text = "Boss"
 
 func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	if label != null and label.text != str(text):
 		label.set_text(str(text))
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
-		var left = sprite.global_position.x - sprite.get_rect().size.x / 2 
-		var right = sprite.global_position.x + sprite.get_rect().size.x / 2 
-		var bottom = sprite.global_position.y - sprite.get_rect().size.y / 2 
-		var top = sprite.global_position.y + sprite.get_rect().size.y / 2 
-		var is_in_card = left <= event.position.x and event.position.x <= right
-		var is_over_card = bottom <= event.position.y and event.position.y <= top
-		if is_in_card and is_over_card:
-			Events.emit_signal("choice_selected", choice_number)
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		Events.emit_signal("choice_selected", choice_number)
+		accept_event()

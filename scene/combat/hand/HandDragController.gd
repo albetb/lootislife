@@ -20,7 +20,7 @@ var return_rotation := 0.0
 
 var drag_lerp_speed := 18.0
 var drag_tilt_lerp := 10.0
-var max_drag_tilt := 18.0
+var max_drag_tilt := 12.0
 var min_drag_speed := 120.0
 
 var return_lerp_speed := 14.0
@@ -70,12 +70,18 @@ func _update_drag(delta: float, mouse_pos: Vector2) -> void:
 	if dragging_card == null:
 		return
 
+	# -----------------------------
+	# POSIZIONE (come prima)
+	# -----------------------------
 	var target := mouse_pos + drag_offset
 	dragging_card.global_position = dragging_card.global_position.lerp(
 		target,
 		min(1.0, drag_lerp_speed * delta)
 	)
 
+	# -----------------------------
+	# VELOCITÀ
+	# -----------------------------
 	drag_velocity = (mouse_pos - last_mouse_pos) / max(delta, 0.0001)
 	last_mouse_pos = mouse_pos
 
@@ -88,25 +94,53 @@ func _update_drag(delta: float, mouse_pos: Vector2) -> void:
 		)
 		return
 
-	var card_half_height := dragging_card.get_card_height() * 0.5
-	var lever_strength = clamp(
-		abs(grab_offset_local.y) / card_half_height,
-		0.0,
-		1.0
+	# -----------------------------
+	# LEVA (quanto sei lontano dal centro)
+	# grab_offset_local è già in locale alla carta
+	# -----------------------------
+	var half_size := Vector2(
+		dragging_card.get_card_width() * 0.5,
+		dragging_card.get_card_height() * 0.5
 	)
 
-	var vertical_sign = sign(grab_offset_local.y)
-	var direction = -sign(drag_velocity.x) * vertical_sign
+	var lever_x = clamp(grab_offset_local.x / half_size.x, -1.0, 1.0)
+	var lever_y = clamp(grab_offset_local.y / half_size.y, -1.0, 1.0)
 
+	var lever_strength = max(abs(lever_x), abs(lever_y))
+	if lever_strength < 0.15:
+		dragging_card.rotation_degrees = lerp(
+			dragging_card.rotation_degrees,
+			0.0,
+			min(1.0, drag_tilt_lerp * delta)
+		)
+		return
+
+	# -----------------------------
+	# DIREZIONE (torque fisico)
+	# -----------------------------
+	var movement := drag_velocity.normalized()
+
+	# cross product 2D → scalare
+	var torque = (movement.y * lever_x) - (movement.x * lever_y)
+
+	# -----------------------------
+	# INTENSITÀ
+	# -----------------------------
 	var speed_factor = clamp(
 		(speed - min_drag_speed) / min_drag_speed,
 		0.0,
 		1.0
 	)
 
-	var allowed_max = max_drag_tilt * lever_strength
-	var target_tilt = direction * allowed_max * speed_factor
+	var target_tilt = clamp(
+		torque * max_drag_tilt * lever_strength * speed_factor,
+		-max_drag_tilt,
+		max_drag_tilt
+	)
 
+	# -----------------------------
+	# APPLICAZIONE
+	# -----------------------------
 	dragging_card.rotation_degrees = lerp(
 		dragging_card.rotation_degrees,
 		target_tilt,

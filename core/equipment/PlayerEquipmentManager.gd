@@ -1,15 +1,25 @@
 extends RefCounted
 class_name PlayerEquipmentManager
 
-# --- Slot principali ---
+# -------------------------------------------------
+# EQUIPMENT SLOTS
+# -------------------------------------------------
+
 var left_hand: EquipmentData = null
 var right_hand: EquipmentData = null
 var armor: EquipmentData = null
 var relic: EquipmentData = null
 
-# --- Consumabili ---
+# -------------------------------------------------
+# CONSUMABLES
+# -------------------------------------------------
+
 const MAX_CONSUMABLES := 4
 var consumables: Array[EquipmentData] = []
+
+# -------------------------------------------------
+# EQUIP
+# -------------------------------------------------
 
 func equip(item: EquipmentData) -> bool:
 	match item.slot_type:
@@ -24,6 +34,7 @@ func equip(item: EquipmentData) -> bool:
 		EquipmentData.SlotType.CONSUMABLE:
 			return _equip_consumable(item)
 	return false
+
 
 func _equip_hand(item: EquipmentData) -> bool:
 	if not item is WeaponData:
@@ -46,38 +57,72 @@ func _equip_hand(item: EquipmentData) -> bool:
 
 	return false
 
+
 func _equip_consumable(item: EquipmentData) -> bool:
 	if consumables.size() >= MAX_CONSUMABLES:
 		return false
 	consumables.append(item)
 	return true
 
+
+# -------------------------------------------------
+# DECK GENERATION
+# -------------------------------------------------
+
 func generate_deck() -> Array[CardInstance]:
 	var deck: Array[CardInstance] = []
+	var processed := {} # evita duplicati (two-hand, future slot)
 
-	_add_equipment_cards(left_hand, deck)
-	_add_equipment_cards(right_hand, deck)
-	_add_equipment_cards(armor, deck)
-	_add_equipment_cards(relic, deck)
+	_add_equipment_cards_unique(left_hand, deck, processed)
+	_add_equipment_cards_unique(right_hand, deck, processed)
+	_add_equipment_cards_unique(armor, deck, processed)
+	_add_equipment_cards_unique(relic, deck, processed)
 
 	for consumable in consumables:
-		_add_equipment_cards(consumable, deck)
+		_add_equipment_cards_unique(consumable, deck, processed)
 
 	return deck
 
-func _add_equipment_cards(equipment: EquipmentData, deck: Array) -> void:
+
+func _add_equipment_cards_unique(
+	equipment: EquipmentData,
+	deck: Array[CardInstance],
+	processed: Dictionary
+) -> void:
 	if equipment == null:
 		return
+	if processed.has(equipment):
+		return
 
+	processed[equipment] = true
+	_add_equipment_cards(equipment, deck)
+
+
+func _add_equipment_cards(
+	equipment: EquipmentData,
+	deck: Array[CardInstance]
+) -> void:
 	for template in equipment.card_templates:
 		if not template is CardTemplate:
 			continue
 
 		for i in range(template.copies):
-			var card := _create_card_instance(template)
-			deck.append(card)
+			deck.append(_create_card_instance(template, equipment))
 
-func _create_card_instance(template: CardTemplate) -> CardInstance:
+
+# -------------------------------------------------
+# CARD FACTORY
+# -------------------------------------------------
+
+func _create_card_instance(
+		template: CardTemplate,
+		source: EquipmentData
+	) -> CardInstance:
 	var card := CardInstance.new()
 	card.setup(template)
+
+	# opzionale ma FUTURE-PROOF
+	if card.has_variable("source_equipment"):
+		card.source_equipment = source
+
 	return card

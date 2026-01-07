@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://wecshwb6p210"]
+
+[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/inventory/inventory_grid.tscn" id="1_guy1u"]
+[ext_resource type="Script" uid="uid://b8u43gta0yp4j" path="res://scene/inventory/InventoryPanel.gd" id="1_i4tt4"]
+
+[node name="InventoryPanel" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 899.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i4tt4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -41.5
+offset_top = -1.0
+offset_right = 38.5
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="InventoryLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Inventario"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("1_guy1u")]
+layout_mode = 2
+
+[node name="InventoryGridWrapper" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2

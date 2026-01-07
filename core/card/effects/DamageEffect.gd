@@ -6,7 +6,7 @@ class_name DamageEffect
 func _init(damage: int = 0):
 	amount = damage
 
-func apply(source, target) -> void:
+func apply(runtime, source, target) -> void:
 	if target == null:
 		return
 	target.take_damage(amount + source.get_damage_bonus())

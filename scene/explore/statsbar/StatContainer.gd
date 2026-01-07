@@ -56,3 +56,4 @@ func _on_plus_button_pressed() -> void:
 	stats.set(stat_key, current_value + 1)
 	Player.data.ability_points -= 1
 	Events.emit_signal("update_ui")
+	Events.emit_signal("inventory_changed")

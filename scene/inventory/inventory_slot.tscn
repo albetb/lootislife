@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7d007ffdxv5q"]
+
+[ext_resource type="Script" uid="uid://bpg32soncaaco" path="res://scene/inventory/InventorySlot.gd" id="1_1tfvy"]
+
+[node name="InventorySlot" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_1tfvy")
+
+[node name="Background" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_filter = 0
+
+[node name="Highlight" type="Node" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -4.0
+offset_bottom = -4.0
+color = Color(0.718259, 0.550255, 0.446049, 1)
+
+[node name="DisabledOverlay" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.94, 0.3666, 0.45261, 0.780392)
+
+[node name="GhostOverlay" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.394523, 0.345358, 0.35029, 0.980392)

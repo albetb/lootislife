@@ -79,11 +79,19 @@ func base_draw() -> int:
 func physical_damage_bonus() -> int:
 	return data.stats.strength
 
+func get_damage_bonus() -> int:
+	return 0
+
 func block_bonus() -> int:
 	return data.stats.dexterity
 	
 func max_ability() -> int:
 	return data.level + 4
+
+func get_inventory_slots() -> int:
+	var base := 16
+	var bonus := data.stats.strength * 2
+	return min(base + bonus, 32)
 
 # -------------------------
 # VITA

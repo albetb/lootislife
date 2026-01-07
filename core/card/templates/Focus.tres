@@ -21,4 +21,5 @@ exhaust = false
 charges = -1
 copies = 3
 effects = Array[ExtResource("1_o6kuf")]([SubResource("Resource_nxy6p")])
+tags = PackedStringArray()
 metadata/_custom_type_script = "uid://c61j8yd47bwva"
