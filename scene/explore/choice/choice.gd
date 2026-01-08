@@ -3,21 +3,21 @@ class_name Choice
 
 @onready var label: Label = $Label
 @onready var text: String
-@onready var type: Room.Type
+@onready var type: RoomResource.Type
 @onready var choice_number: int
 @onready var sprite: Sprite2D = $Sprite2D
 
-func set_values(room_type: Room.Type):
+func set_values(room_type: RoomResource.Type):
 	type = room_type
-	if room_type == Room.Type.Battle:
+	if room_type == RoomResource.Type.Battle:
 		text = "Battaglia"
-	elif room_type == Room.Type.Rest:
+	elif room_type == RoomResource.Type.Rest:
 		text = "Riposa"
-	elif room_type == Room.Type.Treasure:
+	elif room_type == RoomResource.Type.Treasure:
 		text = "Tesoro"
-	elif room_type == Room.Type.Selection:
+	elif room_type == RoomResource.Type.Selection:
 		text = "Scelta"
-	elif room_type == Room.Type.Boss:
+	elif room_type == RoomResource.Type.Boss:
 		text = "Boss"
 
 func _ready() -> void:

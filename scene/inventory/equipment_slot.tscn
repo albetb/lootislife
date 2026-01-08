@@ -1,16 +1,31 @@
-[gd_scene format=3 uid="uid://b2uq123kh6uj3"]
+[gd_scene load_steps=2 format=3 uid="uid://b2uq123kh6uj3"]
+
+[ext_resource type="Script" uid="uid://dbp7wx0jkbwx4" path="res://scene/inventory/EquipmentSlot.gd" id="1_jla6f"]
 
 [node name="EquipmentSlot" type="Control"]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("1_jla6f")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Itemview" type="Node" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+color = Color(0.526204, 0.560737, 0.846601, 1)
+
+[node name="Cells" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

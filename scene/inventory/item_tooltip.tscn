@@ -1,8 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://divri6llse1p5"]
+[gd_scene load_steps=3 format=3 uid="uid://divri6llse1p5"]
 
 [ext_resource type="Script" uid="uid://bnb3j6xqyt04t" path="res://scene/inventory/ItemTooltip.gd" id="1_cmmmc"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_cmmmc"]
+font_size = 18
+font_color = Color(0, 0, 0, 1)
+
 [node name="ItemTooltip" type="Panel"]
+z_index = 1000
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -13,6 +18,13 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_cmmmc")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 278.0
+offset_bottom = 391.0
+mouse_filter = 2
+color = Color(0.260671, 0.594883, 0.879988, 1)
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_right = 279.0
@@ -21,16 +33,15 @@ mouse_filter = 2
 
 [node name="NameLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+text = "Tooltip 
+"
+label_settings = SubResource("LabelSettings_cmmmc")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TypeLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+horizontal_alignment = 1
 
 [node name="Description" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 278.0
-offset_bottom = 391.0
-mouse_filter = 2
-color = Color(0.260671, 0.594883, 0.879988, 1)

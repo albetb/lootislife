@@ -23,7 +23,7 @@ var drag_tilt_lerp := 10.0
 var max_drag_tilt := 12.0
 var min_drag_speed := 120.0
 
-var return_lerp_speed := 14.0
+var return_lerp_speed := 12.0
 var return_rotation_lerp_speed := 8.0
 
 var insert_active := false

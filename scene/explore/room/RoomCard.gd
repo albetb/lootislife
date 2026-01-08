@@ -7,7 +7,7 @@ class_name RoomCard
 @onready var color: Color
 @onready var text: String
 @onready var num: int
-@onready var type: Room.Type
+@onready var type: RoomResource.Type
 
 
 func _ready() -> void:
@@ -21,21 +21,21 @@ func _ready() -> void:
 	elif number_label != null and number_label.text != "x" + str(num):
 		number_label.text = "x" + str(num)
 	
-func set_values(room_type: Room.Type):
+func set_values(room_type: RoomResource.Type):
 	type = room_type
-	if room_type == Room.Type.Battle:
+	if room_type == RoomResource.Type.Battle:
 		text = "Battaglia"
 		color = Color.INDIAN_RED
-	elif room_type == Room.Type.Rest:
+	elif room_type == RoomResource.Type.Rest:
 		text = "Riposa"
 		color = Color.GREEN_YELLOW
-	elif room_type == Room.Type.Treasure:
+	elif room_type == RoomResource.Type.Treasure:
 		text = "Tesoro"
 		color = Color.YELLOW
-	elif room_type == Room.Type.Selection:
+	elif room_type == RoomResource.Type.Selection:
 		text = "Scelta"
 		color = Color.AQUA
-	elif room_type == Room.Type.Boss:
+	elif room_type == RoomResource.Type.Boss:
 		text = "Boss"
 		color = Color.ORANGE
 		

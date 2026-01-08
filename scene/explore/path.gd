@@ -12,8 +12,8 @@ func update_ui() -> void:
 		path_container.remove_child(child)
 		child.queue_free()
 		
-	for room_type in Room.Type.values():
-		var number = Player.data.path.filter(func(x: Room): return x.type == room_type).size()
+	for room_type in RoomResource.Type.values():
+		var number = Player.data.path.filter(func(x: RoomResource): return x.type == room_type).size()
 		if number <= 0:
 			continue
 		var main_room_card: RoomCard = room_scene.instantiate()

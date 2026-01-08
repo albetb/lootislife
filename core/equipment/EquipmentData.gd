@@ -5,7 +5,8 @@ enum SlotType {
 	HAND,
 	ARMOR,
 	RELIC,
-	CONSUMABLE
+	CONSUMABLE,
+	NONE
 }
 
 @export var id: String
@@ -16,3 +17,5 @@ enum SlotType {
 @export var rarity: int = 1
 
 @export var card_templates: Array[Resource] = []
+
+@export var size: Vector2i = Vector2i.ZERO

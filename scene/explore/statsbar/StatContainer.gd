@@ -29,31 +29,28 @@ func update_ui() -> void:
 
 	name_label.text = display_name
 	value_label.text = str(current_value)
+	
+	var max_ability_value = max(stats.strength, stats.dexterity, stats.constitution, stats.intelligence)
 
-	actual_bar.max_value = Player.max_ability()
-	modified_bar.max_value = Player.max_ability()
+	actual_bar.max_value = min(Player.data.MAX_ABILITY, max_ability_value + points_left)
+	modified_bar.max_value = min(Player.data.MAX_ABILITY, max_ability_value + points_left)
+	
+	actual_bar.size = modified_bar.size
 
 	actual_bar.value = current_value
 
-	if points_left <= 0 or current_value >= Player.max_ability():
+	if points_left <= 0 or current_value >= Player.data.MAX_ABILITY:
+		plus_button.visible = false
 		plus_button.disabled = true
 		modified_bar.value = current_value
 	else:
+		plus_button.text = "+%d" % points_left
+		plus_button.visible = true
 		plus_button.disabled = false
-		modified_bar.value = current_value + 1
-	
+		var a = min(points_left, Player.data.MAX_ABILITY - current_value)
+		modified_bar.value = current_value + a
 
 func _on_plus_button_pressed() -> void:
-	if Player.data.ability_points <= 0:
-		return
-
-	var stats := Player.data.stats
-	var current_value = stats.get(stat_key)
-
-	if current_value >= Player.max_ability():
-		return
-
-	stats.set(stat_key, current_value + 1)
-	Player.data.ability_points -= 1
+	Player.update_stat(stat_key, 1) 
 	Events.emit_signal("update_ui")
 	Events.emit_signal("inventory_changed")

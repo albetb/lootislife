@@ -12,7 +12,7 @@ func update_ui() -> void:
 		past_path_container.remove_child(child)
 		child.queue_free()
 		
-	for room: Room in Player.data.past_path:
+	for room: RoomResource in Player.data.past_path:
 		var main_room_card: RoomCard = room_scene.instantiate()
 		main_room_card.set_values(room.type)
 		past_path_container.add_child(main_room_card)

@@ -1,9 +1,9 @@
 extends Node
 
 @export var length: int = 0
-@export var path: Array[Room] = []
-@export var past_path: Array[Room] = []
-@export var current_path: Array[Room] = []
+@export var path: Array[RoomResource] = []
+@export var past_path: Array[RoomResource] = []
+@export var current_path: Array[RoomResource] = []
 
 func _ready() -> void:
 	Events.choice_selected.connect(self.choice_selected)
@@ -42,7 +42,7 @@ func save_path() -> void:
 	
 func choose_path() -> void:
 	current_path = []
-	var pp_size: int = path.filter(func(x): return x.type != Room.Type.Boss).size()
+	var pp_size: int = path.filter(func(x): return x.type != RoomResource.Type.Boss).size()
 	
 	if pp_size == 0 and path.size() == 1:
 		current_path = path
@@ -50,8 +50,8 @@ func choose_path() -> void:
 		return
 		
 	for i in range(min(3, pp_size)):
-		var chosen_room: Room
-		chosen_room = path.filter(func(x): return x.type != Room.Type.Boss).pick_random()
+		var chosen_room: RoomResource
+		chosen_room = path.filter(func(x): return x.type != RoomResource.Type.Boss).pick_random()
 		current_path.append(chosen_room)
 		path.remove_at(path.find(chosen_room))
 	
@@ -66,10 +66,10 @@ func choice_selected(num: int):
 	
 	select_new_scene(selected_path)
 	
-func select_new_scene(room: Room) -> void:
+func select_new_scene(room: RoomResource) -> void:
 	Player.save()
 
-	if room.type == Room.Type.Battle:
+	if room.type == RoomResource.Type.Battle:
 		# 1. Genera il mazzo dal build
 		var deck := Player.generate_deck()
 
@@ -79,7 +79,7 @@ func select_new_scene(room: Room) -> void:
 		# 3. Cambia scena
 		SceneManager.switch("res://scene/combat/battle.tscn")
 
-	if room.type == Room.Type.Boss:
+	if room.type == RoomResource.Type.Boss:
 		Player.data.floor_number += 1
 		Player.save()
 		begin()
@@ -93,15 +93,15 @@ func new_exploration():
 	length = 3 + floor((Player.data.floor_number - 1) / 3)
 
 	for i in range(length):
-		var room_types = Room.Type.values().filter(func(x): return x != Room.Type.Boss and x != Room.Type.Battle)
-		var room = Room.new()
-		room.type = Room.Type.Battle 
+		var room_types = RoomResource.Type.values().filter(func(x): return x != RoomResource.Type.Boss and x != RoomResource.Type.Battle)
+		var room = RoomResource.new()
+		room.type = RoomResource.Type.Battle 
 		path.append(room.duplicate(true)) # add a battle
 		room.type = room_types[randi() % room_types.size()]
 		path.append(room.duplicate(true)) # add a random other room
 
-	var boss_room = Room.new()
-	boss_room.type = Room.Type.Boss 
+	var boss_room = RoomResource.new()
+	boss_room.type = RoomResource.Type.Boss 
 	path.append(boss_room.duplicate(true)) # add a boss
 
 	save_path()

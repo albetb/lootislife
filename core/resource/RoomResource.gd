@@ -1,5 +1,5 @@
 extends Resource
-class_name Room
+class_name RoomResource
 
 @export var type: Type = Type.Selection
 

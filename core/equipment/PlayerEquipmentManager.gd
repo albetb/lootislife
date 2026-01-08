@@ -20,6 +20,22 @@ var consumables: Array[EquipmentData] = []
 # -------------------------------------------------
 # EQUIP
 # -------------------------------------------------
+func can_equip(item: EquipmentData) -> bool:
+	match item.slot_type:
+		EquipmentData.SlotType.HAND:
+			if item is WeaponData:
+				var weapon := item as WeaponData
+				if weapon.hand_usage == WeaponData.HandUsage.TWO_HAND:
+					return left_hand == null and right_hand == null
+				return left_hand == null or right_hand == null
+			return false
+		EquipmentData.SlotType.ARMOR:
+			return armor == null
+		EquipmentData.SlotType.RELIC:
+			return relic == null
+		EquipmentData.SlotType.CONSUMABLE:
+			return consumables.size() < MAX_CONSUMABLES
+	return false
 
 func equip(item: EquipmentData) -> bool:
 	match item.slot_type:
@@ -35,7 +51,6 @@ func equip(item: EquipmentData) -> bool:
 			return _equip_consumable(item)
 	return false
 
-
 func _equip_hand(item: EquipmentData) -> bool:
 	if not item is WeaponData:
 		return false
@@ -48,15 +63,14 @@ func _equip_hand(item: EquipmentData) -> bool:
 		return true
 
 	# ONE HAND
-	if left_hand == null:
-		left_hand = weapon
-		return true
-	elif right_hand == null:
+	if right_hand == null:
 		right_hand = weapon
+		return true
+	elif left_hand == null:
+		left_hand = weapon
 		return true
 
 	return false
-
 
 func _equip_consumable(item: EquipmentData) -> bool:
 	if consumables.size() >= MAX_CONSUMABLES:
@@ -64,6 +78,18 @@ func _equip_consumable(item: EquipmentData) -> bool:
 	consumables.append(item)
 	return true
 
+func unequip(item: EquipmentData) -> void:
+	if left_hand == item:
+		left_hand = null
+	if right_hand == item:
+		right_hand = null
+	if armor == item:
+		armor = null
+	if relic == item:
+		relic = null
+
+	if consumables.has(item):
+		consumables.erase(item)
 
 # -------------------------------------------------
 # DECK GENERATION
@@ -83,7 +109,6 @@ func generate_deck() -> Array[CardInstance]:
 
 	return deck
 
-
 func _add_equipment_cards_unique(
 	equipment: EquipmentData,
 	deck: Array[CardInstance],
@@ -97,18 +122,16 @@ func _add_equipment_cards_unique(
 	processed[equipment] = true
 	_add_equipment_cards(equipment, deck)
 
-
 func _add_equipment_cards(
-	equipment: EquipmentData,
-	deck: Array[CardInstance]
-) -> void:
+		equipment: EquipmentData,
+		deck: Array[CardInstance]
+	) -> void:
 	for template in equipment.card_templates:
 		if not template is CardTemplate:
 			continue
 
 		for i in range(template.copies):
 			deck.append(_create_card_instance(template, equipment))
-
 
 # -------------------------------------------------
 # CARD FACTORY

@@ -32,7 +32,7 @@ func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 	max_hp = player.max_health()
 	current_hp = max_hp
 
-	max_energy = 3
+	max_energy = player.max_energy()
 	energy = max_energy
 
 	deck = current_deck.duplicate()
@@ -45,7 +45,7 @@ func setup(player: Player, current_deck: Array[CardInstance]) -> void:
 func start_turn() -> Array[CardInstance]:
 	energy = max_energy
 
-	var max_hand_size := player_data.max_hand_size
+	var max_hand_size := player_data.MAX_HAND_SIZE
 	var space_left := max_hand_size - hand.size()
 
 	if space_left <= 0:
@@ -73,10 +73,10 @@ func end_turn() -> void:
 
 func draw_cards(amount: int) -> Array[CardInstance]:
 	var drawn: Array[CardInstance] = []
-	var max_hand_size := player_data.max_hand_size
+	var max_hand_size = player_data.MAX_HAND_SIZE
 
 	for i in range(amount):
-		if hand.size() >= max_hand_size:
+		if hand.size() > max_hand_size:
 			break
 
 		reshuffle_if_needed()

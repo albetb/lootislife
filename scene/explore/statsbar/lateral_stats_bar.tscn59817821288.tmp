@@ -46,10 +46,10 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/EquipmentPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="LeftHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
+[node name="RightHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
 
-[node name="RightHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
+[node name="LeftHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
 
 [node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/EquipmentPanel/VBoxContainer"]

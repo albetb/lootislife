@@ -31,7 +31,7 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="LateralStatsBar" parent="." instance=ExtResource("1_ns81l")]
-z_index = 1000
+z_index = 100
 layout_mode = 1
 anchor_right = 0.102
 anchor_bottom = 0.5

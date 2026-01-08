@@ -1,23 +1,12 @@
 extends ColorRect
 
-@onready var points_label: Label = $VBoxContainer/StatsPanel/PointsLabel
-@onready var back_button: Button = $BackButton
-
 func _ready() -> void:
 	Events.update_ui.connect(update_ui)
 	update_ui()
+	#print_tree_pretty()
 
 func update_ui() -> void:
-	if Player.data == null:
-		return
-
-	var points := Player.data.ability_points
-
-	if points > 0:
-		points_label.text = "%d punti da assegnare" % points
-		points_label.visible = true
-	else:
-		points_label.visible = false
+	pass
 
 func _on_back_button_pressed() -> void:
 	Player.save()

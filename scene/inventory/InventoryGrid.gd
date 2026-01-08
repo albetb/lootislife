@@ -5,9 +5,9 @@ signal grid_resized
 
 @export var slot_scene: PackedScene = preload("res://scene/inventory/inventory_slot.tscn")
 @export var item_view_scene: PackedScene = preload("res://scene/inventory/item_view.tscn")
-
 const SLOT_SIZE := Vector2(64, 64)
 
+var equipment_panel: EquipmentPanel
 var inventory: InventoryState
 var slots: Dictionary = {}          # Vector2i -> InventorySlot
 var item_views: Array[ItemView] = []
@@ -17,8 +17,9 @@ const INVALID_CELL := Vector2i(-1, -1)
 # BIND
 # -------------------------------------------------
 
-func bind(state: InventoryState) -> void:
+func bind(state: InventoryState, panel: EquipmentPanel) -> void:
 	inventory = state
+	equipment_panel = panel
 	_build_grid()
 	_refresh()
 
@@ -69,15 +70,11 @@ func get_visible_rows() -> int:
 	var visible_slots := inventory.get_required_visible_slots()
 	return int(ceil(float(visible_slots) / float(inventory.WIDTH)))
 	
-# -------------------------------------------------
-# REFRESH VISUAL
-# -------------------------------------------------
-
 func _refresh() -> void:
 	if inventory == null:
 		return
 
-	# rimuovi item view precedenti
+	# distruggi view precedenti
 	for view in item_views:
 		view.queue_free()
 	item_views.clear()
@@ -86,41 +83,27 @@ func _refresh() -> void:
 	for slot in slots.values():
 		slot.set_occupied(false)
 
-	var processed := {} # evita duplicati ItemView
+	# crea UNA ItemView per OGNI entry
+	for item in inventory.item_to_entry.keys():
+		var entry: InventoryItemData = inventory.item_to_entry[item]
 
-	# crea ItemView SOLO per celle di origine
-	for y in range(inventory.HEIGHT):
-		for x in range(inventory.WIDTH):
-			var idx := inventory._index(x, y)
-			var item = inventory.grid[idx]
+		var view: ItemView = item_view_scene.instantiate()
+		add_child(view)
+		view.bind(item, inventory, self, equipment_panel)
+		item_views.append(view)
 
-			if item == null:
-				continue
-
-			# solo cella di origine
-			if item.position != Vector2i(x, y):
-				continue
-
-			if processed.has(item):
-				continue
-
-			processed[item] = true
-
-			var view: ItemView = item_view_scene.instantiate()
-			add_child(view)
-			view.bind(item, inventory, self)
-
+		if entry.equipped_slot == EquipmentData.SlotType.NONE:
 			view.position = Vector2(item.position) * SLOT_SIZE
 			view.z_index = 10
 
-			item_views.append(view)
-
-			# marca slot occupati dall'item
 			for dy in range(item.size.y):
 				for dx in range(item.size.x):
 					var p = item.position + Vector2i(dx, dy)
 					if slots.has(p):
 						slots[p].set_occupied(true)
+
+		else:
+			view.z_index = 0
 
 func get_cell_from_global_position(global_pos: Vector2) -> Vector2i:
 	var local_pos := global_pos - global_position
@@ -197,3 +180,6 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 				return INVALID_CELL
 		
 	return cell
+	
+func get_items() -> Array[ItemView]:
+	return item_views

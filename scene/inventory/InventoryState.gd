@@ -6,9 +6,11 @@ const WIDTH := 4
 const HEIGHT := 8
 const MAX_SLOTS := WIDTH * HEIGHT
 
-var allowed_slots := 16   # dipende da forza/buff
+var allowed_slots := 20   # dipende da forza/buff
 
 var grid: Array = []
+var data: InventoryData
+var item_to_entry := {}
 
 # -------------------------------------------------
 # SETUP
@@ -19,8 +21,36 @@ func setup() -> void:
 	for i in range(MAX_SLOTS):
 		grid[i] = null
 
-func update_allowed_slots_from_player() -> void:
-	allowed_slots = Player.get_inventory_slots()
+func update_allowed_slots(value: int) -> void:
+	allowed_slots = value
+
+func bind_data(inventory_data: InventoryData) -> void:
+	data = inventory_data
+	_rebuild_grid_from_data()
+	
+func _rebuild_grid_from_data() -> void:
+	grid.clear()
+	grid.resize(WIDTH * HEIGHT)
+	grid.fill(null)
+	item_to_entry.clear()
+
+	var entry_to_item := {}
+	for entry in data.items:
+		var item: ItemInstance
+
+		if entry_to_item.has(entry):
+			item = entry_to_item[entry]
+		else:
+			item = ItemInstance.new()
+			item.equipment = entry.equipment
+			item.size = entry.size
+			entry_to_item[entry] = item
+
+		item.position = entry.position
+		item_to_entry[item] = entry
+
+		if entry.equipped_slot == EquipmentData.SlotType.NONE:
+			place(item, entry.position.x, entry.position.y)
 
 # -------------------------------------------------
 # UTILS
@@ -83,6 +113,9 @@ func place(item: ItemInstance, x: int, y: int) -> bool:
 			grid[_index(x + dx, y + dy)] = item
 
 	item.position = Vector2i(x, y)
+	if item_to_entry.has(item):
+		item_to_entry[item].position = item.position
+
 	return true
 
 # -------------------------------------------------
@@ -128,3 +161,27 @@ func get_required_visible_rows() -> int:
 
 	return max_row + 1
 	
+func add_item_from_equipment(item: ItemInstance, target_pos: Vector2i) -> bool:
+	if not item_to_entry.has(item):
+		push_error("add_item_from_equipment: item senza entry")
+		return false
+
+	var entry: InventoryItemData = item_to_entry[item]
+
+	# torna in inventario
+	entry.equipped_slot = EquipmentData.SlotType.NONE
+	entry.position = target_pos
+
+	return place(item, target_pos.x, target_pos.y)
+	
+func remove_item(item: ItemInstance) -> void:
+	if not item_to_entry.has(item):
+		return
+
+	var entry = item_to_entry[item]
+	data.items.erase(entry)
+	item_to_entry.erase(item)
+
+	for i in range(grid.size()):
+		if grid[i] == item:
+			grid[i] = null

@@ -17,7 +17,7 @@ shadow_size = 1
 shadow_offset = Vector2(1, -1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5hq5"]
-bg_color = Color(2.88785e-07, 0.361198, 0.34284, 1)
+bg_color = Color(0, 0.501961, 0.458824, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -31,7 +31,7 @@ ProgressBar/styles/fill = SubResource("StyleBoxFlat_k5hq5")
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_344y8"]
-bg_color = Color(3.60981e-06, 0.500601, 0.459004, 1)
+bg_color = Color(0, 0.360784, 0.341176, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -42,9 +42,11 @@ ProgressBar/styles/background = SubResource("StyleBoxFlat_l5vh3")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_344y8")
 
 [node name="StatContainer" type="VBoxContainer"]
+custom_minimum_size = Vector2(120, 43)
 script = ExtResource("1_5wqfq")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(120, 32)
 layout_mode = 2
 alignment = 1
 

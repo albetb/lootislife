@@ -12,7 +12,7 @@ func update_ui() -> void:
 		choice_container.remove_child(child)
 		child.queue_free()
 		
-	for room: Room in Player.data.current_path:
+	for room: RoomResource in Player.data.current_path:
 		var choice_card: Choice = choice_scene.instantiate()
 		choice_card.set_values(room.type)
 		choice_card.choice_number = choice_container.get_child_count() % 3

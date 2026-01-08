@@ -37,15 +37,20 @@ func reset() -> void:
 	save()
 
 func _setup_starting_equipment() -> void:
-	var build := data.build
+	var loadout := preload("res://core/equipment/loadouts/base_equip.tres")
+	apply_starting_loadout(loadout)
+	
+func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
+	# --- equip ---
+	for equipment in loadout.starting_equipment:
+		data.build.equip(equipment)
 
-	var weapon := preload("res://core/equipment/templates/short_sword.tres")
-	var armor := preload("res://core/equipment/templates/armor_base.tres")
-	var relic := preload("res://core/equipment/templates/ninnolo_base.tres")
+	# --- inventario ---
+	data.inventory.items.clear()
+	for entry in loadout.starting_inventory:
+		data.inventory.items.append(entry.duplicate(true))
 
-	build.equip(weapon)
-	build.equip(armor)
-	build.equip(relic)
+	save()
 
 # -------------------------
 # PROGRESSION
@@ -65,16 +70,38 @@ func level_up() -> void:
 	data.ability_points += 1
 	# eventuale hook per eventi
 	# Events.player_level_up.emit(data.level)
+	
+func update_stat(stat_key: String, stat_increment: int) -> void:
+	if data.ability_points <= 0:
+		return
+
+	var stats := data.stats
+	var current_value = stats.get(stat_key)
+
+	if current_value >= data.MAX_ABILITY:
+		return
+	
+	if stat_key == "constitution":
+		update_cos(stat_increment)
+
+	stats.set(stat_key, current_value + stat_increment)
+	data.ability_points -= stat_increment
+
+func update_cos(stat_increment: int) -> void:
+	data.current_hp += stat_increment * data.LIFE_PER_COS
 
 # -------------------------
 # STATS DERIVATE
 # -------------------------
 
 func max_health() -> int:
-	return 10 + data.stats.constitution * 5
+	return data.BASE_LIFE + data.stats.constitution * data.LIFE_PER_COS
+
+func max_energy() -> int:
+	return data.BASE_ENERGY + int(data.stats.constitution / data.COS_PER_ENERGY)
 
 func base_draw() -> int:
-	return 5 + int(data.stats.intelligence / 5)
+	return data.BASE_DRAW + int(data.stats.intelligence / data.INT_PER_DRAW)
 
 func physical_damage_bonus() -> int:
 	return data.stats.strength
@@ -84,14 +111,11 @@ func get_damage_bonus() -> int:
 
 func block_bonus() -> int:
 	return data.stats.dexterity
-	
-func max_ability() -> int:
-	return data.level + 4
 
 func get_inventory_slots() -> int:
 	var base := 16
 	var bonus := data.stats.strength * 2
-	return min(base + bonus, 32)
+	return min(base + bonus, 36)
 
 # -------------------------
 # VITA
