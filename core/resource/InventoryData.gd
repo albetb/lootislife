@@ -1,9 +1,7 @@
 extends Resource
 class_name InventoryData
 
-@export var width := 4
-@export var height := 9
-@export var allowed_slots := 16
+@export var width: int = 4
+@export var height: int = 9
 
-# serializzabile
-@export var items = []
+@export var items: Array[InventoryItemData] = []

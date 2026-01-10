@@ -13,4 +13,5 @@ slot_type = 1
 description = ""
 rarity = 1
 card_templates = Array[Resource]([ExtResource("1_q57yd")])
+size = Vector2i(1, 2)
 metadata/_custom_type_script = "uid://ditylr0ad1erv"

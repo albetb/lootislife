@@ -41,16 +41,82 @@ func _setup_starting_equipment() -> void:
 	apply_starting_loadout(loadout)
 	
 func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
-	# --- equip ---
-	for equipment in loadout.starting_equipment:
-		data.build.equip(equipment)
-
-	# --- inventario ---
 	data.inventory.items.clear()
-	for entry in loadout.starting_inventory:
-		data.inventory.items.append(entry.duplicate(true))
 
-	save()
+	var used_slots := {}
+	var next_inventory_cell := Vector2i.ZERO
+
+	# -------------------------
+	# EQUIP INIZIALE AUTOMATICO
+	# -------------------------
+	for equipment in loadout.starting_equipment:
+		var slot := _resolve_starting_equipped_slot(equipment, used_slots)
+		if slot == InventoryItemData.EquippedSlot.NONE:
+			continue
+
+		var entry := InventoryItemData.new()
+		entry.equipment = equipment
+		entry.location = InventoryItemData.ItemLocation.EQUIPPED
+		entry.equipped_slot = slot
+
+		data.inventory.items.append(entry)
+		used_slots[slot] = true
+
+	# -------------------------
+	# INVENTARIO INIZIALE
+	# -------------------------
+	for template in loadout.starting_inventory:
+		var entry := InventoryItemData.new()
+		entry.equipment = template.equipment
+		entry.location = InventoryItemData.ItemLocation.INVENTORY
+		entry.equipped_slot = InventoryItemData.EquippedSlot.NONE
+
+		entry.inventory_position = next_inventory_cell
+		next_inventory_cell.x += 1
+
+		if next_inventory_cell.x >= InventoryState.WIDTH:
+			next_inventory_cell.x = 0
+			next_inventory_cell.y += 1
+
+		data.inventory.items.append(entry)
+
+func _resolve_starting_equipped_slot(
+		equipment: EquipmentData,
+		used_slots: Dictionary
+	) -> InventoryItemData.EquippedSlot:
+
+	match equipment.slot_type:
+
+		EquipmentData.SlotType.HAND:
+			# priorità mano destra
+			if not used_slots.has(InventoryItemData.EquippedSlot.HAND_RIGHT):
+				return InventoryItemData.EquippedSlot.HAND_RIGHT
+			if not used_slots.has(InventoryItemData.EquippedSlot.HAND_LEFT):
+				return InventoryItemData.EquippedSlot.HAND_LEFT
+			return InventoryItemData.EquippedSlot.NONE
+
+		EquipmentData.SlotType.ARMOR:
+			return (
+				InventoryItemData.EquippedSlot.ARMOR
+				if not used_slots.has(InventoryItemData.EquippedSlot.ARMOR)
+				else InventoryItemData.EquippedSlot.NONE
+			)
+
+		EquipmentData.SlotType.RELIC:
+			return (
+				InventoryItemData.EquippedSlot.RELIC
+				if not used_slots.has(InventoryItemData.EquippedSlot.RELIC)
+				else InventoryItemData.EquippedSlot.NONE
+			)
+
+		EquipmentData.SlotType.CONSUMABLE:
+			for i in range(4):
+				var slot := InventoryItemData.EquippedSlot.CONSUMABLE_0 + i
+				if not used_slots.has(slot):
+					return slot
+			return InventoryItemData.EquippedSlot.NONE
+
+	return InventoryItemData.EquippedSlot.NONE
 
 # -------------------------
 # PROGRESSION
@@ -149,13 +215,65 @@ func is_game_started() -> bool:
 # -------------------------
 # DECK / COMBAT
 # -------------------------
-
 func generate_deck() -> Array[CardInstance]:
-	if data == null or data.build == null:
+	if data == null:
 		return []
 
-	# Genera il mazzo a partire dall'equipaggiamento
-	var deck: Array[CardInstance] = data.build.generate_deck()
-	print("Generated deck size:", deck.size())
+	var deck: Array[CardInstance] = []
+	var processed := {}
+
+	var equipped_weapons: Array[InventoryItemData] = []
+
+	for item in data.inventory.items:
+		if item.location == InventoryItemData.ItemLocation.EQUIPPED \
+		and item.equipment.slot_type == EquipmentData.SlotType.HAND:
+			equipped_weapons.append(item)
+
+	var sources: Array = []
+
+	const FISTS_EQUIPMENT := preload("res://core/equipment/templates/pugni.tres")
+
+	var has_weapon := not equipped_weapons.is_empty()
+
+	for item in data.inventory.items:
+		if item.location != InventoryItemData.ItemLocation.EQUIPPED:
+			continue
+
+		# salta le armi se NON ce ne sono
+		if item.equipment.slot_type == EquipmentData.SlotType.HAND and not has_weapon:
+			continue
+
+		sources.append(item)
+
+	# fallback: aggiungi i pugni SOLO se non ci sono armi
+	if not has_weapon:
+		sources.append(FISTS_EQUIPMENT)
+
+	for source in sources:
+		var equipment: EquipmentData
+		var source_item: InventoryItemData = null
+
+		if source is InventoryItemData:
+			equipment = source.equipment
+			source_item = source
+		else:
+			equipment = source
+
+		if processed.has(equipment):
+			continue
+		processed[equipment] = true
+
+		for template in equipment.card_templates:
+			if not template is CardTemplate:
+				continue
+
+			for i in range(template.copies):
+				var card := CardInstance.new()
+				card.setup(template)
+
+				if card.has_variable("source_equipment"):
+					card.source_equipment = source_item
+
+				deck.append(card)
 
 	return deck

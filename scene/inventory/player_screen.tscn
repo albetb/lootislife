@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/explore/statsbar/lateral_stats_bar.tscn" id="1_ns81l"]
 [ext_resource type="PackedScene" uid="uid://wecshwb6p210" path="res://scene/inventory/inventory_panel.tscn" id="2_wssm1"]
 
-[node name="PlayerScreen" type="Control"]
+[node name="PlayerScreen" type="Control" groups=["player_screen"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

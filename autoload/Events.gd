@@ -8,3 +8,6 @@ extends Node
 signal update_ui
 signal choice_selected(number: int)
 signal inventory_changed()
+signal request_move_item(item: InventoryItemData, target_cell: Vector2i)
+signal request_equip_item(item: InventoryItemData, slot: EquipmentSlot)
+signal request_unequip_item(item: InventoryItemData, target_cell: Vector2i)

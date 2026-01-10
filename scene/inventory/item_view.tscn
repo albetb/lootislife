@@ -1,14 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://8e0668gsl78u"]
+[gd_scene load_steps=3 format=3 uid="uid://8e0668gsl78u"]
 
 [ext_resource type="Script" uid="uid://bacb7ng2j5wu8" path="res://scene/inventory/ItemView.gd" id="1_8xs31"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8xs31"]
 
 [node name="ItemView" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1199.0
-offset_bottom = -650.0
+offset_right = -1216.0
+offset_bottom = -656.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_8xs31")
@@ -23,13 +25,25 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.358
 anchor_bottom = 0.4
-offset_right = 31.002
-offset_bottom = 32.0
+offset_right = 37.088
+offset_bottom = 34.4
 color = Color(0.129558, 0.129558, 0.129558, 1)
 
 [node name="InvalidOverlay" type="ColorRect" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 60.0
 offset_bottom = 60.0
 mouse_filter = 2
 color = Color(1, 0.00999999, 0.00999999, 0.203922)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+text = "Spada corta"
+label_settings = SubResource("LabelSettings_8xs31")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3

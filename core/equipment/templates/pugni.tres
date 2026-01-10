@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://drdryqeed1ovt"]
+
+[ext_resource type="Script" uid="uid://myd3mxco7w7j" path="res://core/equipment/WeaponData.gd" id="1_3i41c"]
+[ext_resource type="Resource" uid="uid://dtfhbqpemhyct" path="res://core/card/templates/Calcio.tres" id="1_iucur"]
+[ext_resource type="Resource" uid="uid://drmeltvldlhvl" path="res://core/card/templates/Pugno.tres" id="2_ix6s7"]
+
+[resource]
+script = ExtResource("1_3i41c")
+hand_usage = 0
+base_damage = 0
+id = ""
+display_name = "Pugni"
+slot_type = 0
+description = ""
+rarity = 1
+card_templates = Array[Resource]([ExtResource("1_iucur"), ExtResource("2_ix6s7")])
+size = Vector2i(1, 1)
+metadata/_custom_type_script = "uid://myd3mxco7w7j"

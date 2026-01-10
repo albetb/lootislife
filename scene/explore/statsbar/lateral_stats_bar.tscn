@@ -48,9 +48,11 @@ layout_mode = 2
 
 [node name="LeftHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
+slot_id = 1
 
 [node name="RightHandSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
+slot_id = 2
 
 [node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/EquipmentPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
@@ -61,11 +63,11 @@ layout_mode = 2
 
 [node name="ArmorSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer2" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 1
+slot_id = 3
 
 [node name="RelicSlot" parent="VBoxContainer/EquipmentPanel/VBoxContainer/HBoxContainer2" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 2
+slot_id = 4
 
 [node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/EquipmentPanel"]
 custom_minimum_size = Vector2(0, 5)
@@ -77,19 +79,19 @@ columns = 2
 
 [node name="ConsumableSlot1" parent="VBoxContainer/EquipmentPanel/ConsumablesContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 3
+slot_id = 5
 
 [node name="ConsumableSlot2" parent="VBoxContainer/EquipmentPanel/ConsumablesContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 3
+slot_id = 6
 
 [node name="ConsumableSlot3" parent="VBoxContainer/EquipmentPanel/ConsumablesContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 3
+slot_id = 7
 
 [node name="ConsumableSlot4" parent="VBoxContainer/EquipmentPanel/ConsumablesContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
-slot_type = 3
+slot_id = 8
 
 [node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)

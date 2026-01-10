@@ -8,7 +8,7 @@ class_name ItemTooltip
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-func bind(item: ItemInstance) -> void:
+func bind(item: EquipmentData) -> void:
 	name_label.text = item.display_name
-	type_label.text = item.item_type
+	type_label.text = str(item.slot_type)
 	desc_label.text = item.description
