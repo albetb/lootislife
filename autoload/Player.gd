@@ -39,7 +39,7 @@ func reset() -> void:
 func _setup_starting_equipment() -> void:
 	var loadout := preload("res://core/equipment/loadouts/base_equip.tres")
 	apply_starting_loadout(loadout)
-	
+
 func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
 	data.inventory.items.clear()
 
@@ -55,6 +55,7 @@ func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
 			continue
 
 		var entry := InventoryItemData.new()
+		entry.ensure_uid()
 		entry.equipment = equipment
 		entry.location = InventoryItemData.ItemLocation.EQUIPPED
 		entry.equipped_slot = slot
@@ -67,6 +68,7 @@ func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
 	# -------------------------
 	for template in loadout.starting_inventory:
 		var entry := InventoryItemData.new()
+		entry.ensure_uid()
 		entry.equipment = template.equipment
 		entry.location = InventoryItemData.ItemLocation.INVENTORY
 		entry.equipped_slot = InventoryItemData.EquippedSlot.NONE

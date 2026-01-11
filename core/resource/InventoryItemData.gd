@@ -3,6 +3,16 @@ class_name InventoryItemData
 
 @export var uid: String = ""
 
+func ensure_uid() -> void:
+	if uid == "":
+		var rng := RandomNumberGenerator.new()
+		rng.randomize()
+		uid = "%d_%d_%d" % [
+			Time.get_unix_time_from_system(),
+			Time.get_ticks_usec(),
+			rng.randi()
+		]
+
 @export var equipment: EquipmentData
 
 enum ItemLocation {

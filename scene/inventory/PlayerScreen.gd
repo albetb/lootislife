@@ -1,6 +1,16 @@
 extends Control
 class_name PlayerScreen
 
+# INVENTORY / EQUIPMENT UI – ARCHITECTURAL RULES
+# 1. Un ItemView deve essere sempre figlio del nodo UI che rappresenta,
+#    lo slot logico in cui l’item si trova (InventoryGrid o EquipmentSlot).
+# 2. Un ItemView non deve mai essere riparentato durante il drag.
+#    Il drag è solo un movimento visivo temporaneo.
+# 3. Un ItemView non deve mai essere distrutto durante il gameplay.
+#    Viene creato una sola volta e poi solo riparentato.
+# 4. SOLO PlayerScreen è autorizzato a riparentare gli ItemView.
+#    Nessun altro script deve chiamare reparent() sugli ItemView.
+
 @onready var inventory_panel: InventoryPanel = $InventoryPanel
 @onready var equipment_panel: EquipmentPanel = $LateralStatsBar/VBoxContainer/EquipmentPanel
 @onready var toggle_button: Button = $InventoryToggleButton
@@ -24,11 +34,8 @@ func _ready() -> void:
 	)
 
 	inventory_grid.bind(inventory_state, equipment_panel)
-	equipment_panel.refresh_from_inventory(
-		Player.data.inventory,
-		inventory_state,
-		inventory_grid
-	)
+	inventory_grid._refresh_views()
+	sync_item_views()
 
 	inventory_panel.visible = true
 	_position_inventory(true)
@@ -98,13 +105,6 @@ func request_move_item(item: InventoryItemData, target_cell: Vector2i) -> void:
 	item.inventory_position = target_cell
 
 	_commit_inventory_change()
-	
-	print(
-	item.equipment.display_name,
-	item.location,
-	item.inventory_position,
-	item.equipped_slot
-)
 
 # INVENTORY → EQUIP
 func request_equip_item(item: InventoryItemData, slot: EquipmentSlot) -> void:
@@ -112,11 +112,6 @@ func request_equip_item(item: InventoryItemData, slot: EquipmentSlot) -> void:
 
 	if not _can_equip_item(item, target_slot):
 		return
-		
-	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-		var old_slot := equipment_panel._get_slot_for_item(item)
-		if old_slot:
-			old_slot.clear()
 
 	item.location = InventoryItemData.ItemLocation.EQUIPPED
 	item.equipped_slot = target_slot
@@ -133,13 +128,6 @@ func request_unequip_item(item: InventoryItemData, target_cell: Vector2i) -> voi
 	item.equipped_slot = InventoryItemData.EquippedSlot.NONE
 
 	_commit_inventory_change()
-	
-	print(
-	item.equipment.display_name,
-	item.location,
-	item.inventory_position,
-	item.equipped_slot
-)
 
 # VALIDATION
 func _can_place_item(item: InventoryItemData, base: Vector2i) -> bool:
@@ -213,6 +201,7 @@ func _commit_inventory_change() -> void:
 		Player.get_inventory_slots()
 	)
 	Player.save()
+	sync_item_views()
 
 func _refresh_ui() -> void:
 	inventory_state.bind_data(
@@ -220,20 +209,38 @@ func _refresh_ui() -> void:
 		Player.get_inventory_slots()
 	)
 
-	inventory_grid._refresh()
-	equipment_panel.refresh_from_inventory(
-		Player.data.inventory,
-		inventory_state,
-		inventory_grid
-	)
-	
-	for item in Player.data.inventory.items:
-		print(
-			item.equipment.display_name,
-			"loc:", item.location,
-			"slot:", item.equipped_slot
-		)
-
+	inventory_grid.bind(inventory_state, equipment_panel)
+	sync_item_views()
 
 func is_inventory_open() -> bool:
 	return inventory_open
+
+func sync_item_views() -> void:
+	for item in Player.data.inventory.items:
+		var view: ItemView = inventory_grid.item_views.get(item.uid)
+		if view == null or view.dragging:
+			continue
+
+		if item.location == InventoryItemData.ItemLocation.INVENTORY:
+			if view.get_parent() != inventory_grid:
+				view.reparent(inventory_grid)
+
+			view.visible = true
+			view.position = Vector2(item.inventory_position) * InventoryGrid.SLOT_SIZE
+			view.z_index = 10
+
+		elif item.location == InventoryItemData.ItemLocation.EQUIPPED:
+			var slot := equipment_panel._get_slot_for_item(item)
+			if slot == null:
+				view.visible = false
+				continue
+
+			if view.get_parent() != slot:
+				view.reparent(slot)
+
+			view.visible = true
+
+			var cell_count := slot._get_vertical_cells()
+			var size := Vector2(64, 64 * cell_count)
+			view.position = (size - view.size) * 0.5
+			view.z_index = 200

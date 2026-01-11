@@ -4,7 +4,7 @@ class_name EquipmentPanel
 @export var player: Player
 
 var inventory_state: InventoryState
-var grid: InventoryGrid
+@onready var grid: InventoryGrid
 
 @onready var right_hand_slot: EquipmentSlot = $VBoxContainer/HBoxContainer/RightHandSlot
 @onready var left_hand_slot: EquipmentSlot = $VBoxContainer/HBoxContainer/LeftHandSlot
@@ -17,28 +17,6 @@ var grid: InventoryGrid
 	$ConsumablesContainer/ConsumableSlot3,
 	$ConsumablesContainer/ConsumableSlot4,
 ]
-
-func refresh_from_inventory(
-	inventory: InventoryData,
-	state: InventoryState,
-	inventory_grid: InventoryGrid
-) -> void:
-	_clear_all_slots()
-
-	for item in inventory.items:
-		if item.location != InventoryItemData.ItemLocation.EQUIPPED:
-			continue
-
-		var slot := _get_slot_for_item(item)
-		if slot == null:
-			continue
-
-		var view: ItemView = inventory_grid.item_views.get(item.uid)
-		if view == null:
-			continue
-
-		view.visible = true
-		slot.attach_item_view(view)
 
 func _get_slot_for_item(item: InventoryItemData) -> EquipmentSlot:
 	match item.equipped_slot:

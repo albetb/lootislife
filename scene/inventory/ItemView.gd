@@ -1,13 +1,19 @@
 extends Control
 class_name ItemView
 
+# INVENTORY / EQUIPMENT UI – ARCHITECTURAL RULES
+# 1. Un ItemView deve essere sempre figlio del nodo UI che rappresenta,
+#    lo slot logico in cui l’item si trova (InventoryGrid o EquipmentSlot).
+# 2. Un ItemView non deve mai essere riparentato durante il drag.
+#    Il drag è solo un movimento visivo temporaneo.
+# 3. Un ItemView non deve mai essere distrutto durante il gameplay.
+#    Viene creato una sola volta e poi solo riparentato.
+# 4. SOLO PlayerScreen è autorizzato a riparentare gli ItemView.
+#    Nessun altro script deve chiamare reparent() sugli ItemView.
+
 var item: InventoryItemData
-var inventory_state: InventoryState
-var grid: InventoryGrid
 var equipment_panel: EquipmentPanel
 var tooltip: ItemTooltip
-
-var source_equipment_slot: EquipmentSlot = null
 
 var dragging := false
 var returning := false
@@ -45,23 +51,18 @@ func _ready() -> void:
 	visual.mouse_exited.connect(_on_mouse_exited)
 
 	target_position = global_position
-
+	
 func bind(
-		_item: InventoryItemData,
-		_state: InventoryState,
-		_grid: InventoryGrid,
-		_panel: EquipmentPanel,
-		_can_equip: Callable,
-		_is_inventory_open: Callable
-	) -> void:
+	_item: InventoryItemData,
+	_panel: EquipmentPanel,
+	_can_equip: Callable,
+	_is_inventory_open: Callable
+) -> void:
 	item = _item
-	inventory_state = _state
-	grid = _grid
 	equipment_panel = _panel
 	can_equip_validator = _can_equip
 	is_inventory_open = _is_inventory_open
 
-	# size dal dato reale
 	size = Vector2(
 		60 * item.equipment.size.x + 4 * (item.equipment.size.x - 1),
 		60 * item.equipment.size.y + 4 * (item.equipment.size.y - 1)
@@ -71,25 +72,23 @@ func bind(
 	invalid_overlay.size = size
 	label.text = item.equipment.display_name
 
-	invalid_overlay.visible = inventory_state.item_is_out_of_bounds(item)
-	target_position = global_position
-
 func _process(delta: float) -> void:
 	if dragging:
 		target_position = get_global_mouse_position() - drag_offset
 		global_position = global_position.lerp(target_position, DRAG_LERP * delta)
-
 		_update_drag_rotation(delta)
 
 	elif returning:
 		global_position = global_position.lerp(target_position, RETURN_LERP * delta)
+
 		visual.rotation = lerp(visual.rotation, 0.0, ROTATION_LERP * delta)
 		label.rotation = lerp(label.rotation, 0.0, ROTATION_LERP * delta)
 		invalid_overlay.rotation = lerp(invalid_overlay.rotation, 0.0, ROTATION_LERP * delta)
 
-		if global_position.distance_to(target_position) < 1.0:
+		if global_position.distance_to(target_position) < 0.5:
 			global_position = target_position
 			returning = false
+			_reset_visual_transform()
 
 			if _snap_callback.is_valid():
 				_snap_callback.call()
@@ -140,95 +139,86 @@ func _unhandled_input(event: InputEvent) -> void:
 	and event.button_index == MOUSE_BUTTON_LEFT \
 	and not event.pressed:
 		_end_drag()
-
+		
 func _start_drag() -> void:
 	if is_inventory_open.is_valid() and not is_inventory_open.call():
 		return
+
 	_close_tooltip()
+	original_position = global_position
 	dragging = true
-	returning = false
-	z_index = 2000
-	
+	_update_z_index()
+
 	var mouse_pos := get_global_mouse_position()
 	drag_offset = mouse_pos - global_position
-
-	# offset locale rispetto al centro visuale
 	grab_offset_local = (mouse_pos - global_position) - visual.size * 0.5
 
 	last_mouse_pos = mouse_pos
 	drag_velocity = Vector2.ZERO
-
-	source_equipment_slot = null
-	if get_parent() is EquipmentSlot:
-		source_equipment_slot = get_parent() as EquipmentSlot
-
-	original_position = global_position
-	target_position = global_position
 	
 func _end_drag() -> void:
 	if not dragging:
 		return
-	if is_inventory_open.is_valid() and not is_inventory_open.call():
-		returning = true
-		target_position = original_position
-		return
 
 	dragging = false
-	z_index = 1000
+	_update_z_index()
 
 	var slot := equipment_panel.get_slot_under_mouse()
-	if slot and can_equip_validator.is_valid():
-		if can_equip_validator.call(item, slot):
-			var snap_pos := slot.get_snap_global_position(self)
-			_start_snap_to(snap_pos, func():
-				Events.request_equip_item.emit(item, slot)
-				_finalize_reparent()
-			)
-			return
-
-	var cell := grid.get_best_drop_cell(self)
-	if cell != InventoryGrid.INVALID_CELL:
-		var snap_pos := grid.get_snap_global_position(cell, item)
-
-		if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-			_start_snap_to(snap_pos, func():
-				Events.request_unequip_item.emit(item, cell)
-				_finalize_reparent()
-			)
-		else:
-			_start_snap_to(snap_pos, func():
-				Events.request_move_item.emit(item, cell)
-				_finalize_reparent()
-			)
+	if slot and can_equip_validator.is_valid() and can_equip_validator.call(item, slot):
+		_start_return_to(slot)
 		return
 
+	var grid := equipment_panel.grid
+	var cell := grid.get_best_drop_cell(self)
+	if cell != InventoryGrid.INVALID_CELL:
+		_start_return_to_cell(cell)
+		return
+
+	_start_return()
+	
+func _start_return() -> void:
 	returning = true
+	_update_z_index()
 	target_position = original_position
+	
+func _start_return_to(slot: EquipmentSlot) -> void:
+	returning = true
+	_update_z_index()
+	target_position = slot.get_snap_global_position(self)
 
 	_snap_callback = func():
-		_reset_visual_transform()
-		if source_equipment_slot:
-			source_equipment_slot.attach_item_view(self)
+		Events.request_equip_item.emit(item, slot)
+		
+func _start_return_to_cell(cell: Vector2i) -> void:
+	returning = true
+	_update_z_index()
+	target_position = equipment_panel.grid.get_snap_global_position(cell, item)
+
+	_snap_callback = func():
+		if item.location == InventoryItemData.ItemLocation.EQUIPPED:
+			Events.request_unequip_item.emit(item, cell)
+		else:
+			Events.request_move_item.emit(item, cell)
+
+func _update_z_index() -> void:
+	if dragging:
+		z_index = 2000
+	elif returning:
+		z_index = 1000
+	else:
+		match item.location:
+			InventoryItemData.ItemLocation.INVENTORY:
+				z_index = 10
+			InventoryItemData.ItemLocation.EQUIPPED:
+				z_index = 200
+			_:
+				z_index = 0
 
 func _start_snap_to(pos: Vector2, on_complete: Callable) -> void:
 	dragging = false
 	returning = true
 	target_position = pos
 	_snap_callback = on_complete
-
-func _finalize_reparent() -> void:
-	_reset_visual_transform()
-	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-
-		var slot := equipment_panel._get_slot_for_item(item)
-		if slot:
-			slot.attach_item_view(self)
-			z_index = 200
-	else:
-		var gp := global_position
-		reparent(grid)
-		global_position = gp
-		z_index = 10
 
 func _update_drag_rotation(delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()

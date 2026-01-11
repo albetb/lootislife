@@ -36,7 +36,7 @@ class_name PlayerData
 # -------------------------
 # CONSTANTS
 # -------------------------
-const STARTING_ABILITY_POINTS := 3
+const STARTING_ABILITY_POINTS := 30
 const MAX_ABILITY := 10
 const MAX_HAND_SIZE := 10
 const BASE_LIFE := 10
