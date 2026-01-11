@@ -19,14 +19,10 @@ var grid: InventoryGrid
 ]
 
 func refresh_from_inventory(
-		inventory: InventoryData,
-		state: InventoryState,
-		inventory_grid: InventoryGrid
-	) -> void:
-	# SOLO PER INIT / REBUILD GLOBALI
-	inventory_state = state
-	grid = inventory_grid
-
+	inventory: InventoryData,
+	state: InventoryState,
+	inventory_grid: InventoryGrid
+) -> void:
 	_clear_all_slots()
 
 	for item in inventory.items:
@@ -37,11 +33,11 @@ func refresh_from_inventory(
 		if slot == null:
 			continue
 
-		# recupera la view ESISTENTE dalla grid
-		var view := inventory_grid.get_view_for_item(item)
+		var view: ItemView = inventory_grid.item_views.get(item.uid)
 		if view == null:
 			continue
 
+		view.visible = true
 		slot.attach_item_view(view)
 
 func _get_slot_for_item(item: InventoryItemData) -> EquipmentSlot:
@@ -88,4 +84,6 @@ func _clear_all_slots() -> void:
 		armor_slot,
 		relic_slot
 	] + consumable_slots:
-		slot.clear()
+		if slot.current_view:
+			slot.current_view.source_equipment_slot = null
+			slot.current_view = null

@@ -55,17 +55,35 @@ func _create_cell() -> Control:
 	return root
 
 func attach_item_view(view: ItemView) -> void:
+	if current_view == view:
+		return
+
 	current_view = view
+	view.source_equipment_slot = self
 	view.reparent(self)
-	view.position = (size - view.size) * 0.5
+
+	var cell_count := _get_vertical_cells()
+	var real_size := Vector2(CELL_SIZE.x, CELL_SIZE.y * cell_count)
+
+	view.position = (real_size - view.size) * 0.5
 	view.z_index = 200
 
 func clear() -> void:
-	if current_view:
-		current_view.source_equipment_slot = null
+	if not current_view:
+		return
+
+	var view := current_view
 	current_view = null
+
+	view.source_equipment_slot = null
 
 func get_snap_global_position(view: ItemView) -> Vector2:
 	var rect := get_global_rect()
-	var item_rect := view.get_global_rect()
-	return rect.position + (rect.size - item_rect.size) * 0.5
+
+	var cell_count := _get_vertical_cells()
+	var real_height := CELL_SIZE.y * cell_count
+
+	var slot_top := rect.position
+	var slot_size := Vector2(rect.size.x, real_height)
+
+	return slot_top + (slot_size - view.size) * 0.5

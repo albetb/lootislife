@@ -32,7 +32,7 @@ var grab_offset_local := Vector2.ZERO
 const MAX_ROTATION := 0.25
 const ROTATION_LERP := 14.0
 const MIN_DRAG_SPEED := 30.0
-const TOOLTIP_PADDING := 4
+const TOOLTIP_PADDING := 28
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
@@ -144,7 +144,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _start_drag() -> void:
 	if is_inventory_open.is_valid() and not is_inventory_open.call():
 		return
-	print("START DRAG ", item.equipment.display_name)
+	_close_tooltip()
 	dragging = true
 	returning = false
 	z_index = 2000
@@ -206,6 +206,7 @@ func _end_drag() -> void:
 	target_position = original_position
 
 	_snap_callback = func():
+		_reset_visual_transform()
 		if source_equipment_slot:
 			source_equipment_slot.attach_item_view(self)
 
@@ -214,10 +215,10 @@ func _start_snap_to(pos: Vector2, on_complete: Callable) -> void:
 	returning = true
 	target_position = pos
 	_snap_callback = on_complete
-	
+
 func _finalize_reparent() -> void:
+	_reset_visual_transform()
 	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-		grid.unregister_view(self)
 
 		var slot := equipment_panel._get_slot_for_item(item)
 		if slot:
@@ -227,9 +228,8 @@ func _finalize_reparent() -> void:
 		var gp := global_position
 		reparent(grid)
 		global_position = gp
-		grid.register_view(self)
 		z_index = 10
-		
+
 func _update_drag_rotation(delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
 	drag_velocity = (mouse_pos - last_mouse_pos) / max(delta, 0.0001)
@@ -286,3 +286,8 @@ func _update_drag_rotation(delta: float) -> void:
 		target_rotation,
 		ROTATION_LERP * delta
 	)
+	
+func _reset_visual_transform() -> void:
+	visual.rotation = 0.0
+	label.rotation = 0.0
+	invalid_overlay.rotation = 0.0

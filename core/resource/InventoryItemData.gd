@@ -1,16 +1,16 @@
 extends Resource
 class_name InventoryItemData
 
+@export var uid: String = ""
+
 @export var equipment: EquipmentData
 
 enum ItemLocation {
 	INVENTORY,
 	EQUIPPED
 }
-
-@export var location: ItemLocation = ItemLocation.INVENTORY
-
-@export var inventory_position: Vector2i = Vector2i.ZERO
+@export var location := ItemLocation.INVENTORY
+@export var inventory_position := Vector2i.ZERO
 
 enum EquippedSlot {
 	NONE,
@@ -23,5 +23,4 @@ enum EquippedSlot {
 	CONSUMABLE_2,
 	CONSUMABLE_3
 }
-
-@export var equipped_slot: EquippedSlot = EquippedSlot.NONE
+@export var equipped_slot := EquippedSlot.NONE

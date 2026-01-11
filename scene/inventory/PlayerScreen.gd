@@ -112,6 +112,11 @@ func request_equip_item(item: InventoryItemData, slot: EquipmentSlot) -> void:
 
 	if not _can_equip_item(item, target_slot):
 		return
+		
+	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
+		var old_slot := equipment_panel._get_slot_for_item(item)
+		if old_slot:
+			old_slot.clear()
 
 	item.location = InventoryItemData.ItemLocation.EQUIPPED
 	item.equipped_slot = target_slot
@@ -215,12 +220,20 @@ func _refresh_ui() -> void:
 		Player.get_inventory_slots()
 	)
 
-	inventory_grid.bind(inventory_state, equipment_panel)
+	inventory_grid._refresh()
 	equipment_panel.refresh_from_inventory(
 		Player.data.inventory,
 		inventory_state,
 		inventory_grid
 	)
 	
+	for item in Player.data.inventory.items:
+		print(
+			item.equipment.display_name,
+			"loc:", item.location,
+			"slot:", item.equipped_slot
+		)
+
+
 func is_inventory_open() -> bool:
 	return inventory_open

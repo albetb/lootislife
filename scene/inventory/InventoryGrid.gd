@@ -13,13 +13,13 @@ var inventory_state: InventoryState
 var equipment_panel: EquipmentPanel
 
 var slots: Dictionary = {}
-var item_views: Array[ItemView] = []
+var item_views: Dictionary = {} # uid -> ItemView
 
 func bind(state: InventoryState, panel: EquipmentPanel) -> void:
 	inventory_state = state
 	equipment_panel = panel
 	_build_grid()
-	_refresh()
+	_refresh_views()
 
 func _build_grid() -> void:
 	for child in get_children():
@@ -56,47 +56,58 @@ func _build_grid() -> void:
 
 	emit_signal("grid_resized")
 
-func _refresh() -> void:
-	# distruggi view precedenti
-	for view in item_views:
-		view.queue_free()
-	item_views.clear()
-
+func _refresh_views() -> void:
 	if inventory_state == null:
 		return
 
-	# reset visual occupazione slot
+	var alive := {}
+
+	for item in inventory_state.inventory.items:
+		alive[item.uid] = item
+
+	for uid in item_views.keys():
+		if not alive.has(uid):
+			item_views[uid].queue_free()
+			item_views.erase(uid)
+
 	for slot in slots.values():
 		slot.set_occupied(false)
 
-	# crea UNA ItemView per ogni item (inventory + equipped)
 	for item in inventory_state.inventory.items:
-		var view: ItemView = item_view_scene.instantiate()
-		add_child(view)
+		var view: ItemView
 
-		view.bind(item, 
-			inventory_state, 
-			self, 
-			equipment_panel,
-			Callable(get_tree().get_first_node_in_group("player_screen"), "can_equip_item"),
-			Callable(get_tree().get_first_node_in_group("player_screen"), "is_inventory_open")
-		)
-		item_views.append(view)
+		if not item_views.has(item.uid):
+			view = item_view_scene.instantiate()
+			add_child(view)
+
+			view.bind(
+				item,
+				inventory_state,
+				self,
+				equipment_panel,
+				Callable(get_tree().get_first_node_in_group("player_screen"), "can_equip_item"),
+				Callable(get_tree().get_first_node_in_group("player_screen"), "is_inventory_open")
+			)
+
+			item_views[item.uid] = view
+		else:
+			view = item_views[item.uid]
 
 		if item.location == InventoryItemData.ItemLocation.INVENTORY:
+			if view.get_parent() != self:
+				view.reparent(self)
+
+			view.visible = true
 			view.position = Vector2(item.inventory_position) * SLOT_SIZE
 			view.z_index = 10
+
+			for dy in range(item.equipment.size.y):
+				for dx in range(item.equipment.size.x):
+					var cell := item.inventory_position + Vector2i(dx, dy)
+					if slots.has(cell):
+						slots[cell].set_occupied(true)
 		else:
-			# equip: verrà riposizionata dall'EquipmentPanel
-			view.global_position = Vector2(-10000, -10000)
-			view.z_index = 10
-			
-		# marca slot occupati
-		for dy in range(item.equipment.size.y):
-			for dx in range(item.equipment.size.x):
-				var cell := item.inventory_position + Vector2i(dx, dy)
-				if slots.has(cell):
-					slots[cell].set_occupied(true)
+			view.visible = false
 
 func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 	var local := item_view.global_position - global_position
@@ -135,16 +146,3 @@ func get_visible_rows() -> int:
 func get_snap_global_position(cell: Vector2i, item: InventoryItemData) -> Vector2:
 	var local_pos := Vector2(cell) * SLOT_SIZE
 	return global_position + local_pos
-
-func get_view_for_item(item: InventoryItemData) -> ItemView:
-	for view in item_views:
-		if view.item == item:
-			return view
-	return null
-	
-func register_view(view: ItemView) -> void:
-	if view not in item_views:
-		item_views.append(view)
-		
-func unregister_view(view: ItemView) -> void:
-	item_views.erase(view)
