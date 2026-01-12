@@ -9,7 +9,7 @@ const MAX_WIDTH := 250
 const PADDING := Vector2(12, 10)
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	visible = false
 
 	name_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER

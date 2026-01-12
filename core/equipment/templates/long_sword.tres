@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://u5oy3aumvh2n"]
+
+[ext_resource type="Script" uid="uid://myd3mxco7w7j" path="res://core/equipment/WeaponData.gd" id="1_gedyw"]
+[ext_resource type="Resource" uid="uid://icl6r6g5nyk6" path="res://core/card/templates/Mazzata.tres" id="1_i8bw7"]
+
+[resource]
+script = ExtResource("1_gedyw")
+hand_usage = 0
+base_damage = 0
+id = ""
+display_name = "Spada lunga"
+slot_type = 0
+description = "Una spada decisamente di dimensioni appropriate al contesto"
+rarity = 1
+card_templates = Array[Resource]([ExtResource("1_i8bw7"), ExtResource("1_i8bw7")])
+size = Vector2i(1, 2)
+metadata/_custom_type_script = "uid://myd3mxco7w7j"

@@ -15,14 +15,16 @@ var item: InventoryItemData
 var equipment_panel: EquipmentPanel
 var tooltip: ItemTooltip
 
+signal animation_finished(view: ItemView)
+
 var dragging := false
 var returning := false
 
 var drag_offset := Vector2.ZERO
 var original_position := Vector2.ZERO
 var target_position := Vector2.ZERO
-var _snap_callback: Callable = Callable()
 var can_equip_validator: Callable
+var can_unequip_validator: Callable
 var is_inventory_open: Callable
 
 @onready var visual := $Visual
@@ -44,7 +46,7 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	pivot_offset = Vector2.ZERO
 
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	visual.mouse_filter = Control.MOUSE_FILTER_STOP
 	visual.gui_input.connect(_on_gui_input)
 	visual.mouse_entered.connect(_on_mouse_entered)
@@ -56,11 +58,13 @@ func bind(
 	_item: InventoryItemData,
 	_panel: EquipmentPanel,
 	_can_equip: Callable,
+	_can_unequip: Callable,
 	_is_inventory_open: Callable
 ) -> void:
 	item = _item
 	equipment_panel = _panel
 	can_equip_validator = _can_equip
+	can_unequip_validator = _can_unequip
 	is_inventory_open = _is_inventory_open
 
 	size = Vector2(
@@ -88,11 +92,10 @@ func _process(delta: float) -> void:
 		if global_position.distance_to(target_position) < 0.5:
 			global_position = target_position
 			returning = false
-			_reset_visual_transform()
-
-			if _snap_callback.is_valid():
-				_snap_callback.call()
-				_snap_callback = Callable()
+			visual.rotation = 0.0
+			label.rotation = 0.0
+			invalid_overlay.rotation = 0.0
+			animation_finished.emit(self)
 
 func _on_mouse_entered() -> void:
 	if dragging or returning:
@@ -149,13 +152,15 @@ func _start_drag() -> void:
 	dragging = true
 	_update_z_index()
 
+	equipment_panel.show_valid_drop_slots(item)
+
 	var mouse_pos := get_global_mouse_position()
 	drag_offset = mouse_pos - global_position
 	grab_offset_local = (mouse_pos - global_position) - visual.size * 0.5
 
 	last_mouse_pos = mouse_pos
 	drag_velocity = Vector2.ZERO
-	
+
 func _end_drag() -> void:
 	if not dragging:
 		return
@@ -163,62 +168,50 @@ func _end_drag() -> void:
 	dragging = false
 	_update_z_index()
 
+	equipment_panel.clear_drop_slot_highlights()
+
 	var slot := equipment_panel.get_slot_under_mouse()
-	if slot and can_equip_validator.is_valid() and can_equip_validator.call(item, slot):
-		_start_return_to(slot)
+	if slot:
+		if item.location == InventoryItemData.ItemLocation.EQUIPPED \
+		and slot.slot_id == item.equipped_slot:
+			_start_return()
+			return
+
+		if can_equip_validator.is_valid() and can_equip_validator.call(item, slot):
+			Events.request_equip_item.emit(item, slot)
+		else:
+			_start_return()
 		return
 
-	var grid := equipment_panel.grid
-	var cell := grid.get_best_drop_cell(self)
-	if cell != InventoryGrid.INVALID_CELL:
-		_start_return_to_cell(cell)
+	var cell := equipment_panel.grid.get_best_drop_cell(self)
+
+	if cell == InventoryGrid.INVALID_CELL:
+		_start_return()
 		return
 
-	_start_return()
-	
+	if item.location == InventoryItemData.ItemLocation.INVENTORY:
+		var other := equipment_panel.grid.get_item_at_cell(cell, item)
+		if other != null and other.equipment.size != item.equipment.size:
+			_start_return()
+			return
+
+	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
+		if not can_unequip_validator.call(item, cell):
+			_start_return()
+			return
+
+	Events.request_move_item.emit(item, cell)
+
 func _start_return() -> void:
 	returning = true
 	_update_z_index()
 	target_position = original_position
-	
-func _start_return_to(slot: EquipmentSlot) -> void:
-	returning = true
-	_update_z_index()
-	target_position = slot.get_snap_global_position(self)
 
-	_snap_callback = func():
-		Events.request_equip_item.emit(item, slot)
-		
-func _start_return_to_cell(cell: Vector2i) -> void:
-	returning = true
-	_update_z_index()
-	target_position = equipment_panel.grid.get_snap_global_position(cell, item)
-
-	_snap_callback = func():
-		if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-			Events.request_unequip_item.emit(item, cell)
-		else:
-			Events.request_move_item.emit(item, cell)
-
-func _update_z_index() -> void:
-	if dragging:
-		z_index = 2000
-	elif returning:
-		z_index = 1000
-	else:
-		match item.location:
-			InventoryItemData.ItemLocation.INVENTORY:
-				z_index = 10
-			InventoryItemData.ItemLocation.EQUIPPED:
-				z_index = 200
-			_:
-				z_index = 0
-
-func _start_snap_to(pos: Vector2, on_complete: Callable) -> void:
+func start_swap_animation(target_pos: Vector2) -> void:
 	dragging = false
 	returning = true
-	target_position = pos
-	_snap_callback = on_complete
+	_update_z_index()
+	target_position = target_pos
 
 func _update_drag_rotation(delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
@@ -276,8 +269,17 @@ func _update_drag_rotation(delta: float) -> void:
 		target_rotation,
 		ROTATION_LERP * delta
 	)
-	
-func _reset_visual_transform() -> void:
-	visual.rotation = 0.0
-	label.rotation = 0.0
-	invalid_overlay.rotation = 0.0
+
+func _update_z_index() -> void:
+	if dragging:
+		z_index = 2000
+	elif returning:
+		z_index = 1000
+	else:
+		match item.location:
+			InventoryItemData.ItemLocation.INVENTORY:
+				z_index = 10
+			InventoryItemData.ItemLocation.EQUIPPED:
+				z_index = 200
+			_:
+				z_index = 0

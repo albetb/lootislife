@@ -2,18 +2,23 @@ extends Control
 class_name EquipmentSlot
 
 const CELL_SIZE := Vector2(64, 64)
+const HIGHLIGHT_COLOR := Color(0.6, 1.0, 0.6, 0.85)
 
 @export var slot_id: InventoryItemData.EquippedSlot
 @onready var cells_container: VBoxContainer = $Cells
 
 var current_view: ItemView = null
+var _cell_backgrounds: Array[ColorRect] = []
+var _default_cell_color: Color
 
 func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	cells_container.add_theme_constant_override("separation", 0)
 	_build_cells()
 
 func _build_cells() -> void:
 	_clear_children(cells_container)
+	_cell_backgrounds.clear()
 
 	var count := _get_vertical_cells()
 
@@ -23,7 +28,7 @@ func _build_cells() -> void:
 
 	size = Vector2(CELL_SIZE.x, CELL_SIZE.y * count)
 	custom_minimum_size = size
-	
+
 func _clear_children(node: Node) -> void:
 	for child in node.get_children():
 		child.queue_free()
@@ -46,13 +51,24 @@ func _create_cell() -> Control:
 	root.set_anchors_preset(Control.PRESET_TOP_LEFT)
 
 	var rect := ColorRect.new()
-	rect.color = Color.ANTIQUE_WHITE
 	rect.custom_minimum_size = Vector2(60, 60)
 	rect.size = Vector2(60, 60)
 	rect.position = Vector2(2, 2)
+	rect.color = Color.ANTIQUE_WHITE
 
 	root.add_child(rect)
+
+	_cell_backgrounds.append(rect)
+
+	if _cell_backgrounds.size() == 1:
+		_default_cell_color = rect.color
+
 	return root
+
+func set_highlight(enabled: bool) -> void:
+	var color := HIGHLIGHT_COLOR if enabled else _default_cell_color
+	for rect in _cell_backgrounds:
+		rect.color = color
 
 func attach_item_view(view: ItemView) -> void:
 	if current_view == view:
@@ -74,7 +90,6 @@ func clear() -> void:
 
 	var view := current_view
 	current_view = null
-
 	view.source_equipment_slot = null
 
 func get_snap_global_position(view: ItemView) -> Vector2:

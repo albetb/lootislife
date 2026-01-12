@@ -74,13 +74,14 @@ func _refresh_views() -> void:
 			item,
 			equipment_panel,
 			Callable(get_tree().get_first_node_in_group("player_screen"), "can_equip_item"),
+			Callable(get_tree().get_first_node_in_group("player_screen"), "can_unequip_item"),
 			Callable(get_tree().get_first_node_in_group("player_screen"), "is_inventory_open")
 		)
 
 		item_views[item.uid] = view
 
 func get_best_drop_cell(item_view: ItemView) -> Vector2i:
-	var local := item_view.global_position - global_position
+	var local = item_view.global_position - global_position
 
 	var base_x := int(local.x / SLOT_SIZE.x)
 	var base_y := int(local.y / SLOT_SIZE.y)
@@ -88,8 +89,8 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 	if base_x < 0 or base_y < 0:
 		return INVALID_CELL
 
-	var offset_x := local.x - base_x * SLOT_SIZE.x
-	var offset_y := local.y - base_y * SLOT_SIZE.y
+	var offset_x = local.x - base_x * SLOT_SIZE.x
+	var offset_y = local.y - base_y * SLOT_SIZE.y
 
 	if offset_x > SLOT_SIZE.x * 0.5:
 		base_x += 1
@@ -116,3 +117,21 @@ func get_visible_rows() -> int:
 func get_snap_global_position(cell: Vector2i, item: InventoryItemData) -> Vector2:
 	var local_pos := Vector2(cell) * SLOT_SIZE
 	return global_position + local_pos
+
+func get_item_at_cell(cell: Vector2i, exclude: InventoryItemData) -> InventoryItemData:
+	for other in Player.data.inventory.items:
+		if other == exclude:
+			continue
+		if other.location != InventoryItemData.ItemLocation.INVENTORY:
+			continue
+
+		var pos := other.inventory_position
+		var size := other.equipment.size
+
+		if cell.x >= pos.x \
+		and cell.y >= pos.y \
+		and cell.x < pos.x + size.x \
+		and cell.y < pos.y + size.y:
+			return other
+
+	return null

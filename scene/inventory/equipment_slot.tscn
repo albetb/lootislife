@@ -10,20 +10,7 @@ offset_right = 64.0
 offset_bottom = 64.0
 script = ExtResource("1_jla6f")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
 [node name="Itemview" type="Node" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 60.0
-offset_bottom = 60.0
-color = Color(0.526204, 0.560737, 0.846601, 1)
 
 [node name="Cells" type="VBoxContainer" parent="."]
 layout_mode = 0
