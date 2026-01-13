@@ -6,7 +6,8 @@ class_name InventoryPanel
 @export var columns := 4
 
 @onready var grid := $VBoxContainer/InventoryGrid
-@onready var title_bar := $VBoxContainer/InventoryLabel
+@onready var title_bar := $VBoxContainer/HBoxContainer/InventoryLabel
+@onready var coin_label := $VBoxContainer/HBoxContainer/CoinLabel
 
 func _ready() -> void:
 	grid.grid_resized.connect(_on_grid_resized)
@@ -43,6 +44,7 @@ func configure_from_grid() -> void:
 
 	custom_minimum_size = Vector2(width_px, height_px)
 	size = custom_minimum_size
+	coin_label.text = str(Player.data.coins) + "🪙"
 	
 func _on_grid_resized() -> void:
 	configure_from_grid()

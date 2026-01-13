@@ -22,12 +22,18 @@ font_size = 12
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l0s36"]
 size = Vector2(96, 145)
 
-[node name="Card" type="Node2D"]
+[node name="Card" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_gelhr")
 metadata/_edit_use_anchors_ = true
 
-[node name="VisualRoot" type="Node2D" parent="."]
-position = Vector2(-49, -74)
+[node name="VisualRoot" type="Control" parent="."]
+anchors_preset = 0
+offset_left = -49.0
+offset_top = -74.0
+offset_right = -49.0
+offset_bottom = -74.0
 
 [node name="CardBase" type="Sprite2D" parent="VisualRoot"]
 texture_filter = 1
@@ -68,6 +74,7 @@ justification_flags = 168
 
 [node name="EffectLabel" type="Label" parent="VisualRoot"]
 unique_name_in_owner = true
+layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0

@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://wecshwb6p210"]
+[gd_scene load_steps=5 format=3 uid="uid://wecshwb6p210"]
 
 [ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/inventory/inventory_grid.tscn" id="1_guy1u"]
 [ext_resource type="Script" uid="uid://b8u43gta0yp4j" path="res://scene/inventory/InventoryPanel.gd" id="1_i4tt4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kee53"]
+font_size = 19
+
+[sub_resource type="LabelSettings" id="LabelSettings_qhxdo"]
+font_size = 20
 
 [node name="InventoryPanel" type="Panel"]
 anchors_preset = 15
@@ -18,10 +24,8 @@ anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -41.5
-offset_top = -1.0
-offset_right = 38.5
-offset_bottom = 48.0
+offset_left = -52.0
+offset_right = 52.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
@@ -30,10 +34,24 @@ mouse_filter = 0
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="InventoryLabel" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+alignment = 2
+
+[node name="InventoryLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 text = "Inventario"
+label_settings = SubResource("LabelSettings_kee53")
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CoinLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+label_settings = SubResource("LabelSettings_qhxdo")
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]

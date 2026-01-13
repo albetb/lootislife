@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CardTemplate" load_steps=5 format=3 uid="uid://4fesoj2xc0s"]
+
+[ext_resource type="Script" uid="uid://h0mbh1qv6wsj" path="res://core/card/CardEffect.gd" id="1_phdpe"]
+[ext_resource type="Script" uid="uid://vppo1xyrw68q" path="res://core/card/effects/DamageEffect.gd" id="2_xvxl7"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="3_p33pg"]
+
+[sub_resource type="Resource" id="Resource_34h2t"]
+script = ExtResource("2_xvxl7")
+amount = 99
+metadata/_custom_type_script = "uid://vppo1xyrw68q"
+
+[resource]
+script = ExtResource("3_p33pg")
+id = ""
+display_name = "Mazzatona"
+description = "Infligge 99 danni"
+cost = 3
+type = 0
+retain = false
+exhaust = false
+charges = -1
+copies = 1
+effects = Array[ExtResource("1_phdpe")]([SubResource("Resource_34h2t")])
+tags = PackedStringArray()
+metadata/_custom_type_script = "uid://c61j8yd47bwva"

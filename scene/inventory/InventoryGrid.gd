@@ -118,20 +118,34 @@ func get_snap_global_position(cell: Vector2i, item: InventoryItemData) -> Vector
 	var local_pos := Vector2(cell) * SLOT_SIZE
 	return global_position + local_pos
 
-func get_item_at_cell(cell: Vector2i, exclude: InventoryItemData) -> InventoryItemData:
+func get_item_at_cell(
+	base_cell: Vector2i,
+	exclude: InventoryItemData
+) -> InventoryItemData:
 	for other in Player.data.inventory.items:
 		if other == exclude:
 			continue
 		if other.location != InventoryItemData.ItemLocation.INVENTORY:
 			continue
 
-		var pos := other.inventory_position
-		var size := other.equipment.size
+		var other_pos := other.inventory_position
+		var other_size := other.equipment.size
 
-		if cell.x >= pos.x \
-		and cell.y >= pos.y \
-		and cell.x < pos.x + size.x \
-		and cell.y < pos.y + size.y:
+		if _rects_overlap(
+			base_cell, exclude.equipment.size,
+			other_pos, other_size
+		):
 			return other
 
 	return null
+
+func _rects_overlap(
+	a_pos: Vector2i, a_size: Vector2i,
+	b_pos: Vector2i, b_size: Vector2i
+) -> bool:
+	return not (
+		a_pos.x + a_size.x <= b_pos.x or
+		b_pos.x + b_size.x <= a_pos.x or
+		a_pos.y + a_size.y <= b_pos.y or
+		b_pos.y + b_size.y <= a_pos.y
+	)

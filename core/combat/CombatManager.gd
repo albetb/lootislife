@@ -58,7 +58,7 @@ func _create_card_uis(cards: Array[CardInstance]) -> Array[Card]:
 	var result: Array[Card] = []
 	for c in cards:
 		var card_ui: Card = card_scene.instantiate()
-		card_ui.bind(c)
+		card_ui.bind_instance(c)
 		result.append(card_ui)
 	return result
 

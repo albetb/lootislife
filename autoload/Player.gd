@@ -44,7 +44,6 @@ func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
 	data.inventory.items.clear()
 
 	var used_slots := {}
-	var next_inventory_cell := Vector2i.ZERO
 
 	# -------------------------
 	# EQUIP INIZIALE AUTOMATICO
@@ -72,13 +71,7 @@ func apply_starting_loadout(loadout: StartingLoadoutData) -> void:
 		entry.equipment = template.equipment
 		entry.location = InventoryItemData.ItemLocation.INVENTORY
 		entry.equipped_slot = InventoryItemData.EquippedSlot.NONE
-
-		entry.inventory_position = next_inventory_cell
-		next_inventory_cell.x += 1
-
-		if next_inventory_cell.x >= InventoryState.WIDTH:
-			next_inventory_cell.x = 0
-			next_inventory_cell.y += 1
+		entry.inventory_position = template.inventory_position
 
 		data.inventory.items.append(entry)
 

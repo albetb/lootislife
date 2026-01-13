@@ -37,7 +37,7 @@ func start_drag(card: Card, mouse_pos: Vector2) -> void:
 	dragging_card = card
 	original_index = card.get_index()
 	drag_offset = card.global_position - mouse_pos
-	grab_offset_local = card.to_local(mouse_pos)
+	grab_offset_local = mouse_pos - card.global_position
 
 	card.z_index = 1000
 

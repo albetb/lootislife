@@ -1,48 +1,47 @@
 extends Panel
 class_name ItemTooltip
 
-@onready var name_label: Label = $VBoxContainer/NameLabel
-@onready var type_label: Label = $VBoxContainer/TypeLabel
-@onready var desc_label: Label = $VBoxContainer/Description
-@onready var background: ColorRect = $ColorRect
-const MAX_WIDTH := 250
-const PADDING := Vector2(12, 10)
+@onready var background: ColorRect = $MarginContainer/ColorRect
+@onready var margin: MarginContainer = $MarginContainer
+@onready var cards_preview: CardsPreview = $MarginContainer/HBoxContainer/CardsPreview
+@onready var name_label: Label = $MarginContainer/HBoxContainer/VBoxContainer/NameLabel
+@onready var type_label: Label = $MarginContainer/HBoxContainer/VBoxContainer/TypeLabel
+@onready var desc_label: Label = $MarginContainer/HBoxContainer/VBoxContainer/Description
+
+const MIN_TOOLTIP_SIZE := Vector2(4, 2)
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	visible = false
 
-	name_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	type_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	desc_label.size_flags_horizontal = Control.SIZE_FILL
-
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func bind(item: EquipmentData) -> void:
+	visible = false
+
 	name_label.text = item.display_name
-	
+
 	var slot_key = EquipmentData.SlotType.keys()[item.slot_type]
 	type_label.text = slot_key.to_lower().capitalize()
 
 	desc_label.text = item.description
+	cards_preview.show_cards(item.card_templates)
 
-	# larghezza target per il wrap
-	custom_minimum_size.x = MAX_WIDTH
-	size.x = MAX_WIDTH
-
-	# lascia risolvere il layout
+	# Attendi che TUTTO il layout si stabilizzi
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	var content_size = $VBoxContainer.get_combined_minimum_size()
-	var final_size := Vector2(
-		MAX_WIDTH,
-		content_size.y
-	) + PADDING * 2
+	# Size reale del contenuto
+	var content_size := margin.get_combined_minimum_size()
+	var ent_size := desc_label.get_combined_minimum_size()
+	var cards_size := cards_preview.get_combined_minimum_size()
 
-	custom_minimum_size = final_size
-	size = final_size
+	# Applica solo i vincoli minimi
+	custom_minimum_size = Vector2(
+		max(content_size.x, MIN_TOOLTIP_SIZE.x),
+		max(content_size.y, MIN_TOOLTIP_SIZE.y)
+	) * 1.2
+	background.custom_minimum_size = custom_minimum_size
 
-	background.position = Vector2.ZERO
-	background.size = size
 	visible = true

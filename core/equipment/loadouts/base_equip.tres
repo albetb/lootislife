@@ -22,7 +22,7 @@ script = ExtResource("3_uwixt")
 uid = ""
 equipment = ExtResource("7_7k324")
 location = 0
-inventory_position = Vector2i(1, 0)
+inventory_position = Vector2i(1, 4)
 equipped_slot = 0
 metadata/_custom_type_script = "uid://derj2b34ye5bo"
 

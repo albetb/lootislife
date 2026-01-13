@@ -1,7 +1,6 @@
 extends ColorRect
 
 @onready var level_label: Label = $LevelLabel
-@onready var coin_label: Label = $CoinLabel
 @onready var health_label: Label = $HealthLabel
 @onready var health_bar: ProgressBar = $HealthBar
 @onready var exp_bar: ProgressBar = $ExpBar
@@ -16,9 +15,6 @@ func update_ui() -> void:
 
 	# --- LEVEL ---
 	level_label.text = "Lv: %d" % Player.data.level
-
-	# --- COINS ---
-	coin_label.text = str(Player.data.coins)
 
 	# --- HEALTH ---
 	var current_hp := Player.data.current_hp

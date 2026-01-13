@@ -1,9 +1,9 @@
 class_name Card
-extends Node2D
+extends Control
 
 @onready var input_area: Area2D = $InputArea
 @onready var input_shape: CollisionShape2D = $InputArea/CollisionShape2D
-@onready var visual_root: Node2D = $VisualRoot
+@onready var visual_root: Control = $VisualRoot
 
 @onready var name_label: Label = $VisualRoot/NameLabel
 @onready var cost_label: Label = $VisualRoot/CostLabel
@@ -14,7 +14,7 @@ signal unhovered(card: Card)
 signal drag_started(card: Card)
 signal drag_released(card: Card)
 
-var card_data
+var card_data: CardInstance
 var _data_bound := false
 var interaction_enabled := true
 var is_dragging := false
@@ -32,9 +32,20 @@ func _ready() -> void:
 	if _data_bound:
 		_apply_visuals()
 
-func bind(data) -> void:
-	card_data = data
+func bind_instance(instance: CardInstance) -> void:
+	card_data = instance
 	_data_bound = true
+
+	if is_node_ready():
+		_apply_visuals()
+
+func bind_template(template: CardTemplate) -> void:
+	var preview := CardInstance.new()
+	preview.setup(template)
+
+	card_data = preview
+	_data_bound = true
+
 	if is_node_ready():
 		_apply_visuals()
 
@@ -107,3 +118,17 @@ func _center_visual_root() -> void:
 	var shape := input_shape.shape
 	if shape is RectangleShape2D:
 		visual_root.position = -shape.size * 0.5
+
+func set_visual_scale(factor: float) -> void:
+	visual_root.scale = Vector2.ONE * factor
+	custom_minimum_size = Vector2(
+		get_card_width() * factor,
+		get_card_height() * factor
+	)
+
+func set_stack_copies(copies: int) -> void:
+	var ghost := visual_root.duplicate()
+	for i in range(1, copies):
+		var ghost2 := ghost.duplicate()
+		visual_root.add_child(ghost2)
+		ghost2.position = Vector2(0, 16 * i)

@@ -107,6 +107,7 @@ func request_move_item(item: InventoryItemData, target_cell: Vector2i) -> void:
 	if not inventory_state.is_cell_allowed(target_cell):
 		return
 
+	# swap inventario - inventario
 	var other := inventory_grid.get_item_at_cell(target_cell, item)
 	if other != null:
 		if other.equipment.size != item.equipment.size:
@@ -361,6 +362,8 @@ func _commit_inventory_change() -> void:
 	)
 	Player.save()
 	sync_item_views()
+	inventory_grid._build_grid()
+	inventory_panel.configure_from_grid()
 
 func _refresh_ui() -> void:
 	inventory_state.bind_data(

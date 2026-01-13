@@ -16,6 +16,6 @@ enum SlotType {
 @export var description: String
 @export var rarity: int = 1
 
-@export var card_templates: Array[Resource] = []
+@export var card_templates: Array[CardTemplate] = []
 
 @export var size: Vector2i = Vector2i.ZERO
