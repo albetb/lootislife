@@ -319,7 +319,9 @@ func _can_equip_item(item: InventoryItemData, slot: InventoryItemData.EquippedSl
 		InventoryItemData.EquippedSlot.ARMOR:
 			return item.equipment.slot_type == EquipmentData.SlotType.ARMOR
 
-		InventoryItemData.EquippedSlot.RELIC:
+		InventoryItemData.EquippedSlot.RELIC_0:
+			return item.equipment.slot_type == EquipmentData.SlotType.RELIC
+		InventoryItemData.EquippedSlot.RELIC_1:
 			return item.equipment.slot_type == EquipmentData.SlotType.RELIC
 
 		InventoryItemData.EquippedSlot.CONSUMABLE_0:

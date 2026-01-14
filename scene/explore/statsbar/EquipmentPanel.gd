@@ -9,7 +9,10 @@ var inventory_state: InventoryState
 @onready var right_hand_slot: EquipmentSlot = $VBoxContainer/HBoxContainer/RightHandSlot
 @onready var left_hand_slot: EquipmentSlot = $VBoxContainer/HBoxContainer/LeftHandSlot
 @onready var armor_slot: EquipmentSlot = $VBoxContainer/HBoxContainer2/ArmorSlot
-@onready var relic_slot: EquipmentSlot = $VBoxContainer/HBoxContainer2/RelicSlot
+@onready var relic_slots: Array[EquipmentSlot] = [
+	$VBoxContainer/HBoxContainer2/RelicContainer/RelicSlot1,
+	$VBoxContainer/HBoxContainer2/RelicContainer/RelicSlot2,
+]
 
 @onready var consumable_slots: Array[EquipmentSlot] = [
 	$ConsumablesContainer/ConsumableSlot1,
@@ -29,8 +32,10 @@ func get_slot_by_id(slot_id: InventoryItemData.EquippedSlot) -> EquipmentSlot:
 			return right_hand_slot
 		InventoryItemData.EquippedSlot.ARMOR:
 			return armor_slot
-		InventoryItemData.EquippedSlot.RELIC:
-			return relic_slot
+		InventoryItemData.EquippedSlot.RELIC_0:
+			return relic_slots[0]
+		InventoryItemData.EquippedSlot.RELIC_1:
+			return relic_slots[1]
 		InventoryItemData.EquippedSlot.CONSUMABLE_0:
 			return consumable_slots[0]
 		InventoryItemData.EquippedSlot.CONSUMABLE_1:
@@ -90,6 +95,5 @@ func _get_all_slots() -> Array:
 	return [
 		right_hand_slot,
 		left_hand_slot,
-		armor_slot,
-		relic_slot
-	] + consumable_slots
+		armor_slot
+	] + relic_slots + consumable_slots

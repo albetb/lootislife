@@ -53,6 +53,7 @@ texture = ExtResource("2_ak6k4")
 
 [node name="CostLabel" type="Label" parent="VisualRoot"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 80.0
 offset_top = -1.99999
 offset_right = 104.0
@@ -63,6 +64,7 @@ horizontal_alignment = 1
 
 [node name="NameLabel" type="Label" parent="VisualRoot"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 4.05
 offset_top = 3.75
 offset_right = 63.05

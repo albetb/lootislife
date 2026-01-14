@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ArmorData" load_steps=3 format=3 uid="uid://d1g2lmsl384n3"]
+[gd_resource type="Resource" script_class="ArmorData" load_steps=4 format=3 uid="uid://d1g2lmsl384n3"]
 
 [ext_resource type="Script" uid="uid://ditylr0ad1erv" path="res://core/equipment/ArmorData.gd" id="1_4ustb"]
 [ext_resource type="Resource" uid="uid://nnswg571k72g" path="res://core/card/templates/Parata.tres" id="1_q57yd"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="1_tdofu"]
 
 [resource]
 script = ExtResource("1_4ustb")
@@ -12,6 +13,6 @@ display_name = "Giaco di maglia"
 slot_type = 1
 description = "Fornisce difese base adatte a tutte le occasioni"
 rarity = 1
-card_templates = Array[Resource]([ExtResource("1_q57yd")])
+card_templates = Array[ExtResource("1_tdofu")]([ExtResource("1_q57yd")])
 size = Vector2i(1, 2)
 metadata/_custom_type_script = "uid://ditylr0ad1erv"

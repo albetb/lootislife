@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://cur5bpiop7qbo"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=5 format=3 uid="uid://cur5bpiop7qbo"]
 
 [ext_resource type="Script" uid="uid://myd3mxco7w7j" path="res://core/equipment/WeaponData.gd" id="1_lbjav"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="1_rn3nc"]
 [ext_resource type="Resource" uid="uid://dg7tdnk25eiav" path="res://core/card/templates/Colpo.tres" id="1_s6fkg"]
 [ext_resource type="Resource" uid="uid://icl6r6g5nyk6" path="res://core/card/templates/Mazzata.tres" id="2_wfjvh"]
 
@@ -13,6 +14,6 @@ display_name = "Spada corta"
 slot_type = 0
 description = "Una spada con degli attacchi abbastanza scarsi ma con un attacco piùfforte"
 rarity = 1
-card_templates = Array[Resource]([ExtResource("1_s6fkg"), ExtResource("2_wfjvh")])
+card_templates = Array[ExtResource("1_rn3nc")]([ExtResource("1_s6fkg"), ExtResource("2_wfjvh")])
 size = Vector2i(1, 2)
 metadata/_custom_type_script = "uid://myd3mxco7w7j"

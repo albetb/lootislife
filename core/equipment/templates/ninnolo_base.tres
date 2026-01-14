@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="RelicData" load_steps=3 format=3 uid="uid://batec865mknp3"]
+[gd_resource type="Resource" script_class="RelicData" load_steps=4 format=3 uid="uid://batec865mknp3"]
 
 [ext_resource type="Script" uid="uid://rn48n3m53oos" path="res://core/equipment/RelicData.gd" id="1_6cde8"]
 [ext_resource type="Resource" uid="uid://sku5t6exdgv5" path="res://core/card/templates/Focus.tres" id="1_c5t2m"]
+[ext_resource type="Script" uid="uid://c61j8yd47bwva" path="res://core/card/CardTemplate.gd" id="1_y8o7s"]
 
 [resource]
 script = ExtResource("1_6cde8")
@@ -11,6 +12,6 @@ display_name = "Ninnolo"
 slot_type = 2
 description = "Ha la forma di una pallina per il culo. Viene usato per pescare più carte."
 rarity = 1
-card_templates = Array[Resource]([ExtResource("1_c5t2m")])
+card_templates = Array[ExtResource("1_y8o7s")]([ExtResource("1_c5t2m")])
 size = Vector2i(1, 1)
 metadata/_custom_type_script = "uid://rn48n3m53oos"
