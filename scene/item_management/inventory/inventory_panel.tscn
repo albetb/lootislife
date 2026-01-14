@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://wecshwb6p210"]
 
-[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/inventory/inventory_grid.tscn" id="1_guy1u"]
-[ext_resource type="Script" uid="uid://b8u43gta0yp4j" path="res://scene/inventory/InventoryPanel.gd" id="1_i4tt4"]
+[ext_resource type="Script" uid="uid://b8u43gta0yp4j" path="res://scene/item_management/inventory/InventoryPanel.gd" id="1_euivt"]
+[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/item_management/inventory/inventory_grid.tscn" id="2_325il"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kee53"]
 font_size = 19
@@ -16,7 +16,7 @@ anchor_bottom = 1.0
 offset_left = 899.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_i4tt4")
+script = ExtResource("1_euivt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -58,7 +58,7 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("1_guy1u")]
+[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("2_325il")]
 layout_mode = 2
 
 [node name="InventoryGridWrapper" type="Control" parent="VBoxContainer"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://comhmd4npw7y"]
 
-[ext_resource type="Script" uid="uid://c2td7jepwittq" path="res://scene/explore/statsbar/StatContainer.gd" id="1_5wqfq"]
+[ext_resource type="Script" uid="uid://c2td7jepwittq" path="res://scene/exploration/statsbar/StatContainer.gd" id="1_5wqfq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_liibg"]
 line_spacing = 0.0

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://5y8xc0h64uil" path="res://core/equipment/StartingLoadoutData.gd" id="1_d2gos"]
 [ext_resource type="Script" uid="uid://r0w4kyef56xi" path="res://core/equipment/EquipmentData.gd" id="2_y0n0j"]
-[ext_resource type="Script" uid="uid://derj2b34ye5bo" path="res://core/resource/InventoryItemData.gd" id="3_uwixt"]
+[ext_resource type="Script" uid="uid://derj2b34ye5bo" path="res://core/item_management/InventoryItemData.gd" id="3_uwixt"]
 [ext_resource type="Resource" uid="uid://d1g2lmsl384n3" path="res://core/equipment/templates/armor_base.tres" id="3_xu7hd"]
 [ext_resource type="Resource" uid="uid://cur5bpiop7qbo" path="res://core/equipment/templates/short_sword.tres" id="4_7k324"]
 [ext_resource type="Resource" uid="uid://batec865mknp3" path="res://core/equipment/templates/ninnolo_base.tres" id="5_dx0j2"]
@@ -22,7 +22,7 @@ script = ExtResource("3_uwixt")
 uid = ""
 equipment = ExtResource("7_7k324")
 location = 0
-inventory_position = Vector2i(1, 4)
+inventory_position = Vector2i(1, 1)
 equipped_slot = 0
 metadata/_custom_type_script = "uid://derj2b34ye5bo"
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cx6c7wis3yl0l"]
 
-[ext_resource type="Script" uid="uid://djc1gxdiggcrs" path="res://scene/inventory/InventoryGrid.gd" id="1_vga64"]
+[ext_resource type="Script" uid="uid://djc1gxdiggcrs" path="res://scene/item_management/inventory/InventoryGrid.gd" id="1_vga64"]
 
 [node name="InventoryGrid" type="Control"]
 layout_mode = 3

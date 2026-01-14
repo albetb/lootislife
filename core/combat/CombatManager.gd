@@ -143,4 +143,4 @@ func _end_combat_victory() -> void:
 	Player.save()
 
 	# Torna all'esplorazione
-	SceneManager.switch("res://scene/explore/explore.tscn")
+	SceneManager.switch("res://scene/exploration/explore.tscn")

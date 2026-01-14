@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b2uq123kh6uj3"]
 
-[ext_resource type="Script" uid="uid://dbp7wx0jkbwx4" path="res://scene/inventory/EquipmentSlot.gd" id="1_jla6f"]
+[ext_resource type="Script" uid="uid://dbp7wx0jkbwx4" path="res://scene/item_management/equipment/EquipmentSlot.gd" id="1_f3tn5"]
 
 [node name="EquipmentSlot" type="Control"]
 custom_minimum_size = Vector2(64, 64)
@@ -8,7 +8,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 64.0
 offset_bottom = 64.0
-script = ExtResource("1_jla6f")
+script = ExtResource("1_f3tn5")
 
 [node name="Itemview" type="Node" parent="."]
 

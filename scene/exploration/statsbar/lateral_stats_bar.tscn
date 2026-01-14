@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://domsnyqqkmhhp"]
 
-[ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/explore/statsbar/LateralStatsBar.gd" id="1_7tqpy"]
-[ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/explore/statsbar/stat_container.tscn" id="1_xifav"]
-[ext_resource type="Script" uid="uid://ck5g4eu1uhbqw" path="res://scene/explore/statsbar/EquipmentPanel.gd" id="3_ldj1a"]
-[ext_resource type="PackedScene" uid="uid://b2uq123kh6uj3" path="res://scene/inventory/equipment_slot.tscn" id="4_p3tbl"]
+[ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/exploration/statsbar/LateralStatsBar.gd" id="1_7tqpy"]
+[ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/exploration/statsbar/stat_container.tscn" id="1_xifav"]
+[ext_resource type="Script" uid="uid://ck5g4eu1uhbqw" path="res://scene/exploration/statsbar/EquipmentPanel.gd" id="3_ldj1a"]
+[ext_resource type="PackedScene" uid="uid://b2uq123kh6uj3" path="res://scene/item_management/equipment/equipment_slot.tscn" id="4_p3tbl"]
 
 [node name="LateralStatsBar" type="ColorRect"]
 anchors_preset = -1

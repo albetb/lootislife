@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ska3hghurta2"]
 
-[ext_resource type="Script" uid="uid://dhlx6ivhqjts2" path="res://scene/explore/choice/Choice.gd" id="1_pu34k"]
+[ext_resource type="Script" uid="uid://dhlx6ivhqjts2" path="res://scene/exploration/choice/Choice.gd" id="1_pu34k"]
 [ext_resource type="Texture2D" uid="uid://d1lvhs2t0uu7w" path="res://sprite/choiche_sprite.png" id="2_r388r"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6davc"]

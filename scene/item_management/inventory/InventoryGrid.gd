@@ -3,8 +3,8 @@ class_name InventoryGrid
 
 signal grid_resized
 
-@export var slot_scene: PackedScene = preload("res://scene/inventory/inventory_slot.tscn")
-@export var item_view_scene: PackedScene = preload("res://scene/inventory/item_view.tscn")
+@export var slot_scene: PackedScene = preload("res://scene/item_management/inventory/inventory_slot.tscn")
+@export var item_view_scene: PackedScene = preload("res://scene/item_management/item/item_view.tscn")
 
 const SLOT_SIZE := Vector2(64, 64)
 const INVALID_CELL := Vector2i(-1, -1)

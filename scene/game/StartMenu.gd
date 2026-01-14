@@ -21,7 +21,7 @@ func _ready() -> void:
 
 func _new_game() -> void:
 	Player.reset()
-	SceneManager.switch("res://scene/explore/explore.tscn")
+	SceneManager.switch("res://scene/exploration/explore.tscn")
 
 func _continue() -> void:
-	SceneManager.switch("res://scene/explore/explore.tscn")
+	SceneManager.switch("res://scene/exploration/explore.tscn")

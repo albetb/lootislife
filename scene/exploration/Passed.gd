@@ -1,7 +1,7 @@
 extends MarginContainer
 
 @onready var past_path_container: HBoxContainer = $HBoxContainer
-@onready var room_scene: PackedScene = preload("res://scene/explore/room/room_card.tscn")
+@onready var room_scene: PackedScene = preload("res://scene/exploration/room/room_card.tscn")
 
 func _ready() -> void:
 	Events.update_ui.connect(self.update_ui)

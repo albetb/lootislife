@@ -103,7 +103,7 @@ func _on_mouse_entered() -> void:
 	if tooltip:
 		return
 
-	tooltip = preload("res://scene/inventory/item_tooltip.tscn").instantiate()
+	tooltip = preload("res://scene/item_management/item/item_tooltip.tscn").instantiate()
 	get_tree().current_scene.add_child(tooltip)
 	tooltip.bind(item.equipment)
 

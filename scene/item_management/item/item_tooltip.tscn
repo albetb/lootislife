@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://divri6llse1p5"]
+[gd_scene load_steps=4 format=3 uid="uid://divri6llse1p5"]
 
-[ext_resource type="Script" uid="uid://bnb3j6xqyt04t" path="res://scene/inventory/ItemTooltip.gd" id="1_cmmmc"]
-[ext_resource type="Script" uid="uid://cpk066rrkyd5c" path="res://scene/inventory/CardsPreview.gd" id="2_ibsec"]
-[ext_resource type="PackedScene" uid="uid://3trgkf0u68ry" path="res://scene/card/card.tscn" id="3_31ooq"]
+[ext_resource type="Script" uid="uid://bnb3j6xqyt04t" path="res://scene/item_management/item/ItemTooltip.gd" id="1_huwrh"]
+[ext_resource type="PackedScene" uid="uid://3trgkf0u68ry" path="res://scene/card/card.tscn" id="2_kl6x3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_cmmmc"]
 font_size = 18
@@ -17,7 +16,8 @@ offset_right = -0.560028
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_cmmmc")
+script = ExtResource("1_huwrh")
+card_scene = ExtResource("2_kl6x3")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(10, 10)
@@ -42,11 +42,6 @@ alignment = 1
 [node name="CardsPreview" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
-size_flags_stretch_ratio = 3.96
-mouse_filter = 2
-alignment = 1
-script = ExtResource("2_ibsec")
-card_scene = ExtResource("3_31ooq")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
