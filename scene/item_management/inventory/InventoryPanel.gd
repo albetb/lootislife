@@ -44,7 +44,7 @@ func configure_from_grid() -> void:
 
 	custom_minimum_size = Vector2(width_px, height_px)
 	size = custom_minimum_size
-	coin_label.text = str(Player.data.coins) + "🪙"
+	coin_label.text = str(Player.data.coins) + " 🪙"
 	
 func _on_grid_resized() -> void:
 	configure_from_grid()

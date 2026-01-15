@@ -47,7 +47,6 @@ func get_slot_by_id(slot_id: InventoryItemData.EquippedSlot) -> EquipmentSlot:
 		_:
 			return null
 
-			
 func get_item_in_slot(slot: EquipmentSlot) -> InventoryItemData:
 	if inventory_state == null:
 		return null

@@ -1,12 +1,7 @@
-[gd_scene load_steps=21 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=9 format=3 uid="uid://dk0iotlgj0omy"]
 
 [ext_resource type="Script" uid="uid://hbwumtykd6td" path="res://scene/exploration/Exploration.gd" id="1_u1wya"]
-[ext_resource type="Script" uid="uid://i25mt3olv64p" path="res://scene/exploration/RoomPanel.gd" id="1_wfrkh"]
-[ext_resource type="Script" uid="uid://du20ugncge8uv" path="res://scene/exploration/Path.gd" id="2_gqcq7"]
-[ext_resource type="Script" uid="uid://cok3yew21j3t3" path="res://scene/exploration/TopMenuBackground.gd" id="2_ysj00"]
-[ext_resource type="Script" uid="uid://b2i2mfy4pk61c" path="res://scene/exploration/Passed.gd" id="3_cncri"]
-[ext_resource type="Script" uid="uid://bxjbbej5jahdt" path="res://scene/exploration/Choices.gd" id="4_bf2ox"]
-[ext_resource type="Script" uid="uid://b1ox5xkn2dt0q" path="res://scene/exploration/FloorPanel.gd" id="5_nqvb7"]
+[ext_resource type="Script" uid="uid://bqlnc5laeh51e" path="res://scene/exploration/ExplorationManager.gd" id="2_dxjkk"]
 [ext_resource type="PackedScene" uid="uid://b3nhik41pq50h" path="res://scene/item_management/player_screen.tscn" id="9_wfrkh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pme05"]
@@ -19,57 +14,13 @@ corner_radius_bottom_left = 8
 [sub_resource type="Theme" id="Theme_lhpby"]
 Panel/styles/panel = SubResource("StyleBoxFlat_pme05")
 
-[sub_resource type="LabelSettings" id="LabelSettings_g1dy5"]
-font_size = 22
-shadow_color = Color(0.176471, 0.176471, 0.176471, 0.427451)
-
 [sub_resource type="LabelSettings" id="LabelSettings_y4bjt"]
 font_size = 17
 shadow_color = Color(0.176419, 0.176419, 0.176419, 0.427451)
 
-[sub_resource type="LabelSettings" id="LabelSettings_tlphh"]
-font_size = 32
-font_color = Color(0.0431373, 0.0235294, 0.0470588, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8brc6"]
-bg_color = Color(0.515141, 0.616581, 0.685831, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_size = 1
-shadow_offset = Vector2(1, -1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtd4f"]
-bg_color = Color(0.928655, 0.204271, 0.262771, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="Theme" id="Theme_imwbv"]
-ProgressBar/styles/background = SubResource("StyleBoxFlat_8brc6")
-ProgressBar/styles/fill = SubResource("StyleBoxFlat_xtd4f")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqdji"]
-bg_color = Color(0.515141, 0.616581, 0.685831, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_size = 1
-shadow_offset = Vector2(1, -1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_si8ep"]
-bg_color = Color(0.299926, 0.460557, 0.877095, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="Theme" id="Theme_70n52"]
-ProgressBar/styles/background = SubResource("StyleBoxFlat_eqdji")
-ProgressBar/styles/fill = SubResource("StyleBoxFlat_si8ep")
+[sub_resource type="LabelSettings" id="LabelSettings_g1dy5"]
+font_size = 22
+shadow_color = Color(0.176471, 0.176471, 0.176471, 0.427451)
 
 [sub_resource type="LabelSettings" id="LabelSettings_k4akk"]
 font_size = 31
@@ -77,26 +28,34 @@ font_color = Color(0.0980392, 0.0313726, 0.0980392, 1)
 
 [node name="Explore" type="CanvasLayer"]
 
-[node name="ColorRect" type="ColorRect" parent="."]
-z_index = -2
-offset_right = 1148.0
-offset_bottom = 646.0
+[node name="Exploration" type="Node" parent="."]
+script = ExtResource("1_u1wya")
 
 [node name="Background" type="ColorRect" parent="."]
 z_index = -2
-offset_top = 47.0
 offset_right = 1279.0
 offset_bottom = 721.0
 color = Color(0.881062, 0.826031, 0.438953, 1)
+script = ExtResource("2_dxjkk")
 
 [node name="RoomPanel" type="Panel" parent="Background"]
 layout_mode = 0
-offset_left = 458.0
-offset_top = 24.0
-offset_right = 626.0
-offset_bottom = 83.0
+offset_left = 89.0
+offset_top = 99.0
+offset_right = 257.0
+offset_bottom = 158.0
 theme = SubResource("Theme_lhpby")
-script = ExtResource("1_wfrkh")
+
+[node name="FloorLabel" type="Label" parent="Background/RoomPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 24.0
+offset_right = 164.0
+offset_bottom = 59.0
+text = "Loot +20%"
+label_settings = SubResource("LabelSettings_y4bjt")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="RoomLabel" type="Label" parent="Background/RoomPanel"]
 layout_mode = 0
@@ -109,153 +68,72 @@ label_settings = SubResource("LabelSettings_g1dy5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LootLabel" type="Label" parent="Background/RoomPanel"]
+[node name="UpcomingLabel" type="Label" parent="Background"]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 24.0
-offset_right = 164.0
-offset_bottom = 59.0
-text = "Loot +20%"
-label_settings = SubResource("LabelSettings_y4bjt")
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_left = 329.0
+offset_top = 41.0
+offset_right = 489.0
+offset_bottom = 87.0
+text = "In arrivo"
+label_settings = SubResource("LabelSettings_k4akk")
 
-[node name="TopMenuBackground" type="ColorRect" parent="."]
-offset_right = 1280.0
-offset_bottom = 65.0
-color = Color(0.790586, 0.567307, 0.457462, 1)
-script = ExtResource("2_ysj00")
-
-[node name="HealthLabel" type="Label" parent="TopMenuBackground"]
-layout_mode = 0
-offset_left = 256.0
-offset_right = 433.0
-offset_bottom = 45.0
-text = "Hp: 30/30"
-label_settings = SubResource("LabelSettings_tlphh")
-
-[node name="LevelLabel" type="Label" parent="TopMenuBackground"]
-layout_mode = 0
-offset_left = 31.0
-offset_right = 238.0
-offset_bottom = 45.0
-text = "Livello:"
-label_settings = SubResource("LabelSettings_tlphh")
-
-[node name="HealthBar" type="ProgressBar" parent="TopMenuBackground"]
-layout_mode = 0
-offset_left = 254.0
-offset_top = 47.0
-offset_right = 443.0
-offset_bottom = 61.0
-theme = SubResource("Theme_imwbv")
-step = 1.0
-value = 54.0
-show_percentage = false
-
-[node name="ExpBar" type="ProgressBar" parent="TopMenuBackground"]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 47.0
-offset_right = 217.0
-offset_bottom = 61.0
-theme = SubResource("Theme_70n52")
-step = 1.0
-value = 54.0
-show_percentage = false
-
-[node name="FloorPanel" type="Panel" parent="TopMenuBackground"]
-z_index = 3
-layout_mode = 0
-offset_left = 458.0
-offset_top = 13.0
-offset_right = 626.0
-offset_bottom = 51.0
-theme = SubResource("Theme_lhpby")
-script = ExtResource("5_nqvb7")
-
-[node name="FloorLabel" type="Label" parent="TopMenuBackground/FloorPanel"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 1.0
-offset_right = 164.0
-offset_bottom = 36.0
-text = "Piano 1/10"
-label_settings = SubResource("LabelSettings_g1dy5")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Exploration" type="Node" parent="."]
-script = ExtResource("1_u1wya")
-
-[node name="Path" type="MarginContainer" parent="."]
+[node name="Path" type="MarginContainer" parent="Background"]
+layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.201
 anchor_top = 0.072
 anchor_right = 0.201
 anchor_bottom = 0.072
-offset_left = -177.552
-offset_top = 87.344
-offset_right = 771.448
-offset_bottom = 173.344
-script = ExtResource("2_gqcq7")
+offset_left = 63.921
+offset_top = 39.088
+offset_right = 791.921
+offset_bottom = 125.088
 
-[node name="Panel" type="Panel" parent="Path"]
+[node name="Panel" type="Panel" parent="Background/Path"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Path"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Background/Path"]
 layout_direction = 2
 layout_mode = 2
 
-[node name="UpcomingLabel" type="Label" parent="."]
-offset_left = 61.0
-offset_top = 86.0
-offset_right = 221.0
-offset_bottom = 132.0
-text = "In arrivo"
+[node name="PassedLabel" type="Label" parent="Background"]
+layout_mode = 0
+offset_left = 925.0
+offset_top = 43.0
+offset_right = 1045.0
+offset_bottom = 87.0
+text = "Passate"
 label_settings = SubResource("LabelSettings_k4akk")
 
-[node name="Passed" type="MarginContainer" parent="."]
-offset_left = 54.0
-offset_top = 134.0
-offset_right = 1003.0
-offset_bottom = 220.0
-script = ExtResource("3_cncri")
+[node name="Passed" type="MarginContainer" parent="Background"]
+layout_mode = 0
+offset_left = 322.0
+offset_top = 90.0
+offset_right = 1042.0
+offset_bottom = 176.0
 
-[node name="Panel" type="Panel" parent="Passed"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Background/Passed"]
 visible = false
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Passed"]
 layout_direction = 2
 layout_mode = 2
 alignment = 2
 
-[node name="PassedLabel" type="Label" parent="."]
-offset_left = 880.0
-offset_top = 87.0
-offset_right = 1000.0
-offset_bottom = 131.0
-text = "Passate"
-label_settings = SubResource("LabelSettings_k4akk")
+[node name="Choices" type="MarginContainer" parent="Background"]
+layout_mode = 0
+offset_left = 108.0
+offset_top = 287.0
+offset_right = 1030.0
+offset_bottom = 579.0
 
-[node name="Choices" type="MarginContainer" parent="."]
-offset_left = 71.0
-offset_top = 297.0
-offset_right = 993.0
-offset_bottom = 589.0
-script = ExtResource("4_bf2ox")
-
-[node name="Panel" type="Panel" parent="Choices"]
+[node name="Panel" type="Panel" parent="Background/Choices"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Choices"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Background/Choices"]
 layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="PlayerScreen" parent="." instance=ExtResource("9_wfrkh")]
 visibility_layer = 512
 offset_left = 2.0
-offset_top = 3.0
-offset_right = 2.0
-offset_bottom = 3.0
+offset_right = -1.0
+offset_bottom = 1.0

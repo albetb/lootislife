@@ -73,21 +73,22 @@ func _update_button() -> void:
 
 func _position_inventory(closed: bool) -> void:
 	var sidebar_rect = sidebar.get_global_rect()
+	var bottom_y = sidebar_rect.position.y + sidebar_rect.size.y
 
 	if closed:
 		inventory_target_pos = Vector2(
 			sidebar_rect.position.x + INVENTORY_OFFSET,
-			sidebar_rect.position.y + INVENTORY_OFFSET
+			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
 		)
 
 		button_target_pos = Vector2(
 			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
-			sidebar_rect.position.y + INVENTORY_OFFSET
+			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
 		)
 	else:
 		inventory_target_pos = Vector2(
 			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
-			sidebar_rect.position.y + INVENTORY_OFFSET
+			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
 		)
 
 		button_target_pos = Vector2(
@@ -95,7 +96,7 @@ func _position_inventory(closed: bool) -> void:
 			- inventory_panel.size.x
 			- toggle_button.size.x
 			- 2 * INVENTORY_OFFSET,
-			sidebar_rect.position.y + INVENTORY_OFFSET
+			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
 		)
 
 # INVENTORY → INVENTORY

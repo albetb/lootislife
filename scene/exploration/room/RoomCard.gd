@@ -9,7 +9,6 @@ class_name RoomCard
 @onready var num: int
 @onready var type: RoomResource.Type
 
-
 func _ready() -> void:
 	if label != null and label.text != str(text):
 		label.set_text(str(text))

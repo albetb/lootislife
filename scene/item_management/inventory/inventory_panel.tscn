@@ -13,7 +13,7 @@ font_size = 20
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 899.0
+offset_left = 920.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_euivt")
@@ -30,8 +30,11 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 5)
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("2_325il")]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
@@ -41,7 +44,6 @@ alignment = 2
 [node name="InventoryLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Inventario"
 label_settings = SubResource("LabelSettings_kee53")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -53,14 +55,3 @@ text = "0"
 label_settings = SubResource("LabelSettings_qhxdo")
 horizontal_alignment = 2
 vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 5)
-layout_mode = 2
-
-[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("2_325il")]
-layout_mode = 2
-
-[node name="InventoryGridWrapper" type="Control" parent="VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2

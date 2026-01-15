@@ -1,22 +1,73 @@
-[gd_scene load_steps=5 format=3 uid="uid://domsnyqqkmhhp"]
+[gd_scene load_steps=12 format=3 uid="uid://domsnyqqkmhhp"]
 
 [ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/exploration/statsbar/LateralStatsBar.gd" id="1_7tqpy"]
 [ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/exploration/statsbar/stat_container.tscn" id="1_xifav"]
-[ext_resource type="Script" uid="uid://ck5g4eu1uhbqw" path="res://scene/exploration/statsbar/EquipmentPanel.gd" id="3_ldj1a"]
+[ext_resource type="Script" uid="uid://ck5g4eu1uhbqw" path="res://scene/item_management/equipment/EquipmentPanel.gd" id="3_ldj1a"]
 [ext_resource type="PackedScene" uid="uid://b2uq123kh6uj3" path="res://scene/item_management/equipment/equipment_slot.tscn" id="4_p3tbl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8brc6"]
+bg_color = Color(0.515141, 0.616581, 0.685831, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtd4f"]
+bg_color = Color(0.928655, 0.204271, 0.262771, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_tew3b"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_8brc6")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_xtd4f")
+
+[sub_resource type="LabelSettings" id="LabelSettings_sffgw"]
+font_size = 13
+font_color = Color(0.0431373, 0.0235294, 0.0470588, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqdji"]
+bg_color = Color(0.515141, 0.616581, 0.685831, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 1
+shadow_offset = Vector2(1, -1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_si8ep"]
+bg_color = Color(0.299926, 0.460557, 0.877095, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_ahl1r"]
+ProgressBar/styles/background = SubResource("StyleBoxFlat_eqdji")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_si8ep")
 
 [node name="LateralStatsBar" type="ColorRect"]
 anchors_preset = -1
 anchor_right = 0.017
 anchor_bottom = 0.062
-offset_left = 1122.0
-offset_top = 62.0
-offset_right = 1256.24
-offset_bottom = 674.36
+offset_left = 1124.0
+offset_right = 1258.24
+offset_bottom = 675.36
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.891957, 0.756793, 0.390645, 1)
 script = ExtResource("1_7tqpy")
+
+[node name="MarginContainer3" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+offset_left = 12.0
+offset_top = 25.0
+offset_right = 144.0
+offset_bottom = 40.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -29,8 +80,90 @@ offset_right = 56.5
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme = SubResource("Theme_tew3b")
+step = 1.0
+value = 54.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="VBoxContainer/VBoxContainer/HealthBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.833
+anchor_right = 1.0
+offset_top = 6.332
+offset_bottom = 16.336
+text = "23/56"
+label_settings = SubResource("LabelSettings_sffgw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="ExpBar" type="ProgressBar" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme = SubResource("Theme_ahl1r")
+step = 1.0
+value = 54.0
+show_percentage = false
+
+[node name="ExpLabel" type="Label" parent="VBoxContainer/VBoxContainer/ExpBar"]
+layout_mode = 2
+anchor_top = -0.833
+anchor_right = 1.0
+offset_top = 5.996
+offset_bottom = 16.0
+text = "23/56"
+label_settings = SubResource("LabelSettings_sffgw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="StatsPanel" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StrStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
+layout_mode = 2
+stat_key = "strength"
+display_name = "For"
+
+[node name="DesStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
+layout_mode = 2
+stat_key = "dexterity"
+display_name = "Des"
+
+[node name="CosStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
+layout_mode = 2
+stat_key = "constitution"
+display_name = "Cos"
+
+[node name="IntStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
+layout_mode = 2
+stat_key = "intelligence"
+display_name = "Int"
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/StatsPanel"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="EquipmentPanel" type="VBoxContainer" parent="VBoxContainer"]
@@ -99,35 +232,3 @@ slot_id = 8
 [node name="ConsumableSlot4" parent="VBoxContainer/EquipmentPanel/ConsumablesContainer" instance=ExtResource("4_p3tbl")]
 layout_mode = 2
 slot_id = 9
-
-[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 5)
-layout_mode = 2
-
-[node name="StatsPanel" type="VBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="StrStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
-layout_mode = 2
-stat_key = "strength"
-display_name = "For"
-
-[node name="DesStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
-layout_mode = 2
-stat_key = "dexterity"
-display_name = "Des"
-
-[node name="CosStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
-layout_mode = 2
-stat_key = "constitution"
-display_name = "Cos"
-
-[node name="IntStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
-layout_mode = 2
-stat_key = "intelligence"
-display_name = "Int"
-
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/StatsPanel"]
-custom_minimum_size = Vector2(0, 5)
-layout_mode = 2
