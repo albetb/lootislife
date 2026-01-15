@@ -11,6 +11,7 @@ class_name InventoryPanel
 
 func _ready() -> void:
 	grid.grid_resized.connect(_on_grid_resized)
+	print_tree_pretty()
 
 func configure(rows: int) -> void:
 	# forza il layout prima di leggere size

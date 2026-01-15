@@ -9,7 +9,7 @@ signal grid_resized
 const SLOT_SIZE := Vector2(64, 64)
 const INVALID_CELL := Vector2i(-1, -1)
 
-var inventory_state: InventoryState
+var grid_state: GridState
 var equipment_panel: EquipmentPanel
 
 var slots: Dictionary = {}
@@ -17,8 +17,8 @@ var item_views: Dictionary = {} # uid -> ItemView
 @onready var slots_container: Control = $SlotsContainer
 @onready var items_layer: Control = $ItemViewsLayer
 
-func bind(state: InventoryState, panel: EquipmentPanel) -> void:
-	inventory_state = state
+func bind(state: GridState, panel: EquipmentPanel) -> void:
+	grid_state = state
 	equipment_panel = panel
 	equipment_panel.grid = self
 	_build_grid()
@@ -30,11 +30,11 @@ func _build_grid() -> void:
 
 	slots.clear()
 
-	if inventory_state == null:
+	if grid_state == null:
 		return
 
-	var visible_slots := inventory_state.get_required_visible_slots()
-	var cols := inventory_state.WIDTH
+	var visible_slots := grid_state.get_required_visible_slots()
+	var cols := grid_state.WIDTH
 
 	for index in range(visible_slots):
 		var x := index % cols
@@ -49,21 +49,20 @@ func _build_grid() -> void:
 		var cell := Vector2i(x, y)
 		slots[cell] = slot
 
-		slot.set_out_of_bounds(index >= inventory_state.allowed_slots)
+		slot.set_out_of_bounds(not grid_state.is_cell_allowed(cell))
 
-	var rows := inventory_state.get_required_visible_rows()
 	custom_minimum_size = Vector2(
 		cols * SLOT_SIZE.x,
-		rows * SLOT_SIZE.y
+		grid_state.get_required_visible_rows() * SLOT_SIZE.y
 	)
 
 	emit_signal("grid_resized")
 
 func _refresh_views() -> void:
-	if inventory_state == null:
+	if grid_state == null:
 		return
 
-	for item in inventory_state.inventory.items:
+	for item in grid_state.get_items():
 		if item_views.has(item.uid):
 			continue
 
@@ -104,32 +103,27 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 			var c := cell + Vector2i(dx, dy)
 			if not slots.has(c):
 				return INVALID_CELL
-			if not inventory_state.is_cell_allowed(c):
+			if not grid_state.is_cell_allowed(c):
 				return INVALID_CELL
 
 	return cell
 	
 func get_visible_rows() -> int:
-	if inventory_state == null:
+	if grid_state == null:
 		return 0
-	return inventory_state.get_required_visible_rows()
+	return grid_state.get_required_visible_rows()
 	
 func get_snap_global_position(cell: Vector2i, item: InventoryItemData) -> Vector2:
 	var local_pos := Vector2(cell) * SLOT_SIZE
 	return global_position + local_pos
 
-func get_item_at_cell(
-	base_cell: Vector2i,
-	exclude: InventoryItemData
-) -> InventoryItemData:
-	for other in Player.data.inventory.items:
+func get_item_at_cell(base_cell: Vector2i, exclude) -> InventoryItemData:
+	for other in grid_state.get_items():
 		if other == exclude:
 			continue
-		if other.location != InventoryItemData.ItemLocation.INVENTORY:
-			continue
 
-		var other_pos := other.inventory_position
-		var other_size := other.equipment.size
+		var other_pos = other.inventory_position
+		var other_size = other.equipment.size
 
 		if _rects_overlap(
 			base_cell, exclude.equipment.size,

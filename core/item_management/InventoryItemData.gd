@@ -17,7 +17,8 @@ func ensure_uid() -> void:
 
 enum ItemLocation {
 	INVENTORY,
-	EQUIPPED
+	EQUIPPED,
+	LOOT
 }
 @export var location := ItemLocation.INVENTORY
 @export var inventory_position := Vector2i.ZERO

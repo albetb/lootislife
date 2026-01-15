@@ -1,17 +1,12 @@
-extends RefCounted
+extends GridState
 class_name InventoryState
 
-const WIDTH := 4
-const HEIGHT := 9
-const MAX_SLOTS := WIDTH * HEIGHT
-
 var inventory: InventoryData
-var allowed_slots: int = MAX_SLOTS
-
-# layout: Vector2i -> InventoryItemData
-var layout: Dictionary = {}
+var allowed_slots: int = self.get_max_slot()
 
 func bind_data(data: InventoryData, in_allowed_slots: int) -> void:
+	WIDTH = 4
+	HEIGHT = 4
 	inventory = data
 	allowed_slots = in_allowed_slots
 	_rebuild_layout()
@@ -63,3 +58,8 @@ func item_is_out_of_bounds(item: InventoryItemData) -> bool:
 				return true
 
 	return false
+
+func get_items() -> Array:
+	if inventory == null:
+		return []
+	return inventory.items
