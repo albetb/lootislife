@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3nhik41pq50h"]
+[gd_scene load_steps=5 format=3 uid="uid://b3nhik41pq50h"]
 
 [ext_resource type="Script" uid="uid://dfmjppsc1i3x3" path="res://scene/item_management/PlayerScreen.gd" id="1_mqgyp"]
 [ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/exploration/statsbar/lateral_stats_bar.tscn" id="1_ns81l"]
+[ext_resource type="PackedScene" uid="uid://oul7sm4dr5gc" path="res://scene/item_management/loot/loot_panel.tscn" id="2_kf8db"]
 [ext_resource type="PackedScene" uid="uid://wecshwb6p210" path="res://scene/item_management/inventory/inventory_panel.tscn" id="2_wssm1"]
 
 [node name="PlayerScreen" type="Control" groups=["player_screen"]]
@@ -14,12 +15,28 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_mqgyp")
 
+[node name="BlurPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="InventoryToggleButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 797.0
-offset_top = 67.0
-offset_right = 831.0
-offset_bottom = 183.0
+offset_left = 1063.0
+offset_top = 340.0
+offset_right = 1097.0
+offset_bottom = 456.0
+
+[node name="LootPanel" parent="." instance=ExtResource("2_kf8db")]
+layout_mode = 0
+offset_left = 858.0
+offset_top = 497.0
+offset_right = 1081.0
+offset_bottom = 681.0
 
 [node name="InventoryPanel" parent="." instance=ExtResource("2_wssm1")]
 layout_mode = 0

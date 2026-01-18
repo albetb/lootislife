@@ -23,6 +23,7 @@ func bind(state: GridState, panel: EquipmentPanel) -> void:
 	equipment_panel.grid = self
 	_build_grid()
 	_refresh_views()
+	sync_views()
 
 func _build_grid() -> void:
 	for child in slots_container.get_children():
@@ -143,3 +144,25 @@ func _rects_overlap(
 		a_pos.y + a_size.y <= b_pos.y or
 		b_pos.y + b_size.y <= a_pos.y
 	)
+
+func sync_views() -> void:
+	if grid_state == null:
+		return
+		
+	for item in grid_state.get_items():
+		var view: ItemView = item_views.get(item.uid)
+		if view == null:
+			continue
+
+		if view.get_parent() != items_layer:
+			view.reparent(items_layer)
+
+		view.visible = true
+		view.position = Vector2(item.inventory_position) * SLOT_SIZE
+		view.z_index = 10
+
+func clear_all_views() -> void:
+	for view in item_views.values():
+		view.queue_free()
+
+	item_views.clear()

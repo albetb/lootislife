@@ -10,20 +10,15 @@
 
 [sub_resource type="Resource" id="Resource_hvjau"]
 script = ExtResource("3_uwixt")
-uid = ""
 equipment = ExtResource("5_dx0j2")
 location = 1
-inventory_position = Vector2i(0, 0)
 equipped_slot = 4
 metadata/_custom_type_script = "uid://derj2b34ye5bo"
 
 [sub_resource type="Resource" id="Resource_r3y35"]
 script = ExtResource("3_uwixt")
-uid = ""
 equipment = ExtResource("7_7k324")
-location = 0
 inventory_position = Vector2i(1, 1)
-equipped_slot = 0
 metadata/_custom_type_script = "uid://derj2b34ye5bo"
 
 [resource]

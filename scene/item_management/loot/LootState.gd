@@ -13,6 +13,7 @@ func bind_equipment(equipment_list: Array[EquipmentData]) -> void:
 		var item := InventoryItemData.new()
 		item.equipment = eq
 		item.location = InventoryItemData.ItemLocation.LOOT
+		item.ensure_uid()
 		items.append(item)
 
 	_place_items_randomly()

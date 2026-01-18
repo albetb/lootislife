@@ -11,15 +11,9 @@ metadata/_custom_type_script = "uid://cvmkg7srgciqf"
 
 [resource]
 script = ExtResource("2_rgl70")
-id = ""
 display_name = "Parata"
 description = "Blocca 5 danni"
-cost = 1
 type = 1
-retain = false
-exhaust = false
-charges = -1
 copies = 5
 effects = Array[ExtResource("1_sw7ye")]([SubResource("Resource_5exuf")])
-tags = PackedStringArray()
 metadata/_custom_type_script = "uid://c61j8yd47bwva"

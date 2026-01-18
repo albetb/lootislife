@@ -6,19 +6,25 @@ class_name PlayerScreen
 #    lo slot logico in cui l’item si trova (InventoryGrid o EquipmentSlot).
 # 2. Un ItemView non deve mai essere riparentato durante il drag.
 #    Il drag è solo un movimento visivo temporaneo.
-# 3. Un ItemView non deve mai essere distrutto durante il gameplay.
+# 3. Le ItemView persistenti (inventario / equip) non si distruggono.
+#    Le ItemView temporanee (loot) possono e devono essere distrutte.
+#    Un ItemView persistente non deve mai essere distrutto durante il gameplay.
 #    Viene creato una sola volta e poi solo riparentato.
 # 4. SOLO PlayerScreen è autorizzato a riparentare gli ItemView.
 #    Nessun altro script deve chiamare reparent() sugli ItemView.
 
 @onready var inventory_panel: InventoryPanel = $InventoryPanel
+@onready var loot_panel: LootPanel = $LootPanel
+@onready var loot_panel_scene := preload("res://scene/item_management/loot/loot_panel.tscn")
 @onready var equipment_panel: EquipmentPanel = $LateralStatsBar/VBoxContainer/EquipmentPanel
 @onready var toggle_button: Button = $InventoryToggleButton
 @onready var inventory_grid: InventoryGrid = $InventoryPanel/VBoxContainer/InventoryGrid
 @onready var sidebar := $LateralStatsBar
+@onready var blur_panel := $BlurPanel
 
 var inventory_state := InventoryState.new()
 var inventory_open := false
+var loot_open := false
 
 const INVENTORY_LERP := 10.0
 const INVENTORY_OFFSET := 8
@@ -26,6 +32,7 @@ const INVENTORY_OFFSET := 8
 var active_swap: SwapTransaction = null
 
 var inventory_target_pos := Vector2.ZERO
+var loot_target_pos := Vector2.ZERO
 var button_target_pos := Vector2.ZERO
 
 func _ready() -> void:
@@ -40,17 +47,22 @@ func _ready() -> void:
 	sync_item_views()
 
 	inventory_panel.visible = true
-	_position_inventory(true)
+	_update_panels_position()
 	inventory_panel.global_position = inventory_target_pos
+	loot_panel.global_position = loot_target_pos
 	toggle_button.global_position = button_target_pos
 
 	_update_button()
 	toggle_button.pressed.connect(_on_toggle_inventory)
+	inventory_panel.inventory_panel_resized.connect(_update_panels_position)
+	loot_panel.loot_panel_closed.connect(_on_loot_panel_closed)
+	loot_panel.loot_panel_resized.connect(_update_panels_position)
 
 	Events.update_ui.connect(_refresh_ui)
 	Events.request_move_item.connect(request_move_item)
 	Events.request_equip_item.connect(request_equip_item)
 	Events.request_unequip_item.connect(request_unequip_item)
+	Events.treasure_loot_requested.connect(_open_loot_panel)
 
 func _process(delta: float) -> void:
 	inventory_panel.global_position = inventory_panel.global_position.lerp(
@@ -62,30 +74,25 @@ func _process(delta: float) -> void:
 		button_target_pos,
 		1.0 - exp(-INVENTORY_LERP * delta)
 	)
+	
+	loot_panel.global_position = loot_panel.global_position.lerp(
+		loot_target_pos,
+		1.0 - exp(-INVENTORY_LERP * delta)
+	)
 
 func _on_toggle_inventory() -> void:
 	inventory_open = not inventory_open
-	_position_inventory(not inventory_open)
+	_update_panels_position()
 	_update_button()
-
+	
 func _update_button() -> void:
 	toggle_button.text = ">" if inventory_open else "<"
 
-func _position_inventory(closed: bool) -> void:
+func _update_panels_position() -> void:
 	var sidebar_rect = sidebar.get_global_rect()
 	var bottom_y = sidebar_rect.position.y + sidebar_rect.size.y
 
-	if closed:
-		inventory_target_pos = Vector2(
-			sidebar_rect.position.x + INVENTORY_OFFSET,
-			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
-		)
-
-		button_target_pos = Vector2(
-			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
-			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
-		)
-	else:
+	if inventory_open:
 		inventory_target_pos = Vector2(
 			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
 			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
@@ -97,6 +104,27 @@ func _position_inventory(closed: bool) -> void:
 			- toggle_button.size.x
 			- 2 * INVENTORY_OFFSET,
 			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
+		)
+	else:
+		inventory_target_pos = Vector2(
+			sidebar_rect.position.x + INVENTORY_OFFSET,
+			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
+		)
+
+		button_target_pos = Vector2(
+			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
+			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
+		)
+
+	if loot_open:
+		loot_target_pos = Vector2(
+			inventory_target_pos.x - loot_panel.size.x - INVENTORY_OFFSET,
+			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
+		)
+	else:
+		loot_target_pos = Vector2(
+			sidebar_rect.position.x + INVENTORY_OFFSET,
+			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
 		)
 
 # INVENTORY → INVENTORY
@@ -410,8 +438,8 @@ func sync_item_views() -> void:
 			view.visible = true
 			if not is_animating:
 				var cell_count := slot._get_vertical_cells()
-				var size := Vector2(64, 64 * cell_count)
-				view.position = (size - view.size) * 0.5
+				var new_size := Vector2(64, 64 * cell_count)
+				view.position = (new_size - view.size) * 0.5
 			view.z_index = 200
 
 class SwapTransaction:
@@ -470,3 +498,30 @@ func _get_equipped_item_in_slot(slot: InventoryItemData.EquippedSlot) -> Invento
 	
 func _inventory_global_pos(cell: Vector2i) -> Vector2:
 	return inventory_grid.get_snap_global_position(cell, null)
+	
+func _open_loot_panel(equipment: Array[EquipmentData]) -> void:
+	if loot_panel.is_open():
+		loot_panel.close()
+
+	var loot_state := LootState.new()
+	loot_state.bind_equipment(equipment)
+
+	loot_panel.open(loot_state, equipment_panel)
+	loot_open = true
+
+	blur_panel.visible = true
+	toggle_button.visible = false
+
+	if not inventory_open:
+		inventory_open = true
+
+	_update_button()
+	_update_panels_position()
+
+func _on_loot_panel_closed() -> void:
+	blur_panel.visible = false
+	toggle_button.visible = true
+	loot_open = false
+	
+	if inventory_open:
+		_on_toggle_inventory()

@@ -133,7 +133,7 @@ func _on_gui_input(event: InputEvent) -> void:
 			_start_drag()
 		else:
 			_end_drag()
-			
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not dragging:
 		return

@@ -11,15 +11,9 @@ metadata/_custom_type_script = "uid://bfw0m6h8cavyi"
 
 [resource]
 script = ExtResource("2_sq411")
-id = ""
 display_name = "Focus"
 description = "Pesca 2 carte"
-cost = 1
 type = 1
-retain = false
-exhaust = false
-charges = -1
 copies = 3
 effects = Array[ExtResource("1_o6kuf")]([SubResource("Resource_nxy6p")])
-tags = PackedStringArray()
 metadata/_custom_type_script = "uid://c61j8yd47bwva"

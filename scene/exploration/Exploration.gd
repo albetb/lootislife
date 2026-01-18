@@ -85,6 +85,14 @@ func select_new_scene(room: RoomResource) -> void:
 		begin()
 		Events.emit_signal("update_ui")
 
+	if room.type == RoomResource.Type.Treasure:
+		var loot: Array[EquipmentData] = []
+		loot.append(load("res://core/equipment/templates/short_sword.tres"))
+		loot.append(load("res://core/equipment/templates/ninnolo_base.tres"))
+
+		Events.emit_signal("treasure_loot_requested", loot)
+		return
+
 func new_exploration():
 	path = []
 	current_path = []
@@ -95,7 +103,7 @@ func new_exploration():
 	for i in range(length):
 		var room_types = RoomResource.Type.values().filter(func(x): return x != RoomResource.Type.Boss and x != RoomResource.Type.Battle)
 		var room = RoomResource.new()
-		room.type = RoomResource.Type.Battle 
+		room.type = RoomResource.Type.Treasure 
 		path.append(room.duplicate(true)) # add a battle
 		room.type = room_types[randi() % room_types.size()]
 		path.append(room.duplicate(true)) # add a random other room

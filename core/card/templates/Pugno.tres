@@ -11,15 +11,8 @@ metadata/_custom_type_script = "uid://vppo1xyrw68q"
 
 [resource]
 script = ExtResource("2_4x13v")
-id = ""
 display_name = "Pugno"
 description = "Infligge 2 danni"
-cost = 1
-type = 0
-retain = false
-exhaust = false
-charges = -1
 copies = 4
 effects = Array[ExtResource("1_2rvwf")]([SubResource("Resource_akgnn")])
-tags = PackedStringArray()
 metadata/_custom_type_script = "uid://c61j8yd47bwva"
