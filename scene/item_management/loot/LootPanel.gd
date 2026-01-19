@@ -19,14 +19,13 @@ func _ready() -> void:
 	grid.grid_resized.connect(_on_grid_resized)
 	#visible = false
 	
-func bind(state: LootState, equipment_panel: EquipmentPanel) -> void:
+func bind(state: LootState) -> void:
 	loot_state = state
-	grid.bind(loot_state, equipment_panel)
+	grid.bind(loot_state)
 
-func open(state: LootState, equipment_panel: EquipmentPanel) -> void:
+func open(state: LootState) -> void:
 	loot_state = state
-	grid.bind(loot_state, equipment_panel)
-	#visible = true
+	grid.bind(loot_state)
 
 func is_open() -> bool:
 	return loot_state != null
@@ -35,7 +34,6 @@ func close() -> void:
 	_destroy_remaining_loot()
 	grid.clear_all_views()
 	loot_state = null
-	#visible = false
 	emit_signal("loot_panel_closed")
 
 func _destroy_remaining_loot() -> void:
@@ -69,3 +67,19 @@ func _configure_from_grid() -> void:
 	vbox.add_theme_constant_override("margin_bottom", padding)
 	
 	emit_signal("loot_panel_resized")
+
+# -------------------------------------------------
+# ITEM CONTAINER INTERFACE
+# -------------------------------------------------
+
+func get_grid() -> InventoryGrid:
+	return grid
+
+func get_state() -> GridState:
+	return loot_state
+
+func allows_equip() -> bool:
+	return true
+
+func allows_drop_to_inventory() -> bool:
+	return true

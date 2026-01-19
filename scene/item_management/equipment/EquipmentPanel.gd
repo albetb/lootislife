@@ -96,3 +96,19 @@ func _get_all_slots() -> Array:
 		left_hand_slot,
 		armor_slot
 	] + relic_slots + consumable_slots
+	
+# -------------------------------------------------
+# ITEM CONTAINER INTERFACE
+# -------------------------------------------------
+
+func get_grid() -> InventoryGrid:
+	return null
+
+func get_state() -> GridState:
+	return null
+
+func allows_equip() -> bool:
+	return false
+
+func allows_drop_to_inventory() -> bool:
+	return true

@@ -66,3 +66,16 @@ func item_is_out_of_bounds(item: InventoryItemData) -> bool:
 	
 func get_items() -> Array:
 	return items
+
+func remove_item(item: InventoryItemData) -> void:
+	items.erase(item)
+	_rebuild_layout()
+
+func add_item(item: InventoryItemData) -> void:
+	items.append(item)
+	_rebuild_layout()
+
+func _rebuild_layout() -> void:
+	layout.clear()
+	for item in items:
+		_fill_layout(item, item.inventory_position)

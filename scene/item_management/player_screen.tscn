@@ -30,20 +30,27 @@ offset_left = 1063.0
 offset_top = 340.0
 offset_right = 1097.0
 offset_bottom = 456.0
+text = "<"
 
 [node name="LootPanel" parent="." instance=ExtResource("2_kf8db")]
 layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
 offset_left = 858.0
 offset_top = 497.0
 offset_right = 1081.0
 offset_bottom = 681.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="InventoryPanel" parent="." instance=ExtResource("2_wssm1")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = 0.0
+offset_right = 100.0
+offset_bottom = 100.0
 grow_horizontal = 1
 grow_vertical = 1
 

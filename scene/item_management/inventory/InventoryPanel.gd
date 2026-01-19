@@ -39,3 +39,19 @@ func configure_from_grid() -> void:
 	
 func _on_grid_resized() -> void:
 	configure_from_grid()
+
+# -------------------------------------------------
+# ITEM CONTAINER INTERFACE
+# -------------------------------------------------
+
+func get_grid() -> InventoryGrid:
+	return grid
+
+func get_state() -> GridState:
+	return grid.grid_state
+
+func allows_equip() -> bool:
+	return true
+
+func allows_drop_to_inventory() -> bool:
+	return true

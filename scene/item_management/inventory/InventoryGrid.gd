@@ -10,21 +10,27 @@ const SLOT_SIZE := Vector2(64, 64)
 const INVALID_CELL := Vector2i(-1, -1)
 
 var grid_state: GridState
-var equipment_panel: EquipmentPanel
 
-var slots: Dictionary = {}
-var item_views: Dictionary = {} # uid -> ItemView
+var slots: Dictionary = {}          # Vector2i -> InventorySlot
+var item_views: Dictionary = {}     # uid -> ItemView
+
 @onready var slots_container: Control = $SlotsContainer
 @onready var items_layer: Control = $ItemViewsLayer
 
-func bind(state: GridState, panel: EquipmentPanel) -> void:
+
+# -------------------------------------------------
+# BIND
+# -------------------------------------------------
+func bind(state: GridState) -> void:
 	grid_state = state
-	equipment_panel = panel
-	equipment_panel.grid = self
 	_build_grid()
 	_refresh_views()
 	sync_views()
 
+
+# -------------------------------------------------
+# GRID BUILD
+# -------------------------------------------------
 func _build_grid() -> void:
 	for child in slots_container.get_children():
 		child.queue_free()
@@ -59,6 +65,10 @@ func _build_grid() -> void:
 
 	emit_signal("grid_resized")
 
+
+# -------------------------------------------------
+# ITEM VIEWS
+# -------------------------------------------------
 func _refresh_views() -> void:
 	if grid_state == null:
 		return
@@ -70,18 +80,39 @@ func _refresh_views() -> void:
 		var view: ItemView = item_view_scene.instantiate()
 		items_layer.add_child(view)
 
-		view.bind(
-			item,
-			equipment_panel,
-			Callable(get_tree().get_first_node_in_group("player_screen"), "can_equip_item"),
-			Callable(get_tree().get_first_node_in_group("player_screen"), "can_unequip_item"),
-			Callable(get_tree().get_first_node_in_group("player_screen"), "is_inventory_open")
-		)
-
+		view.bind(item)
 		item_views[item.uid] = view
 
+
+func sync_views() -> void:
+	if grid_state == null:
+		return
+
+	for item in grid_state.get_items():
+		var view: ItemView = item_views.get(item.uid)
+		if view == null:
+			continue
+
+		if view.get_parent() != items_layer:
+			view.reparent(items_layer)
+
+		view.visible = true
+		view.position = Vector2(item.inventory_position) * SLOT_SIZE
+		view.z_index = 10
+
+
+func clear_all_views() -> void:
+	for view in item_views.values():
+		view.queue_free()
+
+	item_views.clear()
+
+
+# -------------------------------------------------
+# DROP / QUERY
+# -------------------------------------------------
 func get_best_drop_cell(item_view: ItemView) -> Vector2i:
-	var local = item_view.global_position - global_position
+	var local := item_view.global_position - global_position
 
 	var base_x := int(local.x / SLOT_SIZE.x)
 	var base_y := int(local.y / SLOT_SIZE.y)
@@ -89,8 +120,8 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 	if base_x < 0 or base_y < 0:
 		return INVALID_CELL
 
-	var offset_x = local.x - base_x * SLOT_SIZE.x
-	var offset_y = local.y - base_y * SLOT_SIZE.y
+	var offset_x := local.x - base_x * SLOT_SIZE.x
+	var offset_y := local.y - base_y * SLOT_SIZE.y
 
 	if offset_x > SLOT_SIZE.x * 0.5:
 		base_x += 1
@@ -108,31 +139,21 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 				return INVALID_CELL
 
 	return cell
-	
-func get_visible_rows() -> int:
-	if grid_state == null:
-		return 0
-	return grid_state.get_required_visible_rows()
-	
-func get_snap_global_position(cell: Vector2i, item: InventoryItemData) -> Vector2:
-	var local_pos := Vector2(cell) * SLOT_SIZE
-	return global_position + local_pos
 
-func get_item_at_cell(base_cell: Vector2i, exclude) -> InventoryItemData:
+
+func get_item_at_cell(base_cell: Vector2i, exclude: InventoryItemData) -> InventoryItemData:
 	for other in grid_state.get_items():
 		if other == exclude:
 			continue
 
-		var other_pos = other.inventory_position
-		var other_size = other.equipment.size
-
 		if _rects_overlap(
 			base_cell, exclude.equipment.size,
-			other_pos, other_size
+			other.inventory_position, other.equipment.size
 		):
 			return other
 
 	return null
+
 
 func _rects_overlap(
 	a_pos: Vector2i, a_size: Vector2i,
@@ -145,24 +166,15 @@ func _rects_overlap(
 		b_pos.y + b_size.y <= a_pos.y
 	)
 
-func sync_views() -> void:
+
+# -------------------------------------------------
+# UTILS
+# -------------------------------------------------
+func get_visible_rows() -> int:
 	if grid_state == null:
-		return
-		
-	for item in grid_state.get_items():
-		var view: ItemView = item_views.get(item.uid)
-		if view == null:
-			continue
+		return 0
+	return grid_state.get_required_visible_rows()
 
-		if view.get_parent() != items_layer:
-			view.reparent(items_layer)
 
-		view.visible = true
-		view.position = Vector2(item.inventory_position) * SLOT_SIZE
-		view.z_index = 10
-
-func clear_all_views() -> void:
-	for view in item_views.values():
-		view.queue_free()
-
-	item_views.clear()
+func get_snap_global_position(cell: Vector2i) -> Vector2:
+	return global_position + Vector2(cell) * SLOT_SIZE
