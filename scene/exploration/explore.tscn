@@ -138,7 +138,6 @@ size_flags_horizontal = 4
 
 [node name="PlayerScreen" parent="." instance=ExtResource("9_wfrkh")]
 visibility_layer = 512
-offset_left = 2.0
 offset_right = -1.0
 offset_bottom = 1.0
 item_view_scene = ExtResource("4_cdab0")

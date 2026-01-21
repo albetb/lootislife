@@ -116,3 +116,9 @@ func swap_items(uid_a: String, uid_b: String) -> bool:
 	b.equipped_slot = slot_a
 
 	return true
+
+func clear_loot() -> void:
+	items = items.filter(
+		func(item):
+			return item.location != InventoryItemData.ItemLocation.LOOT
+	)

@@ -3,6 +3,9 @@ class_name ItemView
 
 signal animation_finished(view: ItemView)
 signal drop_requested(view: ItemView, global_pos: Vector2)
+signal drag_started(view: ItemView)
+signal drag_ended(view: ItemView)
+
 
 var item: InventoryItemData
 var tooltip: ItemTooltip
@@ -133,6 +136,8 @@ func _begin_drag() -> void:
 	dragging = true
 	returning = false
 
+	drag_started.emit(self)
+	
 	var mouse_pos := get_global_mouse_position()
 	_drag_offset = mouse_pos - global_position
 	_grab_offset_local = (mouse_pos - global_position) - visual.size * 0.5
@@ -148,6 +153,7 @@ func _end_drag() -> void:
 		return
 
 	dragging = false
+	drag_ended.emit(self)
 	drop_requested.emit(self, get_global_mouse_position())
 
 

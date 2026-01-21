@@ -14,7 +14,6 @@ signal inventory_panel_resized
 
 func _ready() -> void:
 	grid.grid_resized.connect(_on_grid_resized)
-	print_tree_pretty()
 
 func configure_from_grid() -> void:
 	await get_tree().process_frame

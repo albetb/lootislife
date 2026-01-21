@@ -111,7 +111,6 @@ var button_target_pos := Vector2.ZERO
 # -------------------------------------------------
 var _item_views: Dictionary = {} # uid -> ItemView
 
-
 # -------------------------------------------------
 # LIFECYCLE
 # -------------------------------------------------
@@ -133,7 +132,7 @@ func _ready() -> void:
 	loot_panel.loot_panel_resized.connect(_update_panels_position)
 	loot_panel.loot_panel_closed.connect(_on_loot_panel_closed)
 
-	Events.update_ui.connect(sync_item_views)
+	Events.update_ui.connect(_on_update_ui)
 	Events.treasure_loot_requested.connect(_open_loot_panel)
 
 	inventory_panel.visible = true
@@ -188,6 +187,11 @@ func get_item_view(uid: String) -> ItemView:
 # -------------------------------------------------
 # UI SYNC (NO MOVIMENTO, NO REPARENT)
 # -------------------------------------------------
+func _on_update_ui() -> void:
+	refresh_inventory_capacity()
+	sync_item_views()
+	move_controller.sync_all_views_immediate()
+
 func sync_item_views() -> void:
 	_sync_state(inventory_state)
 	if loot_state != null:
@@ -210,12 +214,27 @@ func _sync_state(state: GridState) -> void:
 			InventoryItemData.ItemLocation.EQUIPPED:
 				view.visible = true
 
+func refresh_inventory_capacity() -> void:
+	var new_slots := Player.get_inventory_slots()
+
+	inventory_state.bind_allowed_slots(new_slots)
+	inventory_grid.bind(inventory_state)
+
+	inventory_panel.configure_from_grid()
+	_update_panels_position()
+
 # -------------------------------------------------
 # DROP ENTRY
 # -------------------------------------------------
 func _register_item_view(view: ItemView) -> void:
 	if not view.drop_requested.is_connected(_on_item_drop_requested):
 		view.drop_requested.connect(_on_item_drop_requested)
+
+	if not view.drag_started.is_connected(_on_item_drag_started):
+		view.drag_started.connect(_on_item_drag_started)
+
+	if not view.drag_ended.is_connected(_on_item_drag_ended):
+		view.drag_ended.connect(_on_item_drag_ended)
 
 
 func _on_item_drop_requested(view: ItemView, _global_pos: Vector2) -> void:
@@ -229,6 +248,12 @@ func _on_item_drop_requested(view: ItemView, _global_pos: Vector2) -> void:
 		target.slot,
 		target.cell
 	)
+
+func _on_item_drag_started(view: ItemView) -> void:
+	equipment_panel.show_valid_drop_slots(view.item)
+
+func _on_item_drag_ended(_view: ItemView) -> void:
+	equipment_panel.clear_drop_slot_highlights()
 
 
 # -------------------------------------------------
@@ -287,7 +312,7 @@ func _open_loot_panel() -> void:
 	if loot_open:
 		return
 
-	clear_loot_item_views()
+	clear_loot()
 	LootGenerator.generate_test_loot()
 
 	loot_state = LootGridState.new()
@@ -295,6 +320,11 @@ func _open_loot_panel() -> void:
 
 	loot_panel.open(loot_state)
 	loot_open = true
+	
+	await loot_panel.loot_panel_resized
+
+	_update_panels_position()
+	loot_panel.global_position = loot_target_pos
 
 	blur_panel.visible = true
 	toggle_button.visible = false
@@ -307,7 +337,7 @@ func _open_loot_panel() -> void:
 	sync_item_views()
 	move_controller.sync_all_views_immediate()
 
-func clear_loot_item_views() -> void:
+func clear_loot() -> void:
 	for item in Player.data.inventory.items:
 		if item.location == InventoryItemData.ItemLocation.LOOT:
 			var view = _item_views.get(item.uid)
@@ -315,6 +345,7 @@ func clear_loot_item_views() -> void:
 				view.queue_free()
 				_item_views.erase(item.uid)
 
+	Player.data.inventory.clear_loot()
 
 func _on_loot_panel_closed() -> void:
 	loot_state = null
