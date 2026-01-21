@@ -30,6 +30,7 @@ const MAX_ROTATION := 0.25
 const ROTATION_LERP := 14.0
 const MIN_DRAG_SPEED := 30.0
 
+
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	pivot_offset = Vector2.ZERO
@@ -40,7 +41,8 @@ func _ready() -> void:
 	visual.mouse_entered.connect(_on_mouse_entered)
 	visual.mouse_exited.connect(_on_mouse_exited)
 
-	target_position = global_position
+	_sync_base_position(global_position)
+
 
 func bind(_item: InventoryItemData) -> void:
 	item = _item
@@ -54,6 +56,7 @@ func bind(_item: InventoryItemData) -> void:
 	invalid_overlay.size = size
 	label.text = item.equipment.display_name
 
+
 func _process(delta: float) -> void:
 	if dragging:
 		target_position = get_global_mouse_position() - drag_offset
@@ -62,19 +65,15 @@ func _process(delta: float) -> void:
 
 	elif returning:
 		global_position = global_position.lerp(target_position, RETURN_LERP * delta)
-
-		visual.rotation = lerp(visual.rotation, 0.0, ROTATION_LERP * delta)
-		label.rotation = lerp(label.rotation, 0.0, ROTATION_LERP * delta)
-		invalid_overlay.rotation = lerp(invalid_overlay.rotation, 0.0, ROTATION_LERP * delta)
+		_reset_rotation(delta)
 
 		if global_position.distance_to(target_position) < 0.5:
 			global_position = target_position
 			returning = false
-			visual.rotation = 0.0
-			label.rotation = 0.0
-			invalid_overlay.rotation = 0.0
+			_reset_rotation_immediate()
 			animation_finished.emit(self)
 			_update_z_index()
+
 
 # ----------------------------------------------------
 # INPUT
@@ -87,6 +86,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		else:
 			_end_drag()
 
+
 func _unhandled_input(event: InputEvent) -> void:
 	if dragging \
 	and event is InputEventMouseButton \
@@ -94,9 +94,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	and not event.pressed:
 		_end_drag()
 
+
 func _start_drag() -> void:
 	_close_tooltip()
-	original_position = global_position
+	_sync_base_position(global_position)
 	dragging = true
 	_update_z_index()
 
@@ -107,19 +108,35 @@ func _start_drag() -> void:
 	last_mouse_pos = mouse_pos
 	drag_velocity = Vector2.ZERO
 
+
 func _end_drag() -> void:
 	if not dragging:
 		return
 
 	dragging = false
-
-	# QUI L’UNICA RESPONSABILITÀ DI ITEMVIEW
 	drop_requested.emit(self, get_global_mouse_position())
 
+
 func start_return() -> void:
+	dragging = false
 	returning = true
-	_update_z_index()
 	target_position = original_position
+	_update_z_index()
+
+
+# ----------------------------------------------------
+# POSITION SYNC (USATA DAL CONTROLLER)
+# ----------------------------------------------------
+
+func force_sync_position(pos: Vector2) -> void:
+	_sync_base_position(pos)
+	global_position = pos
+
+
+func _sync_base_position(pos: Vector2) -> void:
+	original_position = pos
+	target_position = pos
+
 
 # ----------------------------------------------------
 # TOOLTIP
@@ -136,13 +153,16 @@ func _on_mouse_entered() -> void:
 	await get_tree().process_frame
 	_position_tooltip()
 
+
 func _on_mouse_exited() -> void:
 	_close_tooltip()
+
 
 func _close_tooltip() -> void:
 	if tooltip:
 		tooltip.queue_free()
 		tooltip = null
+
 
 func _position_tooltip() -> void:
 	if tooltip:
@@ -151,8 +171,9 @@ func _position_tooltip() -> void:
 			global_position.y
 		)
 
+
 # ----------------------------------------------------
-# ROTATION / VISUAL
+# ROTATION
 # ----------------------------------------------------
 
 func _update_drag_rotation(delta: float) -> void:
@@ -162,9 +183,7 @@ func _update_drag_rotation(delta: float) -> void:
 
 	var speed := drag_velocity.length()
 	if speed < MIN_DRAG_SPEED:
-		visual.rotation = lerp(visual.rotation, 0.0, ROTATION_LERP * delta)
-		label.rotation = lerp(label.rotation, 0.0, ROTATION_LERP * delta)
-		invalid_overlay.rotation = lerp(invalid_overlay.rotation, 0.0, ROTATION_LERP * delta)
+		_reset_rotation(delta)
 		return
 
 	var half_size = visual.size * 0.5
@@ -186,13 +205,32 @@ func _update_drag_rotation(delta: float) -> void:
 	)
 
 	visual.rotation = lerp(visual.rotation, target_rotation, ROTATION_LERP * delta)
-	invalid_overlay.rotation = visual.rotation
 	label.rotation = visual.rotation
+	invalid_overlay.rotation = visual.rotation
+
+
+func _reset_rotation(delta: float) -> void:
+	visual.rotation = lerp(visual.rotation, 0.0, ROTATION_LERP * delta)
+	label.rotation = lerp(label.rotation, 0.0, ROTATION_LERP * delta)
+	invalid_overlay.rotation = lerp(invalid_overlay.rotation, 0.0, ROTATION_LERP * delta)
+
+
+func _reset_rotation_immediate() -> void:
+	visual.rotation = 0.0
+	label.rotation = 0.0
+	invalid_overlay.rotation = 0.0
+
+
+# ----------------------------------------------------
+# Z INDEX
+# ----------------------------------------------------
 
 func _update_z_index() -> void:
 	if dragging:
 		z_index = 2000
 	elif returning:
+		z_index = 1500
+	elif item != null and item.location == InventoryItemData.ItemLocation.EQUIPPED:
 		z_index = 1000
 	else:
 		z_index = 100

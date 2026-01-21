@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://oul7sm4dr5gc"]
 
 [ext_resource type="Script" uid="uid://c0fpih6loonpy" path="res://scene/item_management/loot/LootPanel.gd" id="1_yo1u1"]
-[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/item_management/inventory/inventory_grid.tscn" id="2_yo1u1"]
+[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/item_management/item_grid/item_grid.tscn" id="2_yo1u1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yo1u1"]
 font_size = 20
@@ -32,7 +32,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("2_yo1u1")]
+[node name="ItemGrid" parent="VBoxContainer" instance=ExtResource("2_yo1u1")]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]

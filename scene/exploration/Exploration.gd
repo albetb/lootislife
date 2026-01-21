@@ -86,11 +86,7 @@ func select_new_scene(room: RoomResource) -> void:
 		Events.emit_signal("update_ui")
 
 	if room.type == RoomResource.Type.Treasure:
-		var loot: Array[EquipmentData] = []
-		loot.append(load("res://core/equipment/templates/short_sword.tres"))
-		loot.append(load("res://core/equipment/templates/ninnolo_base.tres"))
-
-		Events.emit_signal("treasure_loot_requested", loot)
+		Events.emit_signal("treasure_loot_requested")
 		return
 
 func new_exploration():

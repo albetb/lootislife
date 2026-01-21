@@ -1,16 +1,15 @@
 [gd_scene load_steps=2 format=3 uid="uid://cx6c7wis3yl0l"]
 
-[ext_resource type="Script" uid="uid://djc1gxdiggcrs" path="res://scene/item_management/inventory/InventoryGrid.gd" id="1_vga64"]
+[ext_resource type="Script" uid="uid://djc1gxdiggcrs" path="res://scene/item_management/item_grid/ItemGrid.gd" id="1_ynqhl"]
 
 [node name="InventoryGrid" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_vga64")
+script = ExtResource("1_ynqhl")
 
 [node name="SlotsContainer" type="Control" parent="."]
-layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

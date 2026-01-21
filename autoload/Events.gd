@@ -12,4 +12,4 @@ signal request_move_item(item: InventoryItemData, target_cell: Vector2i)
 signal request_equip_item(item: InventoryItemData, slot: EquipmentSlot)
 signal request_unequip_item(item: InventoryItemData, target_cell: Vector2i)
 
-signal treasure_loot_requested(equipment: Array[EquipmentData])
+signal treasure_loot_requested()

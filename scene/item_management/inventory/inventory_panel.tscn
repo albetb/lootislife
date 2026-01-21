@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://wecshwb6p210"]
 
 [ext_resource type="Script" uid="uid://b8u43gta0yp4j" path="res://scene/item_management/inventory/InventoryPanel.gd" id="1_euivt"]
-[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/item_management/inventory/inventory_grid.tscn" id="2_325il"]
+[ext_resource type="PackedScene" uid="uid://cx6c7wis3yl0l" path="res://scene/item_management/item_grid/item_grid.tscn" id="2_325il"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kee53"]
 font_size = 19
@@ -36,7 +36,7 @@ mouse_filter = 0
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="InventoryGrid" parent="VBoxContainer" instance=ExtResource("2_325il")]
+[node name="ItemGrid" parent="VBoxContainer" instance=ExtResource("2_325il")]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]

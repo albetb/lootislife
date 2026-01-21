@@ -1,9 +1,9 @@
 extends Control
-class_name InventoryGrid
+class_name ItemGrid
 
 signal grid_resized
 
-@export var slot_scene: PackedScene = preload("res://scene/item_management/inventory/inventory_slot.tscn")
+@export var slot_scene: PackedScene = preload("res://scene/item_management/item_grid/item_slot.tscn")
 @export var item_view_scene: PackedScene = preload("res://scene/item_management/item/item_view.tscn")
 
 const SLOT_SIZE := Vector2(64, 64)
@@ -11,7 +11,7 @@ const INVALID_CELL := Vector2i(-1, -1)
 
 var grid_state: GridState
 
-var slots: Dictionary = {}          # Vector2i -> InventorySlot
+var slots: Dictionary = {}          # Vector2i -> GridSlot
 var item_views: Dictionary = {}     # uid -> ItemView
 
 @onready var slots_container: Control = $SlotsContainer

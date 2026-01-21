@@ -8,43 +8,36 @@ signal loot_panel_resized
 @export var padding := 16
 @export var columns := 4
 
-@onready var grid: InventoryGrid = $VBoxContainer/InventoryGrid
+@onready var grid: ItemGrid = $VBoxContainer/ItemGrid
 @onready var label: Label = $VBoxContainer/HBoxContainer/LootLabel
 @onready var close_button: Button = $VBoxContainer/HBoxContainer/CloseButton
 
-var loot_state: LootState
+var loot_state: LootGridState
+
 
 func _ready() -> void:
 	close_button.pressed.connect(close)
 	grid.grid_resized.connect(_on_grid_resized)
-	#visible = false
-	
-func bind(state: LootState) -> void:
+
+
+func open(state: LootGridState) -> void:
 	loot_state = state
 	grid.bind(loot_state)
 
-func open(state: LootState) -> void:
-	loot_state = state
-	grid.bind(loot_state)
 
 func is_open() -> bool:
 	return loot_state != null
 
+
 func close() -> void:
-	_destroy_remaining_loot()
 	grid.clear_all_views()
 	loot_state = null
 	emit_signal("loot_panel_closed")
 
-func _destroy_remaining_loot() -> void:
-	if loot_state == null:
-		return
-
-	loot_state.items.clear()
-	loot_state.layout.clear()
 
 func _on_grid_resized() -> void:
 	_configure_from_grid()
+
 
 func _configure_from_grid() -> void:
 	await get_tree().process_frame
@@ -65,21 +58,25 @@ func _configure_from_grid() -> void:
 	vbox.add_theme_constant_override("margin_right", padding)
 	vbox.add_theme_constant_override("margin_top", padding)
 	vbox.add_theme_constant_override("margin_bottom", padding)
-	
+
 	emit_signal("loot_panel_resized")
+
 
 # -------------------------------------------------
 # ITEM CONTAINER INTERFACE
 # -------------------------------------------------
 
-func get_grid() -> InventoryGrid:
+func get_grid() -> ItemGrid:
 	return grid
+
 
 func get_state() -> GridState:
 	return loot_state
 
+
 func allows_equip() -> bool:
 	return true
+
 
 func allows_drop_to_inventory() -> bool:
 	return true
