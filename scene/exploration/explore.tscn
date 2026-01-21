@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dk0iotlgj0omy"]
+[gd_scene load_steps=10 format=3 uid="uid://dk0iotlgj0omy"]
 
 [ext_resource type="Script" uid="uid://hbwumtykd6td" path="res://scene/exploration/Exploration.gd" id="1_u1wya"]
 [ext_resource type="Script" uid="uid://bqlnc5laeh51e" path="res://scene/exploration/ExplorationManager.gd" id="2_dxjkk"]
+[ext_resource type="PackedScene" uid="uid://8e0668gsl78u" path="res://scene/item_management/item/item_view.tscn" id="4_cdab0"]
 [ext_resource type="PackedScene" uid="uid://b3nhik41pq50h" path="res://scene/item_management/player_screen.tscn" id="9_wfrkh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pme05"]
@@ -140,3 +141,4 @@ visibility_layer = 512
 offset_left = 2.0
 offset_right = -1.0
 offset_bottom = 1.0
+item_view_scene = ExtResource("4_cdab0")

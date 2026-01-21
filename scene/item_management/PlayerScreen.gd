@@ -80,6 +80,8 @@
 extends Control
 class_name PlayerScreen
 
+@export var item_view_scene: PackedScene
+
 @onready var inventory_panel: InventoryPanel = $InventoryPanel
 @onready var loot_panel: LootPanel = $LootPanel
 @onready var equipment_panel: EquipmentPanel = $LateralStatsBar/VBoxContainer/EquipmentPanel
@@ -87,6 +89,7 @@ class_name PlayerScreen
 @onready var inventory_grid: ItemGrid = $InventoryPanel/VBoxContainer/ItemGrid
 @onready var sidebar := $LateralStatsBar
 @onready var blur_panel := $BlurPanel
+@onready var item_views_root: Control = $ItemViewsRoot
 
 @onready var move_controller := ItemMoveController.new()
 
@@ -103,18 +106,27 @@ var inventory_target_pos := Vector2.ZERO
 var loot_target_pos := Vector2.ZERO
 var button_target_pos := Vector2.ZERO
 
+# -------------------------------------------------
+# ITEM VIEW REGISTRY (GLOBALE)
+# -------------------------------------------------
+var _item_views: Dictionary = {} # uid -> ItemView
 
+
+# -------------------------------------------------
+# LIFECYCLE
+# -------------------------------------------------
 func _ready() -> void:
 	add_to_group("player_screen")
 
 	inventory_state.bind_allowed_slots(Player.get_inventory_slots())
 	inventory_grid.bind(inventory_state)
-	inventory_grid._refresh_views()
+
+	_build_initial_item_views()
 	sync_item_views()
 
 	add_child(move_controller)
 	move_controller.setup(self)
-	move_controller.sync_initial_equipped_views()
+	move_controller.sync_all_views_immediate()
 
 	toggle_button.pressed.connect(_on_toggle_inventory)
 	inventory_panel.inventory_panel_resized.connect(_update_panels_position)
@@ -137,12 +149,10 @@ func _process(delta: float) -> void:
 		inventory_target_pos,
 		1.0 - exp(-INVENTORY_LERP * delta)
 	)
-
 	loot_panel.global_position = loot_panel.global_position.lerp(
 		loot_target_pos,
 		1.0 - exp(-INVENTORY_LERP * delta)
 	)
-
 	toggle_button.global_position = toggle_button.global_position.lerp(
 		button_target_pos,
 		1.0 - exp(-INVENTORY_LERP * delta)
@@ -150,69 +160,42 @@ func _process(delta: float) -> void:
 
 
 # -------------------------------------------------
-# PANEL POSITIONING
+# ITEM VIEW CREATION / LOOKUP
 # -------------------------------------------------
-func _on_toggle_inventory() -> void:
-	inventory_open = not inventory_open
-	_update_button()
-	_update_panels_position()
+func _build_initial_item_views() -> void:
+	for item in Player.data.inventory.items:
+		_ensure_item_view(item)
 
 
-func _update_button() -> void:
-	toggle_button.text = ">" if inventory_open else "<"
+func _ensure_item_view(item: InventoryItemData) -> ItemView:
+	if _item_views.has(item.uid):
+		return _item_views[item.uid]
+
+	var view: ItemView = item_view_scene.instantiate()
+	item_views_root.add_child(view)
+	view.bind(item)
+
+	_item_views[item.uid] = view
+
+	_register_item_view(view)
+	return view
 
 
-func _update_panels_position() -> void:
-	var sidebar_rect = sidebar.get_global_rect()
-	var bottom_y = sidebar_rect.position.y + sidebar_rect.size.y
-
-	if inventory_open:
-		inventory_target_pos = Vector2(
-			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
-			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
-		)
-		button_target_pos = Vector2(
-			inventory_target_pos.x - toggle_button.size.x - INVENTORY_OFFSET,
-			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
-		)
-	else:
-		inventory_target_pos = Vector2(
-			sidebar_rect.position.x + INVENTORY_OFFSET,
-			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
-		)
-		button_target_pos = Vector2(
-			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
-			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
-		)
-
-	if loot_open:
-		loot_target_pos = Vector2(
-			inventory_target_pos.x - loot_panel.size.x - INVENTORY_OFFSET,
-			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
-		)
-	else:
-		loot_target_pos = Vector2(
-			sidebar_rect.position.x + INVENTORY_OFFSET,
-			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
-		)
+func get_item_view(uid: String) -> ItemView:
+	return _item_views.get(uid)
 
 
 # -------------------------------------------------
-# UI SYNC
+# UI SYNC (NO MOVIMENTO, NO REPARENT)
 # -------------------------------------------------
 func sync_item_views() -> void:
 	_sync_state(inventory_state)
 	if loot_state != null:
 		_sync_state(loot_state)
 
-
 func _sync_state(state: GridState) -> void:
 	for item in state.get_items():
-		var view: ItemView = inventory_grid.item_views.get(item.uid)
-		if view == null:
-			continue
-
-		_register_item_view(view)
+		var view := _ensure_item_view(item)
 
 		if view.dragging or view.returning:
 			continue
@@ -226,7 +209,6 @@ func _sync_state(state: GridState) -> void:
 
 			InventoryItemData.ItemLocation.EQUIPPED:
 				view.visible = true
-
 
 # -------------------------------------------------
 # DROP ENTRY
@@ -297,8 +279,6 @@ func can_equip_item(item: InventoryItemData, slot: EquipmentSlot) -> bool:
 func find_first_free_inventory_cell(item: InventoryItemData) -> Vector2i:
 	return inventory_state.find_first_free_cell(item)
 
-func get_item_view(uid: String) -> ItemView:
-	return inventory_grid.item_views.get(uid)
 
 # -------------------------------------------------
 # LOOT
@@ -307,6 +287,7 @@ func _open_loot_panel() -> void:
 	if loot_open:
 		return
 
+	clear_loot_item_views()
 	LootGenerator.generate_test_loot()
 
 	loot_state = LootGridState.new()
@@ -323,6 +304,16 @@ func _open_loot_panel() -> void:
 
 	_update_button()
 	_update_panels_position()
+	sync_item_views()
+	move_controller.sync_all_views_immediate()
+
+func clear_loot_item_views() -> void:
+	for item in Player.data.inventory.items:
+		if item.location == InventoryItemData.ItemLocation.LOOT:
+			var view = _item_views.get(item.uid)
+			if view:
+				view.queue_free()
+				_item_views.erase(item.uid)
 
 
 func _on_loot_panel_closed() -> void:
@@ -330,4 +321,57 @@ func _on_loot_panel_closed() -> void:
 	loot_open = false
 	blur_panel.visible = false
 	toggle_button.visible = true
+	inventory_open = false
+	
+	_update_button()	
 	_update_panels_position()
+	
+	Player.save()
+
+
+# -------------------------------------------------
+# PANEL POSITIONING
+# -------------------------------------------------
+func _on_toggle_inventory() -> void:
+	inventory_open = not inventory_open
+	_update_button()
+	_update_panels_position()
+
+
+func _update_button() -> void:
+	toggle_button.text = ">" if inventory_open else "<"
+
+
+func _update_panels_position() -> void:
+	var sidebar_rect = sidebar.get_global_rect()
+	var bottom_y = sidebar_rect.position.y + sidebar_rect.size.y
+
+	if inventory_open:
+		inventory_target_pos = Vector2(
+			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
+			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
+		)
+		button_target_pos = Vector2(
+			inventory_target_pos.x - toggle_button.size.x - INVENTORY_OFFSET,
+			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
+		)
+	else:
+		inventory_target_pos = Vector2(
+			sidebar_rect.position.x + INVENTORY_OFFSET,
+			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
+		)
+		button_target_pos = Vector2(
+			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
+			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
+		)
+
+	if loot_open:
+		loot_target_pos = Vector2(
+			inventory_target_pos.x - loot_panel.size.x - INVENTORY_OFFSET,
+			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
+		)
+	else:
+		loot_target_pos = Vector2(
+			sidebar_rect.position.x + INVENTORY_OFFSET,
+			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
+		)

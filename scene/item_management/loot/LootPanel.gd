@@ -30,7 +30,7 @@ func is_open() -> bool:
 
 
 func close() -> void:
-	grid.clear_all_views()
+	#grid.clear_all_views()
 	loot_state = null
 	emit_signal("loot_panel_closed")
 

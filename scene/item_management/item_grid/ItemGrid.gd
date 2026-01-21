@@ -3,16 +3,19 @@ class_name ItemGrid
 
 signal grid_resized
 
-@export var slot_scene: PackedScene = preload("res://scene/item_management/item_grid/item_slot.tscn")
-@export var item_view_scene: PackedScene = preload("res://scene/item_management/item/item_view.tscn")
+@export var slot_scene: PackedScene = preload(
+	"res://scene/item_management/item_grid/item_slot.tscn"
+)
 
 const SLOT_SIZE := Vector2(64, 64)
 const INVALID_CELL := Vector2i(-1, -1)
 
-var grid_state: GridState
+# Stato DERIVATO (read-only)
+var grid_state: GridState = null
 
-var slots: Dictionary = {}          # Vector2i -> GridSlot
-var item_views: Dictionary = {}     # uid -> ItemView
+# Celle visive della griglia (NON ItemView)
+# Vector2i -> GridSlot
+var slots: Dictionary = {}
 
 @onready var slots_container: Control = $SlotsContainer
 @onready var items_layer: Control = $ItemViewsLayer
@@ -21,17 +24,18 @@ var item_views: Dictionary = {}     # uid -> ItemView
 # -------------------------------------------------
 # BIND
 # -------------------------------------------------
+# Collega uno stato logico alla griglia.
+# La griglia NON osserva cambiamenti di stato:
+# viene ricostruita solo quando PlayerScreen lo decide.
 func bind(state: GridState) -> void:
 	grid_state = state
-	_build_grid()
-	_refresh_views()
-	sync_views()
+	_rebuild()
 
 
 # -------------------------------------------------
-# GRID BUILD
+# GRID BUILD (SOLO VISIVO)
 # -------------------------------------------------
-func _build_grid() -> void:
+func _rebuild() -> void:
 	for child in slots_container.get_children():
 		child.queue_free()
 
@@ -46,17 +50,16 @@ func _build_grid() -> void:
 	for index in range(visible_slots):
 		var x := index % cols
 		var y := index / cols
+		var cell := Vector2i(x, y)
 
-		var slot = slot_scene.instantiate()
+		var slot := slot_scene.instantiate()
 		slots_container.add_child(slot)
 
-		slot.position = Vector2(x, y) * SLOT_SIZE
+		slot.position = Vector2(cell) * SLOT_SIZE
 		slot.setup(x, y)
-
-		var cell := Vector2i(x, y)
-		slots[cell] = slot
-
 		slot.set_out_of_bounds(not grid_state.is_cell_allowed(cell))
+
+		slots[cell] = slot
 
 	custom_minimum_size = Vector2(
 		cols * SLOT_SIZE.x,
@@ -67,52 +70,15 @@ func _build_grid() -> void:
 
 
 # -------------------------------------------------
-# ITEM VIEWS
-# -------------------------------------------------
-func _refresh_views() -> void:
-	if grid_state == null:
-		return
-
-	for item in grid_state.get_items():
-		if item_views.has(item.uid):
-			continue
-
-		var view: ItemView = item_view_scene.instantiate()
-		items_layer.add_child(view)
-
-		view.bind(item)
-		item_views[item.uid] = view
-
-
-func sync_views() -> void:
-	if grid_state == null:
-		return
-
-	for item in grid_state.get_items():
-		var view: ItemView = item_views.get(item.uid)
-		if view == null:
-			continue
-
-		if view.get_parent() != items_layer:
-			view.reparent(items_layer)
-
-		view.visible = true
-		view.position = Vector2(item.inventory_position) * SLOT_SIZE
-		view.z_index = 10
-
-
-func clear_all_views() -> void:
-	for view in item_views.values():
-		view.queue_free()
-
-	item_views.clear()
-
-
-# -------------------------------------------------
 # DROP / QUERY
 # -------------------------------------------------
-func get_best_drop_cell(item_view: ItemView) -> Vector2i:
-	var local := item_view.global_position - global_position
+# Calcola la cella di drop usando la view SOLO come cursore temporaneo.
+# NON salva, NON sposta, NON muta stato.
+func get_best_drop_cell(view: ItemView) -> Vector2i:
+	if grid_state == null:
+		return INVALID_CELL
+
+	var local := view.global_position - global_position
 
 	var base_x := int(local.x / SLOT_SIZE.x)
 	var base_y := int(local.y / SLOT_SIZE.y)
@@ -120,18 +86,16 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 	if base_x < 0 or base_y < 0:
 		return INVALID_CELL
 
-	var offset_x := local.x - base_x * SLOT_SIZE.x
-	var offset_y := local.y - base_y * SLOT_SIZE.y
-
-	if offset_x > SLOT_SIZE.x * 0.5:
+	if local.x - base_x * SLOT_SIZE.x > SLOT_SIZE.x * 0.5:
 		base_x += 1
-	if offset_y > SLOT_SIZE.y * 0.5:
+	if local.y - base_y * SLOT_SIZE.y > SLOT_SIZE.y * 0.5:
 		base_y += 1
 
 	var cell := Vector2i(base_x, base_y)
 
-	for dy in range(item_view.item.equipment.size.y):
-		for dx in range(item_view.item.equipment.size.x):
+	# Validazione completa considerando dimensioni dell'item
+	for dy in range(view.item.equipment.size.y):
+		for dx in range(view.item.equipment.size.x):
 			var c := cell + Vector2i(dx, dy)
 			if not slots.has(c):
 				return INVALID_CELL
@@ -141,14 +105,24 @@ func get_best_drop_cell(item_view: ItemView) -> Vector2i:
 	return cell
 
 
-func get_item_at_cell(base_cell: Vector2i, exclude: InventoryItemData) -> InventoryItemData:
+# Ritorna l'item logico che occupa una cella.
+# NON usa ItemView.
+func get_item_at_cell(
+	base_cell: Vector2i,
+	exclude: InventoryItemData
+) -> InventoryItemData:
+	if grid_state == null:
+		return null
+
 	for other in grid_state.get_items():
 		if other == exclude:
 			continue
 
 		if _rects_overlap(
-			base_cell, exclude.equipment.size,
-			other.inventory_position, other.equipment.size
+			base_cell,
+			exclude.equipment.size,
+			other.inventory_position,
+			other.equipment.size
 		):
 			return other
 
@@ -176,5 +150,7 @@ func get_visible_rows() -> int:
 	return grid_state.get_required_visible_rows()
 
 
+# Converte una cella logica in posizione globale.
+# Usata da ItemMoveController.
 func get_snap_global_position(cell: Vector2i) -> Vector2:
 	return global_position + Vector2(cell) * SLOT_SIZE

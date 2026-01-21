@@ -61,3 +61,8 @@ anchor_right = 0.102
 anchor_bottom = 0.5
 offset_right = 1147.44
 offset_bottom = 359.0
+
+[node name="ItemViewsRoot" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

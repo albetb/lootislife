@@ -6,6 +6,9 @@ var inventory_grid: ItemGrid
 var equipment_panel: EquipmentPanel
 var loot_panel: LootPanel
 
+# -------------------------------------------------
+# TRANSACTION
+# -------------------------------------------------
 class SwapTransaction:
 	var views: Array[ItemView] = []
 	var completed := {}
@@ -22,35 +25,16 @@ class SwapTransaction:
 				return false
 		return true
 
-
 var active_swap: SwapTransaction = null
 
-
+# -------------------------------------------------
+# SETUP
+# -------------------------------------------------
 func setup(ps: PlayerScreen) -> void:
 	player_screen = ps
 	inventory_grid = ps.inventory_grid
 	equipment_panel = ps.equipment_panel
 	loot_panel = ps.loot_panel
-
-func sync_initial_equipped_views() -> void:
-	for item in Player.data.inventory.items:
-		if item.location != InventoryItemData.ItemLocation.EQUIPPED:
-			continue
-
-		var view := player_screen.get_item_view(item.uid)
-		if view == null:
-			continue
-
-		var slot := equipment_panel.get_slot_by_id(item.equipped_slot)
-		if slot == null:
-			continue
-
-		if view.get_parent() != slot:
-			view.reparent(slot)
-
-		view.target_position = slot.get_snap_global_position(view)
-		view.returning = true
-
 
 # -------------------------------------------------
 # ENTRY POINT
@@ -64,86 +48,69 @@ func request_drop(
 	target_cell: Vector2i
 ) -> void:
 	if active_swap != null:
-		view.start_return()
+		_return_view(view)
 		return
 
 	match target_type:
 		PlayerScreen.DropTargetType.EQUIPMENT:
 			_drop_on_equipment(item, view, target_slot)
+
 		PlayerScreen.DropTargetType.GRID:
 			_drop_on_grid(item, view, target_grid, target_cell)
-		_:
-			view.start_return()
 
+		_:
+			_return_view(view)
 
 # -------------------------------------------------
 # TRANSACTION CORE
 # -------------------------------------------------
-func _start_swap_transaction(pairs: Array, commit_func: Callable) -> void:
+func _start_swap_transaction(
+	views: Array[ItemView],
+	commit_func: Callable
+) -> void:
 	active_swap = SwapTransaction.new()
 	active_swap.commit = commit_func
 
-	for p in pairs:
-		var view: ItemView = p.view
-		view.target_position = p.target
-
+	for view in views:
 		active_swap.add(view)
+
+		# FORZA una animazione (anche se è già sopra)
+		var start_pos := view.global_position
+		view.move_to(start_pos)
+
 		view.animation_finished.connect(
 			_on_swap_anim_finished.bind(active_swap),
 			CONNECT_ONE_SHOT
 		)
-		view.returning = true
-
 
 func _on_swap_anim_finished(view: ItemView, tx: SwapTransaction) -> void:
 	if not tx.mark_done(view):
 		return
 
+	# commit logico UNA SOLA VOLTA
+	tx.commit.call()
+
+	# animazione finale unica e simultanea
 	for v in tx.views:
-		v.returning = false
+		if not is_instance_valid(v):
+			continue
+
 		v.dragging = false
+		v.returning = true
 		v.visual.rotation = 0.0
 		v.label.rotation = 0.0
 		v.invalid_overlay.rotation = 0.0
 
-	tx.commit.call()
-
-	for v in tx.views:
-		if is_instance_valid(v):
-			_reparent_view(v)
-			_set_final_target(v)
+		_reparent_view(v)
+		var final_pos := _resolve_final_position(v.item, v)
+		v.move_to(final_pos)
 
 	player_screen.sync_item_views()
 	active_swap = null
 
-
 # -------------------------------------------------
-# REPOSITION / REPARENT
+# REPARENT / FINAL TARGET
 # -------------------------------------------------
-func _set_final_target(view: ItemView) -> void:
-	var item := view.item
-
-	match item.location:
-		InventoryItemData.ItemLocation.INVENTORY:
-			view.target_position = inventory_grid.get_snap_global_position(
-				item.inventory_position
-			)
-
-		InventoryItemData.ItemLocation.LOOT:
-			var grid := loot_panel.get_grid()
-			if grid:
-				view.target_position = grid.get_snap_global_position(
-					item.inventory_position
-				)
-
-		InventoryItemData.ItemLocation.EQUIPPED:
-			var slot := equipment_panel.get_slot_by_id(item.equipped_slot)
-			if slot:
-				var h := slot._get_vertical_cells()
-				var size := Vector2(64, 64 * h)
-				view.target_position = slot.global_position + (size - view.size) * 0.5
-
-
 func _reparent_view(view: ItemView) -> void:
 	var item := view.item
 
@@ -162,7 +129,6 @@ func _reparent_view(view: ItemView) -> void:
 			if slot and view.get_parent() != slot:
 				view.reparent(slot)
 
-
 # -------------------------------------------------
 # EQUIPMENT
 # -------------------------------------------------
@@ -175,73 +141,67 @@ func _drop_on_equipment(
 	var target_slot := slot.slot_id
 
 	# stesso slot → ritorno
-	if item.location == InventoryItemData.ItemLocation.EQUIPPED \
-	and item.equipped_slot == target_slot:
-		view.start_return()
+	if (
+		item.location == InventoryItemData.ItemLocation.EQUIPPED
+		and item.equipped_slot == target_slot
+	):
+		_return_view(view)
 		return
 
 	# validazione tipo
 	if not player_screen.can_equip_item(item, slot):
-		view.start_return()
+		_return_view(view)
 		return
 
-	# leggi UNA SOLA VOLTA cosa c’è nello slot
+	# leggi UNA SOLA VOLTA lo slot
 	var other := equipment_panel.get_item_in_slot(slot)
 
-	# -------------------------------------------------
-	# SLOT EQUIP VUOTO
-	# -------------------------------------------------
+	# ---------------------------------------------
+	# SLOT VUOTO
+	# ---------------------------------------------
 	if other == null:
 		_start_swap_transaction(
-			[
-				{ "view": view, "target": slot.get_snap_global_position(view) }
-			],
+			[view],
 			func():
 				inventory.move_item_to_equip(item.uid, target_slot)
 		)
 		return
 
-	# da qui in poi lo slot è PIENO
-	var other_view = player_screen.get_item_view(other.uid)
+	var other_view := player_screen.get_item_view(other.uid)
+	if other_view == null:
+		_return_view(view)
+		return
 
-	# -------------------------------------------------
-	# EQUIP ↔ EQUIP (SWAP PURO)
-	# -------------------------------------------------
+	# ---------------------------------------------
+	# EQUIP ↔ EQUIP
+	# ---------------------------------------------
 	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
-		var source_slot := item.equipped_slot
-		var source_slot_node := equipment_panel.get_slot_by_id(source_slot)
+		var source_slot := equipment_panel.get_slot_by_id(item.equipped_slot)
 
 		_start_swap_transaction(
-			[
-				{ "view": view, "target": slot.get_snap_global_position(view) },
-				{
-					"view": other_view,
-					"target": source_slot_node.get_snap_global_position(other_view)
-				}
-			],
+			[view, other_view],
 			func():
 				inventory.swap_items(item.uid, other.uid)
 		)
+
 		return
 
-	# -------------------------------------------------
-	# INVENTORY / LOOT → EQUIP (CON RITORNO DELL’ALTRO)
-	# -------------------------------------------------
-	var target_other := _resolve_return_position(other)
+	# ---------------------------------------------
+	# INVENTORY / LOOT → EQUIP
+	# ---------------------------------------------
+	var source_slot := equipment_panel.get_slot_by_id(other.equipped_slot)
+	if not player_screen.can_equip_item(item, slot):
+		_return_view(view)
+		return
+	if not player_screen.can_equip_item(other, source_slot):
+		_return_view(view)
+		return
 
 	_start_swap_transaction(
-		[
-			{ "view": view, "target": slot.get_snap_global_position(view) },
-			{ "view": other_view, "target": target_other }
-		],
+		[view, other_view],
 		func():
-			inventory.move_item_to_equip(item.uid, target_slot)
-			inventory.unequip_item_to_grid(
-				other.uid,
-				player_screen.find_first_free_inventory_cell(other)
-			)
+			inventory.swap_items(item.uid, other.uid)
 	)
-
 
 
 # -------------------------------------------------
@@ -261,8 +221,7 @@ func _drop_on_grid(
 		_drop_on_loot(item, view, grid, cell)
 		return
 
-	view.start_return()
-
+	_return_view(view)
 
 func _drop_on_inventory(
 	item: InventoryItemData,
@@ -274,7 +233,7 @@ func _drop_on_inventory(
 
 	if other == null:
 		_start_swap_transaction(
-			[{ "view": view, "target": inventory_grid.get_snap_global_position(cell) }],
+			[view],
 			func():
 				inventory.move_item_to_grid(
 					item.uid,
@@ -285,25 +244,25 @@ func _drop_on_inventory(
 		return
 
 	if other.equipment.size != item.equipment.size:
-		view.start_return()
+		_return_view(view)
 		return
 
-	var other_view = inventory_grid.item_views[other.uid]
+	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
+		var source_slot := equipment_panel.get_slot_by_id(item.equipped_slot)
+		if not player_screen.can_equip_item(other, source_slot):
+			_return_view(view)
+			return
+
+	var other_view := player_screen.get_item_view(other.uid)
+	if other_view == null:
+		_return_view(view)
+		return
 
 	_start_swap_transaction(
-		[
-			{ "view": view, "target": inventory_grid.get_snap_global_position(cell) },
-			{
-				"view": other_view,
-				"target": inventory_grid.get_snap_global_position(
-					other.inventory_position
-				)
-			}
-		],
+		[view, other_view],
 		func():
 			inventory.swap_items(item.uid, other.uid)
 	)
-
 
 func _drop_on_loot(
 	item: InventoryItemData,
@@ -314,31 +273,63 @@ func _drop_on_loot(
 	var inventory := Player.data.inventory
 	var other := grid.get_item_at_cell(cell, item)
 
-	if other != null:
-		view.start_return()
+	# ---------------------------------------------
+	# CELLA VUOTA
+	# ---------------------------------------------
+	if other == null:
+		_start_swap_transaction(
+			[view],
+			func():
+				inventory.move_item_to_grid(
+					item.uid,
+					InventoryItemData.ItemLocation.LOOT,
+					cell
+				)
+		)
+		return
+
+	# ---------------------------------------------
+	# SIZE MISMATCH
+	# ---------------------------------------------
+	if other.equipment.size != item.equipment.size:
+		_return_view(view)
+		return
+
+	# ---------------------------------------------
+	# VALIDAZIONE EQUIP SE SERVE
+	# ---------------------------------------------
+	if item.location == InventoryItemData.ItemLocation.EQUIPPED:
+		var source_slot := equipment_panel.get_slot_by_id(item.equipped_slot)
+		if not player_screen.can_equip_item(other, source_slot):
+			_return_view(view)
+			return
+
+	# ---------------------------------------------
+	# SWAP VIEW
+	# ---------------------------------------------
+	var other_view := player_screen.get_item_view(other.uid)
+	if other_view == null:
+		_return_view(view)
 		return
 
 	_start_swap_transaction(
-		[{ "view": view, "target": grid.get_snap_global_position(cell) }],
+		[view, other_view],
 		func():
-			inventory.move_item_to_grid(
-				item.uid,
-				InventoryItemData.ItemLocation.LOOT,
-				cell
-			)
+			inventory.swap_items(item.uid, other.uid)
 	)
-
 
 # -------------------------------------------------
 # UTILS
 # -------------------------------------------------
 func _resolve_return_position(item: InventoryItemData) -> Vector2:
+	var view := player_screen.get_item_view(item.uid)
+	if view == null:
+		return Vector2.ZERO
+
 	match item.location:
 		InventoryItemData.ItemLocation.EQUIPPED:
 			var slot := equipment_panel.get_slot_by_id(item.equipped_slot)
-			return slot.get_snap_global_position(
-				inventory_grid.item_views[item.uid]
-			)
+			return slot.get_snap_global_position(view)
 
 		InventoryItemData.ItemLocation.LOOT:
 			return loot_panel.get_grid().get_snap_global_position(
@@ -349,3 +340,44 @@ func _resolve_return_position(item: InventoryItemData) -> Vector2:
 			return inventory_grid.get_snap_global_position(
 				item.inventory_position
 			)
+
+func sync_all_views_immediate() -> void:
+	for item in Player.data.inventory.items:
+		var view := player_screen.get_item_view(item.uid)
+		if view == null:
+			continue
+
+		# reparent corretto
+		_reparent_view(view)
+
+		# posizione finale corretta
+		var pos := _resolve_final_position(item, view)
+		view.force_snap(pos)
+
+func _resolve_final_position(
+	item: InventoryItemData,
+	view: ItemView
+) -> Vector2:
+	match item.location:
+		InventoryItemData.ItemLocation.INVENTORY:
+			return inventory_grid.get_snap_global_position(
+				item.inventory_position
+			)
+
+		InventoryItemData.ItemLocation.LOOT:
+			var grid := loot_panel.get_grid()
+			if grid:
+				return grid.get_snap_global_position(
+					item.inventory_position
+				)
+
+		InventoryItemData.ItemLocation.EQUIPPED:
+			var slot := equipment_panel.get_slot_by_id(item.equipped_slot)
+			if slot:
+				return slot.get_snap_global_position(view)
+
+	return Vector2.ZERO
+
+func _return_view(view: ItemView) -> void:
+	var pos := _resolve_return_position(view.item)
+	view.move_to(pos)

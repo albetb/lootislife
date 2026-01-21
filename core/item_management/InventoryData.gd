@@ -65,7 +65,9 @@ func move_item_to_equip(
 	if item == null:
 		return false
 
-	if get_equipped_item(slot) != null:
+	# non deve MAI esserci più di un item per slot
+	var existing := get_equipped_item(slot)
+	if existing != null:
 		return false
 
 	item.location = InventoryItemData.ItemLocation.EQUIPPED
@@ -78,11 +80,14 @@ func unequip_item_to_grid(
 	uid: String,
 	cell: Vector2i
 ) -> bool:
-	return move_item_to_grid(
-		uid,
-		InventoryItemData.ItemLocation.INVENTORY,
-		cell
-	)
+	var item := get_item_by_uid(uid)
+	if item == null:
+		return false
+
+	item.location = InventoryItemData.ItemLocation.INVENTORY
+	item.inventory_position = cell
+	item.equipped_slot = InventoryItemData.EquippedSlot.NONE
+	return true
 
 
 func swap_items(uid_a: String, uid_b: String) -> bool:
@@ -92,6 +97,7 @@ func swap_items(uid_a: String, uid_b: String) -> bool:
 	if a == null or b == null:
 		return false
 
+	# snapshot completo
 	var loc_a := a.location
 	var loc_b := b.location
 	var pos_a := a.inventory_position
@@ -99,6 +105,7 @@ func swap_items(uid_a: String, uid_b: String) -> bool:
 	var slot_a := a.equipped_slot
 	var slot_b := b.equipped_slot
 
+	# swap atomico
 	a.location = loc_b
 	b.location = loc_a
 

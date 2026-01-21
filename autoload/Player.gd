@@ -101,14 +101,14 @@ func _resolve_starting_equipped_slot(
 			for i in range(2):
 				var slot := InventoryItemData.EquippedSlot.RELIC_0 + i
 				if not used_slots.has(slot):
-					return slot
+					return slot as InventoryItemData.EquippedSlot
 			return InventoryItemData.EquippedSlot.NONE
 
 		EquipmentData.SlotType.CONSUMABLE:
 			for i in range(4):
 				var slot := InventoryItemData.EquippedSlot.CONSUMABLE_0 + i
 				if not used_slots.has(slot):
-					return slot
+					return slot as InventoryItemData.EquippedSlot
 			return InventoryItemData.EquippedSlot.NONE
 
 	return InventoryItemData.EquippedSlot.NONE
