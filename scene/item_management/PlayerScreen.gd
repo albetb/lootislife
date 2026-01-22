@@ -63,7 +63,7 @@
 #
 # 17. La posizione di un ItemView viene controllata solo tramite target_position.
 #     Nessuno script deve settare direttamente global_position o position.
-#     Il movimento è sempre gestito internamente da ItemView.
+#     Utilizzare sempre la funzione dedicata move_to().
 #
 # 18. Le ItemView non appartengono a una Grid.
 #     Sono gestite globalmente da PlayerScreen.
