@@ -99,8 +99,12 @@ var loot_state: LootGridState = null
 var inventory_open := false
 var loot_open := false
 
+@export var inventory_icon_open: Texture2D
+@export var inventory_icon_closed: Texture2D
+
 const INVENTORY_LERP := 10.0
 const INVENTORY_OFFSET := 8
+const BLUR_FADE_TIME := 0.2
 
 var inventory_target_pos := Vector2.ZERO
 var loot_target_pos := Vector2.ZERO
@@ -141,7 +145,10 @@ func _ready() -> void:
 	inventory_panel.global_position = inventory_target_pos
 	loot_panel.global_position = loot_target_pos
 	toggle_button.global_position = button_target_pos
-
+	toggle_button.focus_mode = Control.FOCUS_NONE
+	
+	blur_panel.visible = false
+	blur_panel.modulate.a = 0.0
 
 func _process(delta: float) -> void:
 	inventory_panel.global_position = inventory_panel.global_position.lerp(
@@ -324,13 +331,13 @@ func _open_loot_panel() -> void:
 	await loot_panel.loot_panel_resized
 
 	_update_panels_position()
-	loot_panel.global_position = loot_target_pos
 
-	blur_panel.visible = true
+	_fade_in_blur()
 	toggle_button.visible = false
 
 	if not inventory_open:
 		inventory_open = true
+		Events.inventory_opened.emit()
 
 	_update_button()
 	_update_panels_position()
@@ -350,9 +357,10 @@ func clear_loot() -> void:
 func _on_loot_panel_closed() -> void:
 	loot_state = null
 	loot_open = false
-	blur_panel.visible = false
+	_fade_out_blur()
 	toggle_button.visible = true
 	inventory_open = false
+	Events.inventory_closed.emit()
 	
 	_update_button()	
 	_update_panels_position()
@@ -365,37 +373,53 @@ func _on_loot_panel_closed() -> void:
 # -------------------------------------------------
 func _on_toggle_inventory() -> void:
 	inventory_open = not inventory_open
+	
+	if inventory_open:
+		Events.inventory_opened.emit()
+		_fade_in_blur()
+	else:
+		Events.inventory_closed.emit()
+		_fade_out_blur()
+	
 	_update_button()
 	_update_panels_position()
 
 
 func _update_button() -> void:
-	toggle_button.text = ">" if inventory_open else "<"
-
+	toggle_button.icon = inventory_icon_open if inventory_open else inventory_icon_closed
 
 func _update_panels_position() -> void:
 	var sidebar_rect = sidebar.get_global_rect()
 	var bottom_y = sidebar_rect.position.y + sidebar_rect.size.y
 
+	var viewport_rect := get_viewport_rect()
+	var screen_bottom := viewport_rect.size.y
+
+	# -----------------------------
+	# INVENTORY
+	# -----------------------------
 	if inventory_open:
 		inventory_target_pos = Vector2(
 			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
 			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
 		)
 		button_target_pos = Vector2(
-			inventory_target_pos.x - toggle_button.size.x - INVENTORY_OFFSET,
-			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
+			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
+			inventory_target_pos.y - toggle_button.size.y
 		)
 	else:
 		inventory_target_pos = Vector2(
-			sidebar_rect.position.x + INVENTORY_OFFSET,
-			bottom_y - inventory_panel.size.y - INVENTORY_OFFSET
+			sidebar_rect.position.x - inventory_panel.size.x - INVENTORY_OFFSET,
+			screen_bottom + INVENTORY_OFFSET
 		)
 		button_target_pos = Vector2(
 			sidebar_rect.position.x - toggle_button.size.x - INVENTORY_OFFSET,
 			bottom_y - toggle_button.size.y - INVENTORY_OFFSET
 		)
 
+	# -----------------------------
+	# LOOT
+	# -----------------------------
 	if loot_open:
 		loot_target_pos = Vector2(
 			inventory_target_pos.x - loot_panel.size.x - INVENTORY_OFFSET,
@@ -403,6 +427,38 @@ func _update_panels_position() -> void:
 		)
 	else:
 		loot_target_pos = Vector2(
-			sidebar_rect.position.x + INVENTORY_OFFSET,
-			bottom_y - loot_panel.size.y - INVENTORY_OFFSET
+			inventory_target_pos.x - loot_panel.size.x - INVENTORY_OFFSET,
+			screen_bottom + INVENTORY_OFFSET
 		)
+
+# -----------------------------
+# Fade blur panel
+# -----------------------------
+	
+func _fade_in_blur() -> void:
+	blur_panel.visible = true
+
+	var tween := create_tween()
+	#tween.kill() # sicurezza
+	tween.tween_property(
+		blur_panel,
+		"modulate:a",
+		1.0,
+		BLUR_FADE_TIME
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _fade_out_blur() -> void:
+	var tween := create_tween()
+	#tween.kill()
+
+	tween.tween_property(
+		blur_panel,
+		"modulate:a",
+		0.0,
+		BLUR_FADE_TIME
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+
+	tween.finished.connect(func():
+		blur_panel.visible = false
+	)

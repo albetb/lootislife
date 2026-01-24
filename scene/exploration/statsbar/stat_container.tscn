@@ -1,39 +1,59 @@
-[gd_scene load_steps=3 format=3 uid="uid://comhmd4npw7y"]
+[gd_scene load_steps=9 format=3 uid="uid://comhmd4npw7y"]
 
 [ext_resource type="Script" uid="uid://c2td7jepwittq" path="res://scene/exploration/statsbar/StatContainer.gd" id="1_5wqfq"]
+[ext_resource type="Texture2D" uid="uid://dr0kho24qs0l1" path="res://sprite/stat_icons/str_icon.png" id="2_ondij"]
+[ext_resource type="Texture2D" uid="uid://chvmkvofmdfoo" path="res://sprite/stat_icons/des_icon.png" id="3_ondij"]
+[ext_resource type="Texture2D" uid="uid://cxbo4t7qlgyad" path="res://sprite/stat_icons/cos_icon.png" id="4_abfsy"]
+[ext_resource type="Texture2D" uid="uid://cog30j27loc6i" path="res://sprite/stat_icons/int_icon.png" id="5_wlx8a"]
+[ext_resource type="Texture2D" uid="uid://bs84k1rqdq4re" path="res://sprite/buttons/plus_button.png" id="6_abfsy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_liibg"]
 line_spacing = 0.0
-font_size = 19
-font_color = Color(0.0235294, 0.027451, 0.0313726, 1)
+font_size = 23
+font_color = Color(0.97610956, 0.97830373, 0.98034424, 1)
+shadow_size = 2
+shadow_color = Color(0.4006977, 0.40069774, 0.40069756, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_abfsy"]
+load_path = "res://.godot/imported/str_icon.png-242470715814f3ba47052012ee0b83db.ctex"
 
 [node name="StatContainer" type="VBoxContainer"]
 custom_minimum_size = Vector2(120, 43)
+offset_right = 136.0
+offset_bottom = 43.0
 script = ExtResource("1_5wqfq")
+str_icon = ExtResource("2_ondij")
+des_icon = ExtResource("3_ondij")
+cos_icon = ExtResource("4_abfsy")
+int_icon = ExtResource("5_wlx8a")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-custom_minimum_size = Vector2(120, 32)
+custom_minimum_size = Vector2(120, 40)
 layout_mode = 2
-alignment = 1
+alignment = 2
 
-[node name="NameLabel" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(45, 0)
+[node name="PlusButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-text = "For"
-label_settings = SubResource("LabelSettings_liibg")
-horizontal_alignment = 1
-vertical_alignment = 1
+icon = ExtResource("6_abfsy")
+flat = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="ValueLabel" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(35, 0)
+custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 text = "5"
 label_settings = SubResource("LabelSettings_liibg")
-horizontal_alignment = 1
+horizontal_alignment = 2
 
-[node name="PlusButton" type="Button" parent="HBoxContainer"]
-custom_minimum_size = Vector2(25, 0)
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
-text = "+"
+
+[node name="Image" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_abfsy")
+expand_mode = 2
 
 [connection signal="pressed" from="HBoxContainer/PlusButton" to="." method="_on_plus_button_pressed"]

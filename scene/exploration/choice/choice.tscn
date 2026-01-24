@@ -1,32 +1,66 @@
-[gd_scene load_steps=4 format=3 uid="uid://ska3hghurta2"]
+[gd_scene load_steps=9 format=3 uid="uid://ska3hghurta2"]
 
 [ext_resource type="Script" uid="uid://dhlx6ivhqjts2" path="res://scene/exploration/choice/Choice.gd" id="1_pu34k"]
-[ext_resource type="Texture2D" uid="uid://d1lvhs2t0uu7w" path="res://sprite/choiche_sprite.png" id="2_r388r"]
+[ext_resource type="Texture2D" uid="uid://dovqnsk0ftmfe" path="res://sprite/rooms/battle_room.png" id="2_k2djy"]
+[ext_resource type="Texture2D" uid="uid://bnblro1u0oycc" path="res://sprite/rooms/rest_room.png" id="3_mwb21"]
+[ext_resource type="Texture2D" uid="uid://0ri1hanhithk" path="res://sprite/rooms/treasure_room.png" id="4_2annk"]
+[ext_resource type="Texture2D" uid="uid://f6d5lavgfkdr" path="res://sprite/rooms/choice_room.png" id="5_vikfm"]
+[ext_resource type="Texture2D" uid="uid://b0p2i5mouryjk" path="res://sprite/rooms/boss_room.png" id="6_fy6uc"]
+[ext_resource type="Texture2D" uid="uid://b8883a2tpi68o" path="res://sprite/rooms/shop_room.png" id="7_5rfxd"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6davc"]
-font_size = 33
+font_size = 30
 font_color = Color(0.12549, 0.152941, 0.145098, 1)
 
 [node name="Choice" type="Control" groups=["exploration"]]
 custom_minimum_size = Vector2(280, 100)
 layout_mode = 3
-anchors_preset = 0
-offset_right = 280.0
-offset_bottom = 282.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_pu34k")
+battle_background = ExtResource("2_k2djy")
+rest_background = ExtResource("3_mwb21")
+treasure_background = ExtResource("4_2annk")
+selection_background = ExtResource("5_vikfm")
+boss_background = ExtResource("6_fy6uc")
+shop_background = ExtResource("7_5rfxd")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(131, 141)
-texture = ExtResource("2_r388r")
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
 
-[node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 89.0
-offset_right = 236.0
-offset_bottom = 145.0
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_k2djy")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Text"
 label_settings = SubResource("LabelSettings_6davc")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2

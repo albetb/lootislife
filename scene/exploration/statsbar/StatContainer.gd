@@ -5,13 +5,20 @@ var stat_key: String
 
 @export var display_name: String
 
-@onready var name_label: Label = $HBoxContainer/NameLabel
 @onready var value_label: Label = $HBoxContainer/ValueLabel
 @onready var plus_button: Button = $HBoxContainer/PlusButton
+@onready var image: TextureRect = $HBoxContainer/Image
+
+@export var str_icon: Texture2D
+@export var des_icon: Texture2D
+@export var cos_icon: Texture2D
+@export var int_icon: Texture2D
 
 func _ready() -> void:
 	Events.update_ui.connect(update_ui)
 	update_ui()
+	
+	plus_button.focus_mode = Control.FOCUS_NONE
 
 func update_ui() -> void:
 	if Player.data == null or Player.data.stats == null:
@@ -25,7 +32,16 @@ func update_ui() -> void:
 
 	var points_left := Player.data.ability_points
 
-	name_label.text = display_name
+	if stat_key == "strength":
+		image.texture = str_icon
+	elif stat_key == "dexterity":
+		image.texture = des_icon
+	elif stat_key == "constitution":
+		image.texture = cos_icon
+	elif stat_key == "intelligence":
+		image.texture = int_icon
+		
+		
 	value_label.text = str(current_value)
 	
 	var max_ability_value = max(stats.strength, stats.dexterity, stats.constitution, stats.intelligence)
@@ -34,7 +50,6 @@ func update_ui() -> void:
 		plus_button.visible = false
 		plus_button.disabled = true
 	else:
-		plus_button.text = "+%d" % points_left
 		plus_button.visible = true
 		plus_button.disabled = false
 		var a = min(points_left, Player.data.MAX_ABILITY - current_value)

@@ -97,9 +97,8 @@ func _on_swap_anim_finished(view: ItemView, tx: SwapTransaction) -> void:
 
 		v.dragging = false
 		v.returning = true
-		v.visual.rotation = 0.0
+		v.sprite.rotation = 0.0
 		v.label.rotation = 0.0
-		v.invalid_overlay.rotation = 0.0
 
 		_reparent_view(v)
 		var final_pos := _resolve_final_position(v.item, v)

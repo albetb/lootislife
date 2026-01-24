@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://domsnyqqkmhhp"]
+[gd_scene load_steps=16 format=3 uid="uid://domsnyqqkmhhp"]
 
 [ext_resource type="Script" uid="uid://dqy4vqrcl4w7y" path="res://scene/exploration/statsbar/LateralStatsBar.gd" id="1_7tqpy"]
 [ext_resource type="PackedScene" uid="uid://comhmd4npw7y" path="res://scene/exploration/statsbar/stat_container.tscn" id="1_xifav"]
@@ -49,6 +49,18 @@ corner_radius_bottom_left = 8
 ProgressBar/styles/background = SubResource("StyleBoxFlat_eqdji")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_si8ep")
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_abfsy"]
+load_path = "res://.godot/imported/str_icon.png-242470715814f3ba47052012ee0b83db.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tew3b"]
+load_path = "res://.godot/imported/des_icon.png-c812457a0bbd5916ab6fde61861be564.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_sffgw"]
+load_path = "res://.godot/imported/cos_icon.png-3afb0492c976b870cc0f15de19d31d39.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ahl1r"]
+load_path = "res://.godot/imported/int_icon.png-17a3cbcb17a8ca8fc2c6f274342ce392.ctex"
+
 [node name="LateralStatsBar" type="ColorRect"]
 anchors_preset = -1
 anchor_right = 0.017
@@ -58,7 +70,7 @@ offset_right = 1258.24
 offset_bottom = 675.36
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.891957, 0.756793, 0.390645, 1)
+color = Color(0.89, 0.7570933, 0.39159998, 0)
 script = ExtResource("1_7tqpy")
 
 [node name="MarginContainer3" type="MarginContainer" parent="."]
@@ -142,6 +154,10 @@ alignment = 1
 layout_mode = 2
 stat_key = "strength"
 display_name = "For"
+str_icon = SubResource("CompressedTexture2D_abfsy")
+des_icon = SubResource("CompressedTexture2D_tew3b")
+cos_icon = SubResource("CompressedTexture2D_sffgw")
+int_icon = SubResource("CompressedTexture2D_ahl1r")
 
 [node name="DesStatContainer" parent="VBoxContainer/StatsPanel" instance=ExtResource("1_xifav")]
 layout_mode = 2

@@ -1,4 +1,4 @@
-extends ColorRect
+extends Sprite2D
 
 @onready var room_scene: PackedScene = preload("res://scene/exploration/room/room_card.tscn")
 @onready var choice_scene: PackedScene = preload("res://scene/exploration/choice/choice.tscn")

@@ -19,3 +19,5 @@ enum SlotType {
 @export var card_templates: Array[CardTemplate] = []
 
 @export var size: Vector2i = Vector2i.ZERO
+
+@export var icon: Texture2D

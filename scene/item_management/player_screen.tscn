@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3nhik41pq50h"]
+[gd_scene load_steps=8 format=3 uid="uid://b3nhik41pq50h"]
 
 [ext_resource type="Script" uid="uid://dfmjppsc1i3x3" path="res://scene/item_management/PlayerScreen.gd" id="1_mqgyp"]
 [ext_resource type="PackedScene" uid="uid://domsnyqqkmhhp" path="res://scene/exploration/statsbar/lateral_stats_bar.tscn" id="1_ns81l"]
+[ext_resource type="PackedScene" uid="uid://8e0668gsl78u" path="res://scene/item_management/item/item_view.tscn" id="2_35ghr"]
 [ext_resource type="PackedScene" uid="uid://oul7sm4dr5gc" path="res://scene/item_management/loot/loot_panel.tscn" id="2_kf8db"]
+[ext_resource type="Texture2D" uid="uid://l15dlehx5yuk" path="res://sprite/buttons/closed_inventory_button.png" id="2_v3ont"]
 [ext_resource type="PackedScene" uid="uid://wecshwb6p210" path="res://scene/item_management/inventory/inventory_panel.tscn" id="2_wssm1"]
+[ext_resource type="Texture2D" uid="uid://ca832pgp2twos" path="res://sprite/buttons/open_inventory_button.png" id="3_vkeog"]
 
 [node name="PlayerScreen" type="Control" groups=["player_screen"]]
 layout_mode = 3
@@ -14,6 +17,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_mqgyp")
+item_view_scene = ExtResource("2_35ghr")
+inventory_icon_open = ExtResource("3_vkeog")
+inventory_icon_closed = ExtResource("2_v3ont")
 
 [node name="BlurPanel" type="Panel" parent="."]
 visible = false
@@ -26,21 +32,23 @@ grow_vertical = 2
 
 [node name="InventoryToggleButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1063.0
-offset_top = 340.0
-offset_right = 1097.0
-offset_bottom = 456.0
-text = "<"
+offset_left = 1047.0
+offset_top = 647.0
+offset_right = 1115.0
+offset_bottom = 716.0
+icon = ExtResource("2_v3ont")
+flat = true
+expand_icon = true
 
 [node name="LootPanel" parent="." instance=ExtResource("2_kf8db")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = 858.0
-offset_top = 497.0
-offset_right = 1081.0
-offset_bottom = 681.0
+offset_left = 579.0
+offset_top = 758.0
+offset_right = 802.0
+offset_bottom = 942.0
 grow_horizontal = 1
 grow_vertical = 1
 
@@ -49,8 +57,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_left = 904.0
+offset_top = 796.0
+offset_right = 1004.0
+offset_bottom = 896.0
 grow_horizontal = 1
 grow_vertical = 1
 

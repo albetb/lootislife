@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7d007ffdxv5q"]
+[gd_scene load_steps=3 format=3 uid="uid://c7d007ffdxv5q"]
 
 [ext_resource type="Script" uid="uid://bpg32soncaaco" path="res://scene/item_management/item_grid/GridSlot.gd" id="1_1tfvy"]
+[ext_resource type="Texture2D" uid="uid://gt1ogx86nfib" path="res://sprite/inventario/slot_inventario.png" id="2_sdhbq"]
 
 [node name="InventorySlot" type="Control"]
 layout_mode = 3
@@ -8,22 +9,13 @@ anchors_preset = 0
 script = ExtResource("1_1tfvy")
 
 [node name="Background" type="TextureRect" parent="."]
-visible = false
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
-offset_right = 64.0
-offset_bottom = 64.0
+offset_right = 60.0
+offset_bottom = 60.0
 mouse_filter = 0
-
-[node name="Highlight" type="Node" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -4.0
-offset_bottom = -4.0
-color = Color(0.718259, 0.550255, 0.446049, 1)
+texture = ExtResource("2_sdhbq")
+expand_mode = 1
 
 [node name="DisabledOverlay" type="ColorRect" parent="."]
 visible = false

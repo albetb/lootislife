@@ -37,7 +37,7 @@ func reset() -> void:
 	save()
 
 func _setup_starting_equipment() -> void:
-	var loadout := preload("res://core/equipment/loadouts/base_equip.tres")
+	var loadout = preload("res://core/equipment/loadouts/base_equip.tres")
 	apply_starting_loadout(loadout)
 
 func apply_starting_loadout(loadout: StartingLoadoutData) -> void:

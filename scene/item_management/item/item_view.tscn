@@ -15,29 +15,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pfkmh")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Sprite" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 60.0
 offset_bottom = 60.0
-
-[node name="Visual" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.358
-anchor_bottom = 0.4
-offset_right = 37.088
-offset_bottom = 34.4
-color = Color(0.129558, 0.129558, 0.129558, 1)
-
-[node name="InvalidOverlay" type="ColorRect" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 60.0
-offset_bottom = 60.0
-mouse_filter = 2
-color = Color(1, 0.00999999, 0.00999999, 0.203922)
 
 [node name="Label" type="Label" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 60.0
 offset_bottom = 60.0

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hbwumtykd6td" path="res://scene/exploration/Exploration.gd" id="1_u1wya"]
 [ext_resource type="Script" uid="uid://bqlnc5laeh51e" path="res://scene/exploration/ExplorationManager.gd" id="2_dxjkk"]
-[ext_resource type="PackedScene" uid="uid://8e0668gsl78u" path="res://scene/item_management/item/item_view.tscn" id="4_cdab0"]
+[ext_resource type="Texture2D" uid="uid://b3scj0cqchu6f" path="res://sprite/backgrounds/explore_background.png" id="2_i12ia"]
 [ext_resource type="PackedScene" uid="uid://b3nhik41pq50h" path="res://scene/item_management/player_screen.tscn" id="9_wfrkh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pme05"]
@@ -25,29 +25,25 @@ shadow_color = Color(0.176471, 0.176471, 0.176471, 0.427451)
 
 [sub_resource type="LabelSettings" id="LabelSettings_k4akk"]
 font_size = 31
-font_color = Color(0.0980392, 0.0313726, 0.0980392, 1)
+font_color = Color(0.9505084, 0.884613, 0.9473464, 1)
 
 [node name="Explore" type="CanvasLayer"]
 
 [node name="Exploration" type="Node" parent="."]
 script = ExtResource("1_u1wya")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="Sprite2D" parent="."]
 z_index = -2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.881062, 0.826031, 0.438953, 1)
+position = Vector2(640.132, 360)
+scale = Vector2(0.73717505, 0.703125)
+texture = ExtResource("2_i12ia")
 script = ExtResource("2_dxjkk")
 
 [node name="RoomPanel" type="Panel" parent="Background"]
-layout_mode = 0
-offset_left = 89.0
-offset_top = 99.0
-offset_right = 257.0
-offset_bottom = 158.0
+offset_left = 16.09928
+offset_top = -465.06665
+offset_right = 184.09927
+offset_bottom = -406.06665
 theme = SubResource("Theme_lhpby")
 
 [node name="FloorLabel" type="Label" parent="Background/RoomPanel"]
@@ -73,25 +69,23 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="UpcomingLabel" type="Label" parent="Background"]
-layout_mode = 0
-offset_left = 329.0
-offset_top = 41.0
-offset_right = 489.0
-offset_bottom = 87.0
+offset_left = -252.49362
+offset_top = -445.15555
+offset_right = -92.49365
+offset_bottom = -399.15555
 text = "In arrivo"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="Path" type="MarginContainer" parent="Background"]
-layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.201
 anchor_top = 0.072
 anchor_right = 0.201
 anchor_bottom = 0.072
-offset_left = 63.921
-offset_top = 39.088
-offset_right = 791.921
-offset_bottom = 125.088
+offset_left = -606.8558
+offset_top = -466.26135
+offset_right = 121.14435
+offset_bottom = -380.26135
 
 [node name="Panel" type="Panel" parent="Background/Path"]
 layout_mode = 2
@@ -101,43 +95,37 @@ layout_direction = 2
 layout_mode = 2
 
 [node name="PassedLabel" type="Label" parent="Background"]
-layout_mode = 0
-offset_left = 925.0
-offset_top = 43.0
-offset_right = 1045.0
-offset_bottom = 87.0
+offset_left = 347.0926
+offset_top = -442.3111
+offset_right = 467.0926
+offset_bottom = -398.3111
 text = "Passate"
 label_settings = SubResource("LabelSettings_k4akk")
 
 [node name="Passed" type="MarginContainer" parent="Background"]
-layout_mode = 0
-offset_left = 322.0
-offset_top = 90.0
-offset_right = 1042.0
-offset_bottom = 176.0
+offset_left = -247.06755
+offset_top = -393.95554
+offset_right = 472.93243
+offset_bottom = -307.95554
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Background/Passed"]
-visible = false
 layout_direction = 2
 layout_mode = 2
 alignment = 2
 
 [node name="Choices" type="MarginContainer" parent="Background"]
-layout_mode = 0
-offset_left = 108.0
-offset_top = 287.0
-offset_right = 1030.0
-offset_bottom = 579.0
+offset_left = -380.00745
+offset_top = -232.85675
+offset_right = 593.98096
+offset_bottom = 71.111145
 
 [node name="Panel" type="Panel" parent="Background/Choices"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Background/Choices"]
 layout_mode = 2
-size_flags_horizontal = 4
+alignment = 1
 
 [node name="PlayerScreen" parent="." instance=ExtResource("9_wfrkh")]
 visibility_layer = 512
-offset_right = -1.0
-offset_bottom = 1.0
-item_view_scene = ExtResource("4_cdab0")
